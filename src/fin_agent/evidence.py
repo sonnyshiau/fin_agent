@@ -39,11 +39,11 @@ def build_evidence_map(query: str, results: list[SearchResult]) -> dict[str, obj
 
 def _field_is_missing(field: str, text: str) -> bool:
     terms = {
-        "thesis": ["thesis", "investment case"],
-        "product_cycle": ["product cycle", "ramp", "cycle", "platform"],
-        "financial_quality": ["revenue", "margin", "eps", "fcf", "cash flow"],
-        "valuation": ["valuation", "pe", "p/e", "ev/sales", "multiple"],
-        "catalyst": ["catalyst", "guidance", "lead time", "order momentum"],
-        "risk": ["risk", "shortage", "allocation", "competition"],
+        "thesis": ["thesis", "investment case", "核心", "受惠", "投資"],
+        "product_cycle": ["product cycle", "ramp", "cycle", "platform", "平台", "放量", "產品週期"],
+        "financial_quality": ["revenue", "margin", "eps", "fcf", "cash flow", "營收", "毛利", "現金流"],
+        "valuation": ["valuation", "pe", "p/e", "ev/sales", "multiple", "估值", "本益比"],
+        "catalyst": ["catalyst", "guidance", "lead time", "order momentum", "催化", "上修", "交期"],
+        "risk": ["risk", "shortage", "allocation", "competition", "風險", "短缺", "競爭"],
     }
     return not any(term in text for term in terms[field])

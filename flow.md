@@ -34,17 +34,17 @@ List missing artifacts, failed checks, and risks. Approve phase advancement only
 
 ## Phase 0: Spec And Project Groundwork
 
-- [ ] Design spec exists under `docs/superpowers/specs/`.
-- [ ] `分析框架.md` exists and is readable as UTF-8 Markdown.
-- [ ] `tech_investing_product_cycle.md` exists.
-- [ ] `.env.example` exists without real secrets.
-- [ ] `.gitignore` ignores `.env`, `report/`, and `outputs/`.
-- [ ] Supervisor reviewed that no secret or report file is staged.
+- [x] Design spec exists under `docs/superpowers/specs/`.
+- [x] `分析框架.md` exists and is readable as UTF-8 Markdown.
+- [x] `tech_investing_product_cycle.md` exists.
+- [x] `.env.example` exists without real secrets.
+- [x] `.gitignore` ignores `.env`, `report/`, and `outputs/`.
+- [x] Supervisor reviewed that no secret or report file is staged.
 
 Done note:
 
 ```text
-Pending.
+Verified with `PYTHONPATH=src python -c "from pathlib import Path; from fin_agent.flow_check import phase_zero_ready; print(phase_zero_ready(Path('.')))"`, which returned True. Full test suite passed with 10 tests. Git status showed `.env` and `report/` ignored, not staged.
 ```
 
 ## Phase 1: Local Ingestion
@@ -129,4 +129,3 @@ Pending.
 - No implementation code exists yet.
 - No ingestion, retrieval, memo generation, or web app tests exist yet.
 - `flow.md` itself must be reviewed before Phase 0 is checked.
-

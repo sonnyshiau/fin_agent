@@ -13,6 +13,6 @@ def test_render_memo_contains_required_sections():
     memo = render_memo("CPO", evidence, model_summary="CPO thesis summary")
     assert "# fin_agent Memo: CPO" in memo
     assert "## Evidence Map" in memo
-    assert "## 投資 Thesis" in memo
+    assert "## 核心 Thesis" in memo
     assert "valuation" in memo
     assert "cpo.txt" in memo

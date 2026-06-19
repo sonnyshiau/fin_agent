@@ -18,7 +18,7 @@ def render_memo(query: str, evidence: dict[str, object], model_summary: str) -> 
             f"- Missing fields: {', '.join(missing_fields) if missing_fields else 'None'}",
             f"- Contradictions: {', '.join(contradictions) if contradictions else 'None'}",
             "",
-            "## 投資 Thesis",
+            "## 核心 Thesis",
             model_summary,
             "",
             "## Key Facts",
