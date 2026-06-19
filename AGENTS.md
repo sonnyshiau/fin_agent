@@ -44,3 +44,22 @@ Pull requests should include a short summary, changed files or modules, test res
 ## Agent-Specific Instructions
 
 Treat `report/` files as source evidence. Do not invent financial figures. When data is unavailable, mark it as missing instead of estimating. Separate facts from interpretation, and cite the source document name in generated analysis.
+
+## Tech Investment Research Heuristics
+
+For technology-sector research, prioritize product-cycle analysis over reacting to already-public news. Tech investors are often underwriting changes in product cycles, especially when new technology reshuffles supply chains and changes where value accrues.
+
+When analyzing an AI hardware or semiconductor product cycle, explicitly ask:
+
+- Which components or supply-chain steps have rising content value?
+- Which parts of the chain are most supply constrained?
+- Which vendors have won design slots or appear positioned for design wins?
+- When does the new platform begin volume ramp?
+- How does the next-generation design differ from the current generation?
+- Which component categories benefit or lose from those design changes?
+
+Use Vera Rubin, its related AI hardware supply chain, and later-generation platforms such as Feynman as examples of the kind of forward product-cycle work expected. A strong tech investor should try to maintain 12-18 months of visibility on major product cycles. This visibility will not be perfect; specifications, timing, allocations, and demand can change. Maintain the view through repeated channel checks.
+
+Do not treat earnings calls, company announcements, or mainstream news as early information. By the time these appear, the information is often already stale for specialist investors. Good channel checks may surface supply-chain changes 6-9 months before they become obvious to the broader market.
+
+For shorter-term trading analysis, identify catalysts. High-frequency pricing, lead-time changes, order momentum, supply shortages, and allocation signals can all serve as catalysts. If no direct pricing signal exists, reason from the question: "What might the news be writing 2-3 months from now?" Use this to infer likely narratives, data points, or events that could cause repricing.
