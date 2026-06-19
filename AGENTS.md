@@ -4,7 +4,7 @@
 
 This repository currently contains source materials for a fundamental-analysis AI agent.
 
-- `分析框架.txt`: primary analysis framework and checklist for company research.
+- `分析框架.md`: primary analysis framework and checklist for company research.
 - `report/`: input research materials, including PDFs and short text notes.
 - `AGENTS.md`: contributor and agent operating guide.
 
@@ -20,7 +20,7 @@ When implementation code is added, keep it separate from raw research assets. Re
 There are no build or test commands yet because the repository has not been initialized as an application. Once code is added, document exact commands here. Suggested examples:
 
 - `python -m pytest`: run Python tests.
-- `python src/main.py --input report --framework 分析框架.txt`: run a local analysis workflow.
+- `python src/main.py --input report --framework 分析框架.md`: run a local analysis workflow.
 - `ruff check src tests`: lint Python code, if Ruff is adopted.
 
 Prefer commands that work from the repository root.
