@@ -1,0 +1,15 @@
+# Local research inputs and copyrighted reports
+report/
+
+# Generated analysis outputs
+outputs/
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local configuration
+.env
+.env.*
