@@ -139,3 +139,8 @@ True
 - 保留頁碼 metadata
 - 加入 PDF 成功解析或清楚失敗的 fixture tests
 - 驗證通過後才更新 `flow.md`
+
+## GitHub Pages
+
+- [Vera Rubin / Rubin Ultra NVL72 Rack Architecture](https://sonnyshiau.github.io/fin_agent/)
+- [Retirement Calculator](https://sonnyshiau.github.io/retirement-calculator/)
