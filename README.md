@@ -2,7 +2,7 @@
 
 ## Pages
 
-### [AI Supply Chain: CoWoS 2027 Bottleneck](./ai-supply-chain-cowos.html)
+### [AI Supply Chain: CoWoS 2027 Bottleneck](https://sonnyshiau.github.io/fin_agent/ai-supply-chain-cowos.html)
 
 四頁式研究 dashboard，交叉比對 Morgan Stanley 與 UBS 對 2027 CoWoS 需求、產能分配、封裝技術與受益供應鏈的看法。
 
