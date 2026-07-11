@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bloom Energy BE Interview Insight Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4f6f3;
+      --surface: #ffffff;
+      --ink: #18211f;
+      --muted: #66706c;
+      --line: #dfe5df;
+      --green: #0f8f6d;
+      --green-soft: #e4f4ef;
+      --red: #b9483f;
+      --red-soft: #f7e8e6;
+      --amber: #bd7b19;
+      --amber-soft: #f7eddc;
+      --blue: #2d6fa3;
+      --blue-soft: #e5eff6;
+      --charcoal: #27312e;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif; line-height: 1.55; }
+    .page { width: min(1160px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 52px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:18px; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.07em; }
+    .brand { display:flex; align-items:center; gap:10px; color:var(--charcoal); font-weight:800; }
+    .brand-mark { width:26px; height:26px; border-radius:6px; background:var(--green); }
+    header { padding: 28px 0 48px; border-bottom:1px solid var(--line); }
+    h1 { max-width:980px; margin:42px 0 18px; font-size:clamp(43px,6vw,76px); line-height:1.08; letter-spacing:-.035em; }
+    .subtitle { max-width:800px; margin:0; color:#3c4642; font-size:clamp(18px,2.1vw,24px); line-height:1.45; }
+    .thesis-strip { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:12px; margin-top:34px; }
+    .thesis { min-height:142px; padding:18px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+    .thesis strong, .section-kicker, .metric-label { display:block; margin-bottom:8px; color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+    .thesis p { margin:0; font-size:17px; line-height:1.45; }
+    main { padding-top:8px; }
+    section { padding:48px 0; border-bottom:1px solid var(--line); }
+    .section-head { display:grid; grid-template-columns:.8fr 1.2fr; gap:28px; align-items:end; margin-bottom:22px; }
+    h2 { margin:0; font-size:clamp(27px,3.2vw,42px); line-height:1.14; letter-spacing:-.02em; }
+    .section-head p { margin:0; color:var(--muted); font-size:16px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .card { min-width:0; padding:18px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+    .stat { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .stat-value { font-size:clamp(28px,4vw,44px); line-height:1; font-weight:800; }
+    .card p { margin:0; color:var(--muted); font-size:14px; }
+    .tag { display:inline-flex; align-items:center; min-height:25px; padding:3px 8px; border-radius:99px; font-size:11px; font-weight:800; white-space:nowrap; }
+    .green { color:var(--green); background:var(--green-soft); } .blue { color:var(--blue); background:var(--blue-soft); } .amber { color:var(--amber); background:var(--amber-soft); } .red { color:var(--red); background:var(--red-soft); }
+    .adoption { display:grid; grid-template-columns:.92fr 1.08fr; gap:18px; }
+    .oracle-panel { display:grid; gap:16px; padding:24px; border-radius:8px; background:#17231f; color:#f8fbf9; }
+    .oracle-panel h3 { margin:0; font-size:30px; line-height:1.12; } .oracle-panel p { margin:0; color:#c7d7cf; }
+    .mini-metrics { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .mini { padding:14px; border:1px solid rgba(255,255,255,.15); border-radius:7px; background:rgba(255,255,255,.06); }
+    .mini b { display:block; margin-bottom:4px; font-size:23px; line-height:1; } .mini span { color:#b9cac2; font-size:12px; }
+    .ladder { display:grid; gap:10px; }
+    .ladder-step { display:grid; grid-template-columns:130px 1fr; gap:12px; align-items:center; min-height:78px; padding:14px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+    .ladder-step strong { font-size:15px; } .ladder-step p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+    .drivers { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .driver { min-height:180px; padding:16px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+    .number { display:grid; place-items:center; width:34px; height:34px; margin-bottom:14px; border-radius:7px; background:#edf1ee; font-weight:800; }
+    .driver h3 { margin:0 0 8px; font-size:17px; } .driver p { margin:0; color:var(--muted); font-size:13px; }
+    .matrix { overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+    table { width:100%; min-width:700px; border-collapse:collapse; } th, td { padding:14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; font-size:13px; } th { background:#eef2ee; color:#35413d; font-weight:800; } td:first-child { font-weight:800; } tr:last-child td { border-bottom:0; }
+    .timeline { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+    .event { min-height:158px; padding:15px; border:1px solid var(--line); border-top:4px solid var(--green); border-radius:8px; background:var(--surface); }
+    .event b { display:block; margin-bottom:8px; } .event p { margin:0; color:var(--muted); font-size:13px; }
+    .case-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .case { padding:18px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+    .case h3 { display:flex; justify-content:space-between; gap:10px; align-items:center; margin:0 0 10px; font-size:20px; }
+    ul { margin:0; padding:0; list-style:none; } li { display:grid; grid-template-columns:12px 1fr; gap:9px; padding:10px 0; border-top:1px solid var(--line); color:#3f4a46; font-size:14px; } li::before { content:""; width:7px; height:7px; margin-top:8px; border-radius:50%; background:var(--green); } .case.base li::before { background:var(--amber); } .case.bear li::before { background:var(--red); }
+    .quote-band { display:grid; grid-template-columns:.8fr 1.2fr; gap:22px; padding:25px; border-radius:8px; background:#eef2ee; }
+    .takeaway { display:grid; gap:10px; } .takeaway-row { display:grid; grid-template-columns:96px 1fr; gap:12px; padding:13px; border:1px solid #d5ddd6; border-radius:7px; background:rgba(255,255,255,.65); } .takeaway-row span { color:var(--muted); font-size:14px; }
+    footer { padding-top:24px; color:var(--muted); font-size:12px; }
+    @media (max-width:900px) { .thesis-strip,.section-head,.grid-3,.adoption,.drivers,.timeline,.case-grid,.quote-band { grid-template-columns:1fr; } .ladder-step { grid-template-columns:1fr; } }
+    @media print { body { background:#fff; } .card,.case,.event,.oracle-panel,.thesis { box-shadow:none; } section { break-inside:avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="topbar"><div class="brand"><span class="brand-mark"></span><span>BE Interview Insight Dashboard</span></div><div>Prepared from 4 expert interviews | 2026</div></div>
+      <h1>Bloom Energy&#xFF1A;&#x6280;&#x8853;&#x5F37;&#xFF0C;&#x4F46;&#x4E0D;&#x4EE3;&#x8868;&#x6BCF;&#x5BB6; CSP &#x90FD;&#x6703;&#x7ACB;&#x5373;&#x5927;&#x8CB7;&#x3002;</h1>
+      <p class="subtitle">&#x5C08;&#x5BB6;&#x8A2A;&#x8AC7;&#x5C0D;&#x4E00;&#x4EF6;&#x4E8B;&#x6709;&#x5171;&#x8B58;&#xFF1A;BE &#x7684;&#x50F9;&#x503C;&#x4F86;&#x81EA; AI data center &#x9700;&#x8981;&#x66F4;&#x5FEB;&#x62FF;&#x5230;&#x96FB;&#x3002;Oracle &#x662F;&#x91CD;&#x8981;&#x7684; lighthouse&#xFF0C;&#x4F46;&#x5176;&#x4ED6; CSP &#x4ECD;&#x5728;&#x7B49;&#x5F85;&#x6210;&#x672C;&#x3001;&#x78B3;&#x6392;&#x8207;&#x7D1A;&#x6578;&#x898F;&#x6A21;&#x7684;&#x8B49;&#x660E;&#x3002;</p>
+      <div class="thesis-strip">
+        <article class="thesis"><strong>Investment Thesis</strong><p>&#x6293;&#x4F4F; time-to-power &#x7A00;&#x7F3A;&#x7A97;&#x53E3;&#xFF1B;Oracle &#x662F;&#x4E00;&#x500B;&#x53EF;&#x89C0;&#x5BDF;&#x7684;&#x53C3;&#x8003;&#x6848;&#x4F8B;&#x3002;</p></article>
+        <article class="thesis"><strong>Why It Works Now</strong><p>&#x96FB;&#x7DB2;&#x6392;&#x7A0B;&#x3001;&#x6E26;&#x8F2A;&#x6A5F;&#x4EA4;&#x4ED8;&#x8207; AI campus &#x9700;&#x6C42;&#x540C;&#x6642;&#x4F7F;&#x901F;&#x5EA6;&#x66F4;&#x6709;&#x50F9;&#x503C;&#x3002;</p></article>
+        <article class="thesis"><strong>Key Risk</strong><p>GW &#x7D1A;&#x7684;&#x53EF;&#x9760;&#x5EA6;&#x3001;&#x7DAD;&#x4FEE;&#x6210;&#x672C;&#x8207;&#x9577;&#x671F;&#x6DE8;&#x96F6;&#x9069;&#x914D;&#x5EA6;&#x4ECD;&#x662F;&#x95DC;&#x9375;&#x3002;</p></article>
+      </div>
+    </header>
+    <main>
+      <section>
+        <div class="section-head"><div><span class="section-kicker">Executive View</span><h2>BE &#x8D0F;&#x5728;&#x96FB;&#x529B;&#x7A00;&#x7F3A;&#x7684;&#x7A97;&#x53E3;&#x3002;</h2></div><p>&#x9019;&#x662F;&#x4E00;&#x500B;&#x95DC;&#x65BC;&#x4F9B;&#x96FB;&#x901F;&#x5EA6;&#x7684;&#x6574;&#x9AD4;&#x89E3;&#x6CD5;&#xFF0C;&#x4E0D;&#x662F;&#x95DC;&#x65BC;&#x6700;&#x4F4E;&#x6210;&#x672C;&#x6216;&#x6700;&#x6DE8;&#x96F6;&#x7684;&#x55AE;&#x4E00;&#x6280;&#x8853;&#x89E3;&#x3002;</p></div>
+        <div class="grid-3">
+          <article class="card"><div class="stat"><span class="metric-label">Window</span><span class="tag green">Bullish</span></div><div class="stat-value">2026-28</div><p>&#x96FB;&#x529B;&#x4F9B;&#x7D66;&#x7DCA;&#x7E2E;&#x8207; AI &#x9700;&#x6C42;&#x63D0;&#x4F9B;&#x4E86;&#x6700;&#x5F37;&#x7684;&#x51FA;&#x8CA8;&#x80CC;&#x666F;&#x3002;</p></article>
+          <article class="card"><div class="stat"><span class="metric-label">Oracle Deal</span><span class="tag blue">Lighthouse</span></div><div class="stat-value">2.8GW</div><p>Oracle &#x7684;&#x5927;&#x578B;&#x627F;&#x8AFE;&#x662F;&#x5E02;&#x5834;&#x91CD;&#x65B0;&#x8A55;&#x4F30; BE &#x7684;&#x4E3B;&#x8981;&#x89C0;&#x5BDF;&#x9EDE;&#x3002;</p></article>
+          <article class="card"><div class="stat"><span class="metric-label">Bear Debate</span><span class="tag red">Execution</span></div><div class="stat-value">GW Scale</div><p>&#x5F9E; MW &#x5230; GW &#x7684;&#x4F9B;&#x61C9;&#x93C8;&#x3001;&#x54C1;&#x8CEA;&#x8207;&#x73FE;&#x5834;&#x670D;&#x52D9;&#x662F;&#x6700;&#x5927;&#x7684;&#x57F7;&#x884C;&#x98A8;&#x96AA;&#x3002;</p></article>
+        </div>
+      </section>
+      <section>
+        <div class="section-head"><div><span class="section-kicker">Adoption Map</span><h2>&#x70BA;&#x4EC0;&#x9EBC; Oracle &#x6703;&#x8D70;&#x5728;&#x524D;&#x9762;&#xFF1F;</h2></div><p>Oracle &#x8FFD;&#x6C42; AI cloud &#x5BB9;&#x91CF;&#x7684;&#x4E0A;&#x7DDA;&#x901F;&#x5EA6;&#xFF1B;&#x5176;&#x4ED6;&#x5E73;&#x53F0;&#x578B;&#x8CB7;&#x5BB6;&#x5247;&#x6709;&#x66F4;&#x591A;&#x6642;&#x9593;&#x8207;&#x66F4;&#x9AD8;&#x7684;&#x9577;&#x671F;&#x6C7A;&#x7B56;&#x9580;&#x6ABB;&#x3002;</p></div>
+        <div class="adoption">
+          <article class="oracle-panel"><span class="tag green">Anchor Case</span><h3>Oracle &#x7684;&#x6C7A;&#x5B9A;&#xFF1A;&#x5148;&#x62FF;&#x5230;&#x96FB;&#x3002;</h3><p>&#x7576;&#x5BB9;&#x91CF;&#x4E0A;&#x7DDA;&#x901F;&#x5EA6;&#x662F;&#x6700;&#x91CD;&#x8981;&#x7684;&#x6210;&#x9577;&#x74F6;&#x9838;&#xFF0C;&#x65B0;&#x7684;&#x73FE;&#x5834;&#x96FB;&#x6E90;&#x65B9;&#x6848;&#x5C31;&#x53EF;&#x4EE5;&#x53D6;&#x5F97;&#x66F4;&#x9AD8;&#x7684;&#x7D93;&#x6FDF;&#x50F9;&#x503C;&#x3002;</p><div class="mini-metrics"><div class="mini"><b>90 &#x5929;</b><span>&#x6A21;&#x7D44;&#x5316;&#x90E8;&#x7F72;&#x7684;&#x901F;&#x5EA6;&#x512A;&#x52E2;</span></div><div class="mini"><b>2.45GW</b><span>Project Jupiter &#x7684;&#x5BB9;&#x91CF;&#x80CC;&#x666F;</span></div><div class="mini"><b>10-20 &#x5E74;</b><span>&#x6B63;&#x5728;&#x88AB;&#x6AA2;&#x9A57;&#x7684;&#x4F9B;&#x96FB;&#x627F;&#x8AFE;</span></div><div class="mini"><b>99.99%</b><span>&#x8CC7;&#x6599;&#x4E2D;&#x5FC3;&#x5C0D; uptime &#x7684;&#x671F;&#x5F85;</span></div></div></article>
+          <div class="ladder"><div class="ladder-step"><strong>Oracle</strong><div><span class="tag green">Prime Power</span><p>&#x63A1;&#x7528;&#x901F;&#x5EA6;&#x70BA;&#x7B2C;&#x4E00;&#x512A;&#x5148;&#x3002;</p></div></div><div class="ladder-step"><strong>CoreSite / Colo</strong><div><span class="tag blue">Operating Base</span><p>&#x6578;&#x64DA;&#x4E2D;&#x5FC3;&#x5DF2;&#x6709;&#x7684;&#x904B;&#x8F49;&#x6848;&#x4F8B;&#x63D0;&#x4F9B;&#x57FA;&#x790E;&#x3002;</p></div></div><div class="ladder-step"><strong>CoreWeave / AEP</strong><div><span class="tag amber">Power Stack</span><p>&#x540C;&#x6A23;&#x9762;&#x5C0D; AI infrastructure &#x4F9B;&#x96FB;&#x7F3A;&#x53E3;&#x3002;</p></div></div><div class="ladder-step"><strong>Google / Microsoft / AWS</strong><div><span class="tag red">Watchful</span><p>&#x66F4;&#x91CD;&#x8996;&#x4F4E;&#x78B3;&#x8DEF;&#x5F91;&#x3001;&#x96FB;&#x529B;&#x7BA1;&#x7DDA;&#x8207;&#x9577;&#x671F;&#x7D93;&#x6FDF;&#x6027;&#x3002;</p></div></div></div>
+        </div>
+      </section>
+      <section>
+        <div class="section-head"><div><span class="section-kicker">Why Not Every CSP</span><h2>&#x5927;&#x578B; CSP &#x8CB7;&#x7684;&#x662F; 20 &#x5E74;&#x7684;&#x7D50;&#x679C;&#x3002;</h2></div><p>&#x6280;&#x8853;&#x80FD;&#x767C;&#x96FB;&#x4E0D;&#x8DB3;&#x4EE5;&#x6C7A;&#x5B9A;&#x5927;&#x578B;&#x63A1;&#x8CFC;&#x3002;&#x6210;&#x672C;&#x3001;&#x78B3;&#x6392;&#x3001;&#x53EF;&#x9760;&#x5EA6;&#x548C;&#x8ABF;&#x5EA6;&#x80FD;&#x529B;&#x90FD;&#x5FC5;&#x9808;&#x540C;&#x6642;&#x6210;&#x7ACB;&#x3002;</p></div>
+        <div class="drivers"><article class="driver"><div class="number">01</div><h3>&#x7D93;&#x6FDF;&#x6027;</h3><p>CapEx &#x3001;&#x7A05;&#x62B5;&#x3001;&#x71C3;&#x6599;&#x8207;&#x7DAD;&#x4FEE;&#x5171;&#x540C;&#x6C7A;&#x5B9A;&#x7E3D;&#x6210;&#x672C;&#x3002;</p></article><article class="driver"><div class="number">02</div><h3>&#x78B3;&#x6392;</h3><p>&#x5929;&#x7136;&#x6C23;&#x8DEF;&#x5F91;&#x8207; 24/7 clean power &#x627F;&#x8AFE;&#x5B58;&#x5728;&#x843D;&#x5DEE;&#x3002;</p></article><article class="driver"><div class="number">03</div><h3>GW &#x7D1A;&#x9A57;&#x8B49;</h3><p>&#x9577;&#x671F;&#x904B;&#x8F49;&#x3001;&#x670D;&#x52D9;&#x4FDD;&#x8B49;&#x8207;&#x4F9B;&#x61C9;&#x93C8;&#x5747;&#x9700;&#x8981;&#x9A57;&#x8B49;&#x3002;</p></article><article class="driver"><div class="number">04</div><h3>&#x8ABF;&#x5EA6;&#x80FD;&#x529B;</h3><p>SOFC &#x9069;&#x5408;&#x57FA;&#x8F09;&#xFF0C;&#x4F46;&#x9AD8;&#x5EA6;&#x52D5;&#x614B;&#x8CA0;&#x8F09;&#x4ECD;&#x9700;&#x5176;&#x4ED6;&#x914D;&#x5957;&#x3002;</p></article></div>
+      </section>
+      <section>
+        <div class="section-head"><div><span class="section-kicker">Technology Scorecard</span><h2>&#x901F;&#x5EA6;&#x7A81;&#x51FA;&#xFF0C;&#x4F46;&#x5176;&#x4ED6;&#x7DAD;&#x5EA6;&#x5C1A;&#x5728;&#x5B8C;&#x5584;&#x3002;</h2></div><p>&#x4EE5;&#x6574;&#x9AD4;&#x96FB;&#x529B;&#x67B6;&#x69CB;&#x4F86;&#x6BD4;&#x8F03;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x53EA;&#x770B;&#x55AE;&#x4E00;&#x8A2D;&#x5099;&#x7684;&#x6548;&#x80FD;&#x3002;</p></div>
+        <div class="matrix"><table><thead><tr><th>Criteria</th><th>Bloom SOFC</th><th>Gas Turbine</th><th>Grid / PPA</th><th>Emerging Clean</th></tr></thead><tbody><tr><td>Time-to-power</td><td>&#x5F37;</td><td>&#x53D7;&#x4EA4;&#x4ED8;&#x671F;&#x9650;&#x5236;</td><td>&#x53D7;&#x4E26;&#x7DB2;&#x6392;&#x7A0B;&#x5F71;&#x97FF;</td><td>&#x958B;&#x767C;&#x671F;&#x8F03;&#x9577;</td></tr><tr><td>Permitting / Water</td><td>&#x6709;&#x5229;</td><td>&#x9700;&#x8981;&#x66F4;&#x591A;&#x8A31;&#x53EF;</td><td>&#x56E0;&#x5730;&#x5340;&#x800C;&#x7570;</td><td>&#x9032;&#x5EA6;&#x4E0D;&#x4E00;</td></tr><tr><td>Cost</td><td>&#x4F9D;&#x60C5;&#x5883;</td><td>&#x719F;&#x6089;</td><td>&#x5BB9;&#x91CF;&#x53D6;&#x5F97;&#x5F8C;&#x66F4;&#x4F4E;</td><td>&#x5C1A;&#x5728;&#x8B49;&#x660E;</td></tr><tr><td>Reliability Proof</td><td>GW &#x7D1A;&#x5F85;&#x9A57;&#x8B49;</td><td>&#x5DF2;&#x6210;&#x719F;</td><td>&#x53D7;&#x96FB;&#x7DB2;&#x5F71;&#x97FF;</td><td>&#x5C1A;&#x5728;&#x958B;&#x767C;</td></tr><tr><td>Carbon Fit</td><td>&#x904E;&#x6E21;&#x65B9;&#x6848;</td><td>&#x8F03;&#x5F31;</td><td>&#x4F9D;&#x6E05;&#x6F54;&#x96FB;&#x6BD4;&#x4F8B;</td><td>&#x6F5B;&#x529B;&#x8F03;&#x5F37;</td></tr></tbody></table></div>
+      </section>
+      <section>
+        <div class="section-head"><div><span class="section-kicker">Catalyst Timeline</span><h2>&#x63A5;&#x4E0B;&#x4F86;&#x5E7E;&#x5E74;&#x770B;&#x7684;&#x662F;&#x904B;&#x8F49;&#x8B49;&#x660E;&#x3002;</h2></div><p>&#x80FD;&#x5426;&#x6309;&#x6642;&#x4E0A;&#x7DDA;&#x3001;&#x7A69;&#x5B9A;&#x904B;&#x4F5C;&#x4E26;&#x5F97;&#x5230;&#x7B2C;&#x4E8C;&#x500B;&#x5927;&#x578B;&#x4E3B;&#x7528;&#x96FB;&#x5BA2;&#x6236;&#xFF0C;&#x6BD4;&#x4EFB;&#x4F55;&#x5BA3;&#x50B3;&#x66F4;&#x91CD;&#x8981;&#x3002;</p></div>
+        <div class="timeline"><article class="event"><b>2026 H2</b><p>Oracle &#x8207;&#x5927;&#x578B;&#x6848;&#x4F8B;&#x7684;&#x90E8;&#x7F72;&#x9032;&#x5EA6;&#x3002;</p></article><article class="event"><b>2027</b><p>uptime &#x3001;&#x670D;&#x52D9;&#x6210;&#x672C;&#x8207;&#x73FE;&#x5834;&#x7D93;&#x9A57;&#x3002;</p></article><article class="event"><b>2028</b><p>&#x6E26;&#x8F2A;&#x6A5F;&#x8207;&#x5F15;&#x64CE;&#x4EA4;&#x4ED8;&#x671F;&#x662F;&#x5426;&#x6B63;&#x5E38;&#x5316;&#x3002;</p></article><article class="event"><b>2029</b><p>&#x65B0;&#x7684; CSP &#x53C3;&#x8003;&#x6848;&#x4F8B;&#x662F;&#x5426;&#x51FA;&#x73FE;&#x3002;</p></article><article class="event"><b>2030+</b><p>&#x66F4;&#x6DE8;&#x96F6;&#x7684;&#x4F9B;&#x96FB;&#x65B9;&#x6848;&#x662F;&#x5426;&#x6210;&#x719F;&#x3002;</p></article></div>
+      </section>
+      <section>
+        <div class="section-head"><div><span class="section-kicker">Scenario Framework</span><h2>&#x6210;&#x8D97;&#x5728;&#x65BC;&#x5F9E;&#x4E00;&#x500B;&#x53C3;&#x8003;&#x6848;&#x4F8B;&#x5230;&#x5E73;&#x53F0;&#x5316;&#x3002;</h2></div><p>&#x9806;&#x5229;&#x7684;&#x5EFA;&#x7F6E;&#x4E0D;&#x8DB3;&#x4EE5;&#x4F5C;&#x70BA;&#x7D50;&#x8AD6;&#xFF1B;&#x80FD;&#x5426;&#x8907;&#x88FD;&#x3001;&#x4E26;&#x4FDD;&#x6301;&#x7D93;&#x6FDF;&#x6027;&#x624D;&#x662F;&#x6838;&#x5FC3;&#x3002;</p></div>
+        <div class="case-grid"><article class="case"><h3>Bull Case <span class="tag green">Platform</span></h3><ul><li>Oracle &#x7A69;&#x5B9A;&#x4E0A;&#x7DDA;&#x4E26;&#x9A57;&#x8B49; uptime&#x3002;</li><li>&#x7B2C;&#x4E8C;&#x5BB6; CSP &#x5C0E;&#x5165;&#x591A;&#x5730;&#x9EDE;&#x4E3B;&#x7528;&#x96FB;&#x3002;</li><li>BE &#x5EFA;&#x7ACB;&#x670D;&#x52D9;&#x8207;&#x5B89;&#x88DD;&#x898F;&#x6A21;&#x512A;&#x52E2;&#x3002;</li></ul></article><article class="case base"><h3>Base Case <span class="tag amber">Window</span></h3><ul><li>BE &#x5728;&#x7F3A;&#x96FB;&#x578B;&#x6848;&#x4EF6;&#x4E2D;&#x4FDD;&#x6301;&#x512A;&#x52E2;&#x3002;</li><li>Oracle &#x6709;&#x6548;&#xFF0C;&#x5176;&#x4ED6; CSP &#x4ECD;&#x9078;&#x64C7;&#x6027;&#x5C0E;&#x5165;&#x3002;</li><li>&#x6210;&#x672C;&#x8207;&#x6DE8;&#x96F6;&#x76EE;&#x6A19;&#x9650;&#x5236;&#x5E02;&#x5834;&#x4E0A;&#x9650;&#x3002;</li></ul></article><article class="case bear"><h3>Bear Case <span class="tag red">Scarcity Trade</span></h3><ul><li>&#x73FE;&#x5834;&#x6545;&#x969C;&#x6216;&#x670D;&#x52D9;&#x6210;&#x672C;&#x60E1;&#x5316;&#x3002;</li><li>&#x66FF;&#x4EE3;&#x96FB;&#x6E90;&#x4F9B;&#x61C9;&#x56DE;&#x5FA9;&#x3002;</li><li>&#x7A05;&#x62B5;&#x6216;&#x78B3;&#x6392;&#x7D04;&#x675F;&#x60E1;&#x5316;&#x7D93;&#x6FDF;&#x6027;&#x3002;</li></ul></article></div>
+      </section>
+      <section>
+        <div class="quote-band"><div><span class="section-kicker">Research Takeaway</span><h2>BE &#x662F; AI &#x96FB;&#x529B;&#x7F3A;&#x53E3;&#x7684;&#x8A66;&#x91D1;&#x77F3;&#x3002;</h2></div><div class="takeaway"><div class="takeaway-row"><b>&#x89F8;&#x767C;&#x9EDE;</b><span>Oracle &#x662F;&#x5426;&#x8B49;&#x660E;&#x901F;&#x5EA6;&#x53EF;&#x4EE5;&#x8F49;&#x5316;&#x70BA;&#x53EF;&#x8907;&#x88FD;&#x7684;&#x4E3B;&#x7528;&#x96FB;&#x9700;&#x6C42;&#x3002;</span></div><div class="takeaway-row"><b>&#x6838;&#x5FC3;&#x98A8;&#x96AA;</b><span>BE &#x662F;&#x5426;&#x53EA;&#x662F;&#x6E26;&#x8F2A;&#x6A5F;&#x7F3A;&#x8CA8;&#x6642;&#x7684;&#x9078;&#x9805;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x9577;&#x671F;&#x7684;&#x6A19;&#x6E96;&#x3002;</span></div><div class="takeaway-row"><b>&#x95DC;&#x9375;&#x8B49;&#x660E;</b><span>&#x591A;&#x500B; MW / GW &#x6848;&#x4F8B;&#x7684;&#x9577;&#x671F;&#x53EF;&#x9760;&#x5EA6;&#x3001;&#x7DAD;&#x4FEE;&#x6210;&#x672C;&#x548C;&#x7B2C;&#x4E8C;&#x5BB6;&#x5927;&#x578B;&#x5BA2;&#x6236;&#x3002;</span></div></div></div>
+      </section>
+    </main>
+    <footer>Source basis: Mainspring Energy Interview, Principal Architect/CTO Google Interview, Senior Analytics Leader Google Fuel Cells Interview, VP Dioxycle/Bloom Energy Interview, plus follow-up synthesis on Oracle/CSP adoption dynamics.</footer>
+  </div>
+</body>
+</html>
