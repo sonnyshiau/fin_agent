@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 供應鏈：CoWoS 2027 瓶頸</title>
+  <style>
+    :root {
+      --bg: #f4f6f3;
+      --panel: #ffffff;
+      --ink: #18211f;
+      --muted: #66706c;
+      --line: #dfe5df;
+      --blue: #2d6fa3;
+      --blue-soft: #e5eff6;
+      --amber: #bd7b19;
+      --amber-soft: #f7eddc;
+      --green: #0f8f6d;
+      --green-soft: #e4f4ef;
+      --red: #b9483f;
+      --red-soft: #f7e8e6;
+      --charcoal: #27312e;
+      --shadow: none;
+      --r: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      width: min(1160px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 46px;
+    }
+
+    .deck-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(244, 246, 243, 0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .deck-nav a {
+      display: grid;
+      gap: 2px;
+      min-height: 46px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: #263241;
+      background: #fff;
+      box-shadow: none;
+      text-decoration: none;
+    }
+
+    .deck-nav a:hover {
+      border-color: #c8dcd1;
+      background: var(--green-soft);
+    }
+
+    .deck-nav strong {
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .deck-nav span {
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .deck-page {
+      min-height: calc(100vh - 120px);
+      margin-bottom: 16px;
+      scroll-margin-top: 86px;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 0 0 10px;
+    }
+
+    .page-kicker {
+      margin: 0 0 3px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .page-detail {
+      max-width: 680px;
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .read-card {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 11px;
+      background: #fbfcfd;
+    }
+
+    .read-card h3 {
+      margin: 0 0 5px;
+      font-size: 13px;
+    }
+
+    .read-card p {
+      margin: 0;
+      color: #344154;
+      font-size: 12px;
+    }
+
+    .mini-table {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 10px;
+      padding: 9px 0;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .mini-row strong {
+      color: #111318;
+    }
+
+    .summary-grid .kpis {
+      grid-template-columns: 1fr;
+      margin-bottom: 0;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 3px 9px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .tag.broker {
+      border-color: #efd5a5;
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .tag.public {
+      border-color: #b9e4ca;
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .tag.watch {
+      border-color: #ffd0ca;
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+      gap: 14px;
+      align-items: stretch;
+      margin-bottom: 14px;
+    }
+
+    .hero-main,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue), #18a058 55%, #e2a335);
+    }
+
+    h1 {
+      margin: 6px 0 8px;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .thesis {
+      max-width: 940px;
+      margin: 0;
+      color: #2a3340;
+      font-size: clamp(15px, 1.5vw, 18px);
+    }
+
+    .hero-note {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+    }
+
+    .note-title {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .note-text {
+      margin: 0;
+      font-size: 15px;
+      color: #2a3340;
+    }
+
+    .signal {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 18px;
+    }
+
+    .signal span {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: #2e3a48;
+      background: #f9fafb;
+      font-size: 12px;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .signal .active {
+      border-color: #bfdcff;
+      background: var(--blue-soft);
+      color: #0759ad;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kpi {
+      padding: 14px 15px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    .kpi-value {
+      margin: 7px 0 0;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .kpi-value small {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .kpi-foot {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 15px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 11px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pie-box {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 12px;
+      background: #fbfcfd;
+    }
+
+    .pie-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .pie-wrap {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pie {
+      width: 112px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: conic-gradient(#0f83fd 0deg 360deg);
+      border: 1px solid var(--line);
+      box-shadow: inset 0 0 0 18px #fff;
+    }
+
+    .legend {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      font-size: 11px;
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: 9px minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: center;
+      color: #334155;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .legend-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .capacity {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) 72px;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .bar-label {
+      font-weight: 800;
+    }
+
+    .bar-track {
+      height: 26px;
+      display: flex;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+
+    .seg {
+      display: grid;
+      place-items: center;
+      min-width: 24px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .seg.tsmc { background: #0f83fd; }
+    .seg.ase { background: #18a058; }
+    .seg.amkor { background: #b7791f; }
+    .seg.other { background: #7c8796; }
+
+    .source-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      background: #eef2ee;
+      color: #35413d;
+      font-size: 11px;
+      letter-spacing: 0;
+      font-weight: 850;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td strong {
+      color: #111318;
+    }
+
+    .delta {
+      color: #1f2a37;
+      font-weight: 650;
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(460px, 1.05fr) minmax(360px, 0.95fr);
+      gap: 14px;
+      margin-top: 14px;
+      align-items: start;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .tech {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 10px;
+      background: #fbfcfd;
+      min-height: 130px;
+    }
+
+    .tech h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+
+    .tech p {
+      margin: 0;
+      color: #344154;
+      font-size: 12px;
+    }
+
+    .mini {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 7px;
+      background: var(--blue-soft);
+      color: #0759ad;
+      font-size: 10px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .mini.mid {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .mini.watch {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .benefit-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .benefit {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 10px;
+      background: #fbfcfd;
+    }
+
+    .benefit h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+
+    .benefit p {
+      margin: 0;
+      color: #344154;
+      font-size: 12px;
+    }
+
+    details {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 9px 10px;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 800;
+      background: #f8fafc;
+    }
+
+    .detail-body {
+      padding: 0;
+      max-height: 360px;
+      overflow: auto;
+    }
+
+    .allocation-detail table {
+      min-width: 640px;
+    }
+
+    .allocation-detail th:nth-child(1),
+    .allocation-detail td:nth-child(1) {
+      width: 72px;
+    }
+
+    .allocation-detail th:nth-child(2),
+    .allocation-detail td:nth-child(2) {
+      width: 150px;
+    }
+
+    .allocation-detail th:nth-child(3),
+    .allocation-detail td:nth-child(3) {
+      width: 92px;
+    }
+
+    .sources {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .source-link {
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfd;
+      min-width: 0;
+    }
+
+    .source-link span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .foot {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: right;
+    }
+
+    @media (max-width: 1120px) {
+      .hero,
+      .main-grid,
+      .lower-grid,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-note {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100vw - 20px, 720px);
+        padding-top: 12px;
+      }
+
+      .topline,
+      .panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .kpis,
+      .charts,
+      .matrix,
+      .sources,
+      .signal,
+      .deck-nav,
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .deck-nav {
+        position: static;
+      }
+
+      .page-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .pie-wrap {
+        grid-template-columns: 100px minmax(0, 1fr);
+      }
+
+      .pie {
+        width: 100px;
+      }
+
+      .bar-row {
+        grid-template-columns: 44px minmax(0, 1fr);
+      }
+
+      .bar-total {
+        grid-column: 2;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        width: auto;
+        padding: 0;
+      }
+
+      .deck-nav {
+        display: none;
+      }
+
+      .deck-page {
+        min-height: auto;
+        break-after: page;
+        page-break-after: always;
+        margin: 0;
+        padding: 14mm 10mm;
+      }
+
+      .deck-page:last-of-type {
+        break-after: auto;
+        page-break-after: auto;
+      }
+
+      .panel,
+      .hero-main,
+      .kpi {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topline">
+      <div>本地預覽 · Morgan Stanley 2026-06-23 vs UBS 2026-07-01</div>
+      <div class="tag-row" aria-label="evidence legend">
+        <span class="tag broker">券商預估</span>
+        <span class="tag public">公開驗證</span>
+        <span class="tag watch">推論 / 待追蹤</span>
+      </div>
+    </div>
+
+    <nav class="deck-nav" aria-label="four page navigation">
+      <a href="#page-1"><strong>01 總覽結論</strong><span>結論、KPI、投資讀法</span></a>
+      <a href="#page-2"><strong>02 產能分配</strong><span>需求圓餅圖與產能分配</span></a>
+      <a href="#page-3"><strong>03 銀行差異</strong><span>MS / UBS 關鍵差異</span></a>
+      <a href="#page-4"><strong>04 技術與受益者</strong><span>CoWoS key、受益者、來源</span></a>
+    </nav>
+
+    <section class="deck-page" id="page-1" aria-labelledby="page-title">
+      <div class="page-head">
+        <div>
+          <p class="page-kicker">第 1 頁 / 總覽結論</p>
+          <h1 class="page-title" id="page-title">AI 供應鏈：CoWoS 2027 瓶頸</h1>
+          <p class="page-detail">四頁濃縮版研究 dashboard。目標是把兩份券商報告的共同結論、分歧、供應鏈受益者與待驗證訊號放進一個可掃描的投資頁面。</p>
+        </div>
+        <span class="tag broker">MS / UBS 對照</span>
+      </div>
+
+      <div class="summary-grid">
+        <div class="hero-main">
+          <p class="thesis"><strong>核心結論：</strong>MS 與 UBS 都指向 2027 CoWoS 仍偏吃緊，但敘事重點不同。MS 對總需求、TSMC 產能與非 TSMC 產能貢獻較樂觀；UBS 更強調 ASE / OSAT full-process CoWoS 能力打開後段封裝市場。</p>
+          <div class="signal" aria-label="advanced packaging signal lane">
+            <span class="active">GPU / ASIC</span>
+            <span>HBM</span>
+            <span class="active">CoWoS</span>
+            <span>OSAT</span>
+            <span>ABF</span>
+          </div>
+          <div class="summary-cards">
+            <div class="read-card">
+              <h3>共同點</h3>
+              <p>Nvidia Rubin / Vera 是 2027 主軸，Google ASIC / TPU 讓 CoWoS 需求不只靠 GPU，TSMC 高階封裝仍是最高價值瓶頸。</p>
+            </div>
+            <div class="read-card">
+              <h3>最大分歧</h3>
+              <p>不是 Nvidia，而是 AMD Venice、Amkor / 非 TSMC 產能，以及 ASIC 客戶把封裝分流到 OSAT 的速度。</p>
+            </div>
+            <div class="read-card">
+              <h3>投資含義</h3>
+              <p>若 MS 成真，上行彈性在 AMD、Amkor、ABF / HBM pull-through；若 UBS 成真，較乾淨的受益主線是 TSMC、ASE、MediaTek。</p>
+            </div>
+            <div class="read-card">
+              <h3>追蹤訊號</h3>
+              <p>TSMC 後段封裝營收、ASE 資本支出 / 稼動率、AMD Venice ramp、Google TPU 分配、HBM 交期與 ABF 供給。</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="core metrics">
+          <div class="panel-head">
+            <div>
+              <h2>Core Numbers</h2>
+              <p class="sub">先看數字，再看推論。</p>
+            </div>
+            <span class="tag watch">區間</span>
+          </div>
+          <section class="kpis" aria-label="core metrics">
+            <article class="kpi">
+              <div class="kpi-label"><span>MS 2027 需求</span><span class="tag broker">報告</span></div>
+              <div class="kpi-value">2.694<small>百萬片</small></div>
+              <p class="kpi-foot">初步 TSMC CoWoS 分配估計。</p>
+            </article>
+            <article class="kpi">
+              <div class="kpi-label"><span>UBS 2027 需求</span><span class="tag broker">報告</span></div>
+              <div class="kpi-value">2.475<small>百萬片</small></div>
+              <p class="kpi-foot">Cloud AI CoWoS interposer 需求估計。</p>
+            </article>
+            <article class="kpi">
+              <div class="kpi-label"><span>2027 產業產能</span><span class="tag watch">區間</span></div>
+              <div class="kpi-value">250-280<small>kwpm</small></div>
+              <p class="kpi-foot">UBS 250kwpm; MS 280kwpm.</p>
+            </article>
+          </section>
+          <div class="mini-table">
+            <div class="mini-row"><strong>供給讀法</strong><span>2027 需求仍高於舒適供給，投資重點不只是總量，而是誰拿到高品質產能分配。</span></div>
+            <div class="mini-row"><strong>需求讀法</strong><span>GPU 仍大，但 ASIC 是第二條成長線：Google、AWS、Meta 與客製化晶片供應鏈。</span></div>
+            <div class="mini-row"><strong>風險讀法</strong><span>券商分配數字是供應鏈調查，不是公司指引，應作為情境錨點。</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="deck-page" id="page-2" aria-labelledby="capacity-title">
+      <div class="page-head">
+        <div>
+          <p class="page-kicker">第 2 頁 / 產能與分配</p>
+          <h2 class="page-title" id="capacity-title">需求差異不只在總量，也在誰吃掉產能</h2>
+          <p class="page-detail">MS 的總需求比 UBS 高約 219k wafers，主要來自 AMD / ASIC 假設較強；UBS 對 ASE full-process CoWoS 的描述更直接，較適合用 OSAT 產能驗證。</p>
+        </div>
+        <span class="tag broker">券商預估</span>
+      </div>
+
+      <section class="main-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>2027 客戶需求分配</h2>
+              <p class="sub">圓餅圖呈現兩家券商估算的 CoWoS wafer 需求結構。</p>
+            </div>
+            <span class="tag broker">分配</span>
+          </div>
+          <div class="charts">
+            <div class="pie-box">
+              <p class="pie-title">Morgan Stanley · 2.694m</p>
+              <div class="pie-wrap">
+                <div class="pie" id="pie-ms" role="img" aria-label="Morgan Stanley 2027 CoWoS 客戶需求分配圓餅圖"></div>
+                <div class="legend" id="legend-ms"></div>
+              </div>
+            </div>
+            <div class="pie-box">
+              <p class="pie-title">UBS · 2.475m</p>
+              <div class="pie-wrap">
+                <div class="pie" id="pie-ubs" role="img" aria-label="UBS 2027 CoWoS 客戶需求分配圓餅圖"></div>
+                <div class="legend" id="legend-ubs"></div>
+              </div>
+            </div>
+          </div>
+          <details class="allocation-detail">
+            <summary>展開完整分配資料</summary>
+            <div class="detail-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>券商</th>
+                    <th>客戶 / 平台</th>
+                    <th>2027 晶圓</th>
+                    <th>投資讀法</th>
+                  </tr>
+                </thead>
+                <tbody id="allocation-table"></tbody>
+              </table>
+            </div>
+          </details>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>2027 產能分配</h2>
+              <p class="sub">長條圖以 MS 280kwpm 產業產能估計作為標準化基準。</p>
+            </div>
+            <span class="tag watch">250-280kwpm</span>
+          </div>
+          <div class="capacity" aria-label="capacity bars">
+            <div class="bar-row">
+              <div class="bar-label">MS</div>
+              <div class="bar-track" aria-label="MS capacity split">
+                <div class="seg tsmc" style="width:71.4%">TSMC 200</div>
+                <div class="seg ase" style="width:17.9%">ASE 50</div>
+                <div class="seg amkor" style="width:10.7%">Amkor 30</div>
+              </div>
+              <div class="bar-total">280kwpm</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">UBS</div>
+              <div class="bar-track" aria-label="UBS capacity split" style="margin-right:10.7%">
+                <div class="seg tsmc" style="width:72%">TSMC 180</div>
+                <div class="seg ase" style="width:20%">ASE 50+</div>
+                <div class="seg other" style="width:8%">Other 20</div>
+              </div>
+              <div class="bar-total">250kwpm</div>
+            </div>
+          </div>
+          <div class="source-strip">
+            <span class="tag broker">MS: TSMC 200, ASE/SPIL 50, Amkor 30</span>
+            <span class="tag broker">UBS: TSMC 180, ASE &gt;50, 產業 250</span>
+            <span class="tag public">TrendForce / TSMC 公開資料支持方向，不驗證精確分配。</span>
+          </div>
+          <div class="mini-table">
+            <div class="mini-row"><strong>MS 視角</strong><span>較高的 TSMC 與 non-TSMC 假設，代表 AMD 與 ASIC 需求更有空間轉成出貨。</span></div>
+            <div class="mini-row"><strong>UBS 視角</strong><span>產業總產能較保守，但 ASE 擴產敘事更清楚，投資重點偏後段封裝市場與 OSAT 稼動率。</span></div>
+            <div class="mini-row"><strong>驗證訊號</strong><span>看 TSMC 高階封裝營收、ASE full-process 里程碑、Amkor AI 封裝合作進度。</span></div>
+          </div>
+        </article>
+      </section>
+    </section>
+
+    <section class="deck-page" id="page-3" aria-labelledby="delta-title">
+      <div class="page-head">
+        <div>
+          <p class="page-kicker">第 3 頁 / 銀行差異</p>
+          <h2 class="page-title" id="delta-title">MS 比 UBS 更 aggressive；UBS 比 MS 更容易公開驗證</h2>
+          <p class="page-detail">這頁把兩份報告的差異拆成「數字、推論、投資含義」。Nvidia 其實接近，真正需要追的是 AMD、Google TPU、OSAT 產能與封裝技術路徑。</p>
+        </div>
+        <span class="tag watch">推論</span>
+      </div>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>銀行差異表</h2>
+            <p class="sub">每列讀法：數字差異 → 供應鏈推論 → 受益者。</p>
+          </div>
+          <span class="tag watch">推論</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>主題</th>
+                <th>MS</th>
+                <th>UBS</th>
+                <th>差異 / 推論</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>產能</strong></td>
+                <td>TSMC 200kwpm；非 TSMC 80kwpm。</td>
+                <td>TSMC 180kwpm；產業合計 250kwpm。</td>
+                <td class="delta">MS 對 TSMC 與 Amkor contribution 較樂觀；UBS 更保守但較可由 ASE 產能驗證。</td>
+              </tr>
+              <tr>
+                <td><strong>需求</strong></td>
+                <td>2.694m wafers。</td>
+                <td>2.475m wafers。</td>
+                <td class="delta">MS 高約 219k wafers，代表更強的 AMD / ASIC booking 假設。</td>
+              </tr>
+              <tr>
+                <td><strong>Nvidia</strong></td>
+                <td>1.222m wafers；Vera CPU 隱含約 5.75m units。</td>
+                <td>1.238m wafers；Vera 約 5.5m units。</td>
+                <td class="delta">兩家接近，Nvidia 不是主要分歧；共同確認 Rubin / Vera 是 2027 主軸。</td>
+              </tr>
+              <tr>
+                <td><strong>AMD / Venice</strong></td>
+                <td>Venice booking 270k wafers；隱含約 6.75m units。</td>
+                <td>Venice 約 4m units；AMD CoWoS 年增 232%。</td>
+                <td class="delta">最大差異。若 AMD pull-in 成真，TSMC CoWoS-L、ABF、HBM 受益彈性更大。</td>
+              </tr>
+              <tr>
+                <td><strong>Google TPU</strong></td>
+                <td>Broadcom + MediaTek 分配；並討論 TPU v8t / v9 透過 EMIB-T 的可能性。</td>
+                <td>2027 Google TPU 約 9m units；MediaTek 支援 4m v8t。</td>
+                <td class="delta">方向一致：Google ASIC 是 ASIC CoWoS 需求核心，MediaTek 能見度上升。</td>
+              </tr>
+              <tr>
+                <td><strong>OSAT</strong></td>
+                <td>ASE/SPIL 50kwpm；Amkor 30kwpm。</td>
+                <td>ASE full-process CoWoS 到 2027 年底超過 50kwpm。</td>
+                <td class="delta">UBS 對 ASE TAM 更直接；MS 額外給 Amkor 更大的 non-TSMC 空間。</td>
+              </tr>
+              <tr>
+                <td><strong>受益者</strong></td>
+                <td>TSMC, ASE, Amkor, AMD, MediaTek, Broadcom, Alchip, Marvell, GUC.</td>
+                <td>TSMC, MediaTek, ASE as top picks.</td>
+                <td class="delta">MS beneficiary map 較分散；UBS top-pick concentration 較高。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <section class="summary-cards" aria-label="delta interpretation">
+        <div class="read-card">
+          <h3>MS 隱含的情境</h3>
+          <p>更高的 TSMC 產能、非 TSMC 產能、AMD Venice booking 與 ASIC 需求轉出貨。這是一個更積極的供應鏈分配情境。</p>
+        </div>
+        <div class="read-card">
+          <h3>UBS 隱含的情境</h3>
+          <p>TSMC / ASE 擴產速度本身就是 cloud AI 需求的領先指標。UBS 的優點是較容易用營收、資本支出、稼動率追蹤。</p>
+        </div>
+        <div class="read-card">
+          <h3>市場可能重估的位置</h3>
+          <p>若 2-3 個月後新聞開始寫 AMD Venice 提前拉貨、Google TPU 訂單上修、ASE CoWoS 稼動率，相關供應鏈可能提前反應。</p>
+        </div>
+        <div class="read-card">
+          <h3>會破壞 thesis 的因素</h3>
+          <p>HBM / ABF supply 無法跟上、Rubin / Venice timing 變慢、ASIC 客戶轉單不如預期，或 OSAT full-process yield ramp 慢於報告假設。</p>
+        </div>
+      </section>
+    </section>
+
+    <section class="deck-page" id="page-4" aria-labelledby="tech-title">
+      <div class="page-head">
+        <div>
+          <p class="page-kicker">第 4 頁 / 技術與受益者</p>
+          <h2 class="page-title" id="tech-title">技術路徑決定誰吃到瓶頸價值</h2>
+          <p class="page-detail">CoWoS-S/L/R、FoCoS、EMIB-T、CoPoS、HBM 不是同一層東西。投資上要分清楚：哪些是 2027 主軸，哪些是中期替代或擴產路徑。</p>
+        </div>
+        <span class="tag public">tech map</span>
+      </div>
+
+      <section class="lower-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>CoWoS / 封裝技術矩陣</h2>
+              <p class="sub">把報告中提到的 key 技術整理成一張投資用途表。</p>
+            </div>
+            <span class="tag public">技術</span>
+          </div>
+          <div class="matrix">
+            <div class="tech">
+              <h3>CoWoS-S <span class="mini">2027 主軸</span></h3>
+              <p>Silicon interposer 路線，Google TPU / ASIC 常見。投資重點是 TSMC 高階封裝產能與 interposer 供給。</p>
+            </div>
+            <div class="tech">
+              <h3>CoWoS-L <span class="mini">2027 主軸</span></h3>
+              <p>Local silicon interconnect / larger package route，Nvidia Rubin、AMD MI / Venice exposure 高。瓶頸更直接映射到 GPU / CPU ramp。</p>
+            </div>
+            <div class="tech">
+              <h3>CoWoS-R <span class="mini">選擇性採用</span></h3>
+              <p>報告中連到部分 Marvell / Trainium 分配。重點是 ASIC 客戶是否把更多封裝分流到 OSAT。</p>
+            </div>
+            <div class="tech">
+              <h3>FoCoS <span class="mini">OSAT</span></h3>
+              <p>ASE/SPIL 的非 TSMC 高階封裝能力之一。若 UBS 的 ASE 打開市場空間情境成真，FoCoS / full-process 能見度上升。</p>
+            </div>
+            <div class="tech">
+              <h3>EMIB-T <span class="mini mid">中期延伸</span></h3>
+              <p>Intel 高階封裝路線，MS 提到 Google TPU v9 相關可能性。較像中期產能延伸，不是 2027 CoWoS 即刻替代。</p>
+            </div>
+            <div class="tech">
+              <h3>CoPoS <span class="mini mid">2028+</span></h3>
+              <p>Panel-level packaging 延伸。公開資料偏向 2028-29 ramp；投資上是中期 throughput story。</p>
+            </div>
+            <div class="tech">
+              <h3>HBM <span class="mini">含量提升</span></h3>
+              <p>MS 估 2027 HBM 需求 51bn Gb。CoWoS 需求越高，HBM 堆疊、測試、基板拉貨越強。</p>
+            </div>
+            <div class="tech">
+              <h3>ABF <span class="mini watch">供給限制</span></h3>
+              <p>報告暗示 ABF supply 會影響 MediaTek TPU 27/28 shipments。這是 2-3 個月新聞流可能重新定價的追蹤點。</p>
+            </div>
+            <div class="tech">
+              <h3>ASIC <span class="mini">需求來源</span></h3>
+              <p>Google、AWS、Meta ASIC 讓 CoWoS 需求不只看 Nvidia。UBS 的 ASIC 33% share 是重要分散訊號。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>受益者 / 追蹤訊號</h2>
+              <p class="sub">受益層級與下一步該看什麼。</p>
+            </div>
+            <span class="tag watch">追蹤清單</span>
+          </div>
+          <div class="benefit-grid">
+            <div class="benefit">
+              <h3>直接產能受益者</h3>
+              <p><strong>TSMC</strong> 吃到最高價值瓶頸。<strong>ASE</strong> 受益於 full-process CoWoS 擴張。<strong>Amkor</strong> 是 MS non-TSMC 產能假設中的 swing factor。</p>
+            </div>
+            <div class="benefit">
+              <h3>平台 / ASIC 拉動</h3>
+              <p><strong>AMD</strong> 是兩家券商最大分歧。<strong>MediaTek</strong> 與 <strong>Broadcom</strong> 受益於 Google TPU。<strong>Alchip / Marvell / GUC</strong> 則取決於 ASIC design slot。</p>
+            </div>
+            <div class="benefit">
+              <h3>二階供應鏈</h3>
+              <p><strong>HBM</strong>、advanced substrate、ABF 與 testing 產能需要一起追蹤；瓶頸可能從封裝產能轉移到零組件供給。</p>
+            </div>
+          </div>
+
+          <details open>
+            <summary>來源與公開驗證連結</summary>
+            <div class="sources">
+              <div class="source-link">Morgan Stanley, AI Supply Chain, 2026-06-23<span>本地 PDF：260623_ms_AI-supply-chain.pdf</span></div>
+              <div class="source-link">UBS, Cloud AI, 2026-07-01<span>本地 PDF：260701_ubs_cloud-AI.pdf</span></div>
+              <a class="source-link" href="https://www.trendforce.com/news/2026/06/15/news-tsmc-cowos-supply-demand-gap-reportedly-seen-narrowing-from-20-to-10-by-end-2026-as-capacity-expands/">TrendForce CoWoS 產能<span>公開產能交叉驗證</span></a>
+              <a class="source-link" href="https://investor.tsmc.com/chinese/encrypt/files/encrypt_file/reports/2026-04/3cef85204275f94fd111485cfdf4adb3c0263c45/TSMC%201Q26%20Transcript.pdf">TSMC 法說逐字稿<span>高階封裝 / HPC 背景</span></a>
+              <a class="source-link" href="https://ir.amkor.com/news-releases/news-release-details/tsmc-and-amkor-technology-announce-long-term-partnership">Amkor / TSMC 合作<span>OSAT 產能驗證</span></a>
+              <a class="source-link" href="https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Vera-Rubin-Ramps-Into-Full-Production-to-Power-Agentic-AI-Factories-Worldwide/default.aspx">NVIDIA Vera Rubin<span>平台 ramp 驗證</span></a>
+              <a class="source-link" href="https://www.amd.com/en/newsroom/press-releases/2026-5-20-amd-announces-production-ramp-of-next-generation-a.html">AMD Venice<span>平台 ramp 驗證</span></a>
+              <a class="source-link" href="https://community.intel.com/t5/Blogs/Intel-Foundry/Systems-Foundry-for-the-AI-Era/Intel-Foundry-s-Advanced-Packaging-Innovations-Lead-the-Industry/post/1738888">Intel EMIB-T<span>替代封裝路徑</span></a>
+            </div>
+          </details>
+        </article>
+      </section>
+    </section>
+
+    <p class="foot">本頁為本地視覺化研究預覽；券商數字屬於預估與供應鏈調查，不是公司指引。</p>
+  </main>
+
+  <script>
+    const colors = ["#0f8f6d", "#2d6fa3", "#bd7b19", "#7d5ba6", "#b9483f", "#3f8ea8", "#66706c", "#d99a25", "#9aa5a0"];
+
+    const msData = [
+      { label: "Nvidia", value: 1222 },
+      { label: "AMD", value: 530 },
+      { label: "Broadcom", value: 484 },
+      { label: "MediaTek", value: 180 },
+      { label: "AWS / Annapurna", value: 90 },
+      { label: "Marvell", value: 64 },
+      { label: "GUC", value: 60 },
+      { label: "Alchip", value: 36 },
+      { label: "其他 / 四捨五入", value: 28 }
+    ];
+
+    const ubsData = [
+      { label: "Nvidia", value: 1238 },
+      { label: "AMD", value: 427 },
+      { label: "Google ASIC", value: 520 },
+      { label: "Amazon ASIC", value: 136 },
+      { label: "Meta", value: 25 },
+      { label: "其他", value: 129 }
+    ];
+
+    function renderPie(pieId, legendId, data) {
+      const total = data.reduce((sum, item) => sum + item.value, 0);
+      let start = 0;
+      const stops = data.map((item, index) => {
+        const deg = item.value / total * 360;
+        const end = start + deg;
+        const stop = `${colors[index]} ${start.toFixed(2)}deg ${end.toFixed(2)}deg`;
+        start = end;
+        return stop;
+      });
+
+      document.getElementById(pieId).style.background = `conic-gradient(${stops.join(", ")})`;
+      document.getElementById(legendId).innerHTML = data.map((item, index) => {
+        const pct = item.value / total * 100;
+        return `<div class="legend-row">
+          <span class="dot" style="background:${colors[index]}"></span>
+          <span class="legend-label" title="${item.label}">${item.label}</span>
+          <strong>${pct.toFixed(0)}%</strong>
+        </div>`;
+      }).join("");
+    }
+
+    function renderAllocationTable() {
+      const rows = [
+        ...msData.map(item => ["MS", item.label, `${item.value}k`, "MS 的總需求較高，AMD 與非 TSMC 產能是假設差異的主要來源。"]),
+        ...ubsData.map(item => ["UBS", item.label, `${item.value}k`, "UBS 更強調 ASE / OSAT 市場擴張；Nvidia 方向大致與 MS 接近。"])
+      ];
+
+      document.getElementById("allocation-table").innerHTML = rows.map(row => (
+        `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`
+      )).join("");
+    }
+
+    renderPie("pie-ms", "legend-ms", msData);
+    renderPie("pie-ubs", "legend-ubs", ubsData);
+    renderAllocationTable();
+  </script>
+</body>
+</html>
