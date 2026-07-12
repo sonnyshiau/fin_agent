@@ -1,5 +1,20 @@
 # fin_agent
 
+## 研究定位
+
+`fin_agent` 是一個聚焦 AI 基礎設施、半導體與高成長科技公司的基本面研究專案。研究不只回答「公司做什麼」，而是從下一代運算平台的技術變化出發，追蹤供應鏈價值量、產能與認證瓶頸、產品放量節奏、競爭位置及市場預期，最後連接到營收、利潤率、EPS、估值與投資策略。
+
+目前涵蓋的核心主題包括 NVIDIA Vera Rubin／Rubin Ultra、Kyber 與 rack-scale architecture、800VDC 與資料中心電力、CoWoS／CoPoS 與先進封裝、CPO 與高速光通訊、HBM／ASIC，以及 AI Factory 的散熱、網路、儲存與能源基礎設施。
+
+## 研究架構
+
+1. **技術架構**：拆解晶片、模組、機櫃、網路、電源、液冷與資料中心設施之間的系統關係。
+2. **產品週期**：追蹤 2026–2028 平台時程、設計變更、量產節點與 12–18 個月領先指標。
+3. **供應鏈映射**：整理關鍵零組件、單機價值量、供應商、市占率、產能、lead time、認證與良率。
+4. **基本面傳導**：將平台滲透率、design win 與產品組合映射到 Revenue、Margin、EPS、FCF 與 Capex。
+5. **情境估值**：建立 Bear／Base／Bull Case，區分市場已定價與尚未定價的假設，並設定催化劑與 Thesis Broken 條件。
+6. **證據分級**：清楚區分官方資料、公司指引、券商預估、供應鏈調查、市場傳聞與自主推論。
+
 ## Pages
 
 ### [800VDC × Kyber 電源產業投資研究](https://sonnyshiau.github.io/fin_agent/800vdc-kyber-power-industry.html)
