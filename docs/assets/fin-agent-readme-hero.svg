@@ -12,7 +12,7 @@
 
   <!-- editorial copy -->
   <g font-family="Arial, Helvetica, sans-serif">
-    <text x="72" y="102" fill="#a7d7c5" font-size="13" font-weight="700" letter-spacing="3.4">AI INFRASTRUCTURE INVESTMENT RESEARCH</text>
+    <text x="72" y="102" fill="#a7d7c5" font-size="13" font-weight="700" letter-spacing="3.4">AI Infrastructure Investment Research</text>
     <text x="68" y="181" fill="#f4f8f6" font-size="72" font-weight="700" letter-spacing="2">FIN_AGENT</text>
     <text x="72" y="222" fill="#cfdfd9" font-size="20" letter-spacing="0.6">Architecture &#8594; Supply Chain &#8594; Earnings &#8594; Valuation</text>
   </g>
@@ -62,11 +62,11 @@
       <rect x="588" y="279" width="104" height="34" rx="17"/>
     </g>
     <g fill="#dce9e4" text-anchor="middle">
-      <text x="128" y="301">COMPUTE</text>
-      <text x="259" y="301">PACKAGING</text>
-      <text x="399" y="301">NETWORKING</text>
-      <text x="526" y="301">POWER</text>
-      <text x="640" y="301">COOLING</text>
+      <text x="128" y="301">Compute</text>
+      <text x="259" y="301">Packaging</text>
+      <text x="399" y="301">Networking</text>
+      <text x="526" y="301">Power</text>
+      <text x="640" y="301">Cooling</text>
     </g>
   </g>
 </svg>
