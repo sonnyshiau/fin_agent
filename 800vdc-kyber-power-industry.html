@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="800VDC、Kyber、BBU 與 AI 資料中心電源供應鏈投資研究">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23245d7a%22/><path d=%22M18 3 8 18h7l-1 11 10-16h-7z%22 fill=%22white%22/></svg>">
+  <title>800VDC × Kyber｜電源產業投資研究</title>
+  <style>
+    :root {
+      --bg:#f4f5f1; --surface:#fff; --ink:#202521; --muted:#716f68; --line:#dfe2dc;
+      --blue:#245d7a; --blue-bg:#edf5f8; --green:#2d6a4f; --green-bg:#eef6f1;
+      --amber:#9a6518; --amber-bg:#fbf4e7; --red:#a13a34; --red-bg:#fbefed;
+      --gray:#727872; --gray-bg:#f1f2ef; --blackspace:#3f4540; --r:7px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",Arial,sans-serif;line-height:1.65}
+    a{color:var(--blue);text-underline-offset:3px}
+    button{font:inherit}
+    .shell{width:min(1152px,calc(100% - 64px));margin:auto}
+    .topbar{border-bottom:1px solid var(--line);background:rgba(244,245,241,.96);position:sticky;top:0;z-index:20}
+    .topbar .shell{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:52px}
+    .brand{font-size:13px;font-weight:800;letter-spacing:.08em}.nav{display:flex;gap:18px;overflow:auto;white-space:nowrap}.nav a{color:var(--muted);font-size:12px;text-decoration:none}.nav a:hover{color:var(--ink)}
+    header{padding:56px 0 24px}.eyebrow,.section-label{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+    h1{font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-.035em;margin:12px 0 18px;max-width:900px}
+    .lead{font-size:20px;line-height:1.55;max-width:930px;margin:0;color:#363d38}.meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:22px;color:var(--muted);font-size:12px}
+    section{padding:34px 0;border-top:1px solid var(--line)}
+    h2{font-size:clamp(25px,3vw,34px);line-height:1.25;letter-spacing:-.02em;margin:5px 0 10px}.section-intro{color:var(--muted);max-width:820px;margin:0 0 24px}
+    h3{font-size:17px;line-height:1.35;margin:0 0 8px}.small{font-size:12px;color:var(--muted)}
+    .grid-3,.grid-4,.grid-5,.scenario-grid{display:grid;gap:12px}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-5{grid-template-columns:repeat(5,1fr)}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}.card p{margin:0;color:#4e554f}.card strong.big{font-size:27px;display:block;line-height:1.15;margin:7px 0}
+    .thesis{border-top:3px solid var(--blue)}.thesis.risk{border-top-color:var(--red)}.thesis.now{border-top-color:var(--amber)}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:800;letter-spacing:.05em;white-space:nowrap}
+    .official{background:var(--blue-bg);color:var(--blue)}.broker{background:var(--amber-bg);color:var(--amber)}.risk-badge{background:var(--red-bg);color:var(--red)}.inference{background:var(--gray-bg);color:var(--gray)}.positive{background:var(--green-bg);color:var(--green)}
+    .metric{min-height:144px}.metric .source{display:block;margin-top:12px;font-size:11px;color:var(--muted)}
+    .callout{border-left:3px solid var(--amber);background:var(--amber-bg);padding:15px 18px;margin:18px 0;border-radius:0 var(--r) var(--r) 0;font-size:14px}
+    .flow{display:grid;grid-template-columns:repeat(7,minmax(100px,1fr));align-items:stretch;gap:20px;margin-top:22px;overflow-x:auto;padding:2px 2px 12px}
+    .node{position:relative;min-width:120px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px;text-align:left;cursor:pointer;color:var(--ink);transition:border-color .15s,background .15s}.node:hover,.node:focus-visible,.node.active{border-color:var(--blue);background:var(--blue-bg);outline:none}.node:not(:last-child)::after{content:"→";position:absolute;right:-17px;top:50%;transform:translateY(-50%);color:var(--blue);font-weight:800}.node b{display:block;font-size:14px}.node span{font-size:11px;color:var(--muted)}
+    .detail{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-top:12px}.detail p{margin:3px 0;font-size:13px}.detail-title{font-size:19px;font-weight:800}
+    .spaces{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}.space{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--blackspace);padding:18px;border-radius:var(--r)}.space.gray{border-top-color:#929993}.space.white{border-top-color:#d8dcd6}.space ul{padding-left:18px;margin:10px 0 0;font-size:13px;color:#4e554f}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}.architecture{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}.architecture.new{border-color:#9fbcc9}.path{display:flex;align-items:stretch;gap:8px;margin-top:18px;overflow-x:auto;padding-bottom:8px}.step{flex:1;min-width:92px;background:var(--gray-bg);padding:12px 8px;border-radius:6px;font-size:12px;text-align:center}.architecture.new .step{background:var(--blue-bg)}.arrow{display:flex;align-items:center;color:var(--muted)}
+    .drivers{counter-reset:driver}.driver{position:relative;padding-top:48px}.driver::before{counter-increment:driver;content:counter(driver,decimal-leading-zero);position:absolute;top:13px;left:18px;font-size:12px;font-weight:900;color:var(--blue)}
+    .table-tools{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.filter{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;cursor:pointer;color:var(--muted)}.filter.active,.filter:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}table{width:100%;border-collapse:collapse;min-width:940px;font-size:12px}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--line)}th{background:#f7f8f5;color:#4b514c;cursor:pointer;white-space:nowrap}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafbf8}.purity{font-weight:800}.high{color:var(--green)}.medium{color:var(--amber)}.low{color:var(--gray)}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:28px}.time{position:relative;border-top:2px solid var(--line);padding:22px 18px 12px 0}.time::before{content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:var(--blue);top:-6px;left:0}.time .year{font-weight:900;color:var(--blue)}.time p{font-size:13px;color:#505750;margin:6px 12px 0 0}
+    .tabs{display:flex;gap:8px;margin:18px 0}.tab{border:1px solid var(--line);background:var(--surface);padding:8px 16px;border-radius:6px;cursor:pointer}.tab.active[data-case="bear"]{background:var(--red-bg);border-color:#dca9a3;color:var(--red)}.tab.active[data-case="base"]{background:var(--blue-bg);border-color:#9fbcc9;color:var(--blue)}.tab.active[data-case="bull"]{background:var(--green-bg);border-color:#9fc6ae;color:var(--green)}
+    .scenario-grid{grid-template-columns:1fr 1fr}.company{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}.company-top{display:flex;justify-content:space-between;gap:16px}.price{font-size:30px;font-weight:900}.eps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:17px 0}.eps{background:var(--gray-bg);padding:10px;border-radius:6px}.eps span{font-size:11px;color:var(--muted);display:block}.eps b{font-size:18px}.target{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--line);padding-top:15px}.target b{display:block;font-size:21px}.assumptions{font-size:13px;color:#505750;margin:14px 0 0;padding-left:18px}
+    .takeaway{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.decision{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:var(--r);padding:22px}.broken{background:var(--red-bg);border:1px solid #e7c5c1;border-radius:var(--r);padding:22px}.broken ul,.decision ul{padding-left:18px;margin-bottom:0}
+    footer{padding:34px 0 70px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}.sources{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;padding-left:18px}.disclaimer{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+    @media(max-width:900px){.shell{width:min(100% - 32px,1152px)}.grid-4,.grid-5{grid-template-columns:repeat(2,1fr)}.grid-3,.spaces{grid-template-columns:1fr}.compare,.scenario-grid,.takeaway{grid-template-columns:1fr}.timeline{grid-template-columns:repeat(2,1fr)}.detail{grid-template-columns:1fr}.nav{display:none}}
+    @media(max-width:560px){header{padding-top:36px}h1{font-size:36px}.lead{font-size:17px}.grid-4,.grid-5{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.time{border-top:0;border-left:2px solid var(--line);padding:0 0 22px 22px}.time::before{top:5px;left:-6px}.sources{grid-template-columns:1fr}.scenario-grid{display:block}.company+.company{margin-top:12px}.topbar .shell{min-height:46px}.brand{font-size:11px}}
+  </style>
+</head>
+<body>
+  <div class="topbar"><div class="shell"><div class="brand">FIN_AGENT / POWER INFRASTRUCTURE</div><nav class="nav" aria-label="章節導覽"><a href="#framework">架構</a><a href="#drivers">驅動</a><a href="#chain">供應鏈</a><a href="#timeline">時程</a><a href="#scenario">估值</a><a href="#takeaway">結論</a></nav></div></div>
+  <header class="shell">
+    <div class="eyebrow">AI Power Infrastructure · Research Brief</div>
+    <h1>800VDC 不只是換電壓，而是把電源價值從機櫃內搬到整座 AI Factory</h1>
+    <p class="lead"><strong>一句話結論：</strong>Kyber 的意義不是讓所有資料中心立刻改成 800VDC，而是讓 MW 級機櫃第一次逼近 54V 架構的物理極限；台達電擁有最完整的 Grid-to-Chip 選擇權，但凱基 Base Case 已要求高度順利兌現，光寶科估值較低、客戶集中與新客戶取得則是關鍵分水嶺。</p>
+    <div class="meta"><span>研究日期：2026-07-12</span><span>核心來源：凱基投顧 2026-07-06、NVIDIA、OCP、公司資料</span><span>股價錨點：凱基報告價（非即時報價）</span></div>
+  </header>
+
+  <main>
+    <section><div class="shell grid-3">
+      <article class="card thesis"><span class="badge positive">Investment Thesis</span><h3>瓶頸從 PSU 移向系統電力電子</h3><p>受惠不只在 Power Rack；DC/DC、保護、busway、儲能、液冷與微電網的整合能力，決定誰能取得更高價值量。</p></article>
+      <article class="card thesis now"><span class="badge broker">Why Now</span><h3>2026 是驗證，2027 是導入，2028 才是斜率</h3><p>2H26 初期出貨不等於全面量產。NVIDIA 指向 2027 Kyber，凱基則認為 2028 隨 400kW+ 機櫃顯著加速。</p></article>
+      <article class="card thesis risk"><span class="badge risk-badge">Key Risk</span><h3>好產業不等於好價格</h3><p>台達 2027–28 EPS 高於市場共識 11%／19%；若滲透、市占或利潤率任一落空，EPS 與估值可能同時壓縮。</p></article>
+    </div></section>
+
+    <section><div class="shell"><div class="section-label">Executive View</div><h2>先抓住四個決策數字</h2><div class="grid-4">
+      <article class="card metric"><span class="badge broker">券商預估</span><strong class="big">10–20%</strong><p>NVIDIA 平台 2027 年 HVDC 滲透率；ASIC 平台可能略高。</p><span class="source">凱基供應鏈調查</span></article>
+      <article class="card metric"><span class="badge broker">供應鏈調查</span><strong class="big">&gt;60%</strong><p>台達電 HVDC 市占率；屬券商調查，並非公司正式揭露。</p><span class="source">凱基，2026-07-06</span></article>
+      <article class="card metric"><span class="badge official">平台／券商</span><strong class="big">220kW → 1MW</strong><p>VR200 約 220kW 尚可沿用過渡架構；Kyber 目標 MW 級使 54V 成本急升。</p><span class="source">凱基；NVIDIA</span></article>
+      <article class="card metric"><span class="badge broker">估值錨</span><strong class="big">32× / 21×</strong><p>凱基分別給台達 2027–28 平均 EPS、光寶 2027 EPS 的目標倍數。</p><span class="source">目標價 2,910／275 元</span></article>
+    </div><div class="callout"><strong>核心矛盾：</strong>800VDC 方向幾乎沒有爭議，爭議在「何時、哪些資料中心、哪個 CSP、多少市占、多少利潤」。因此應把 2026 年 Power Rack 出貨視為設計驗證，不應直接線性外推成 2028 年全面滲透。</div></div></section>
+
+    <section id="framework"><div class="shell"><div class="section-label">Main Framework</div><h2>電力從 Grid 到 GPU，價值量沿著轉換與保護環節重分配</h2><p class="section-intro">點擊任一節點查看功能、投資含義與證據層級。800VDC 的本質是將 AC/DC 集中化，再把高壓 DC 帶到 IT rack，最後在靠近 GPU 處降壓。</p>
+      <div class="flow" id="powerFlow" aria-label="Grid to Chip 電力路徑">
+        <button class="node active" data-node="grid"><b>13.8kV Grid</b><span>電網／變電</span></button>
+        <button class="node" data-node="rectifier"><b>Rectifier / SST</b><span>AC → 800VDC</span></button>
+        <button class="node" data-node="storage"><b>BBU / BESS</b><span>多時間尺度儲能</span></button>
+        <button class="node" data-node="busway"><b>800V Busway</b><span>配電＋保護</span></button>
+        <button class="node" data-node="rack"><b>Power / IT Rack</b><span>高壓輸入</span></button>
+        <button class="node" data-node="dcdc"><b>64:1 DC/DC</b><span>800V → 12V</span></button>
+        <button class="node" data-node="gpu"><b>VPD / GPU</b><span>最後一吋</span></button>
+      </div>
+      <div class="detail" id="nodeDetail" aria-live="polite"></div>
+      <div class="spaces">
+        <article class="space"><span class="badge inference">Black space</span><h3>電力抵達資料中心之前</h3><ul><li>公用變電站、中壓變壓器</li><li>電網併接、備援發電與燃料</li><li>SST、SOFC、BESS、微電網</li></ul></article>
+        <article class="space gray"><span class="badge inference">Gray / Grey space</span><h3>維持 White space 運作</h3><ul><li>UPS、配電盤、開關設備</li><li>冰水主機、泵浦、DCIM/BMS</li><li>未來可能集中化的 BBU／儲能</li></ul></article>
+        <article class="space white"><span class="badge inference">White space</span><h3>直接產生運算價值</h3><ul><li>AI compute rack、network rack</li><li>Power shelf、DC/DC、busbar</li><li>CDU、cold plate、GPU／ASIC</li></ul></article>
+      </div>
+      <div class="callout"><strong>BBU 是什麼？</strong>Battery Backup Unit 是電池備援單元，通常處理停電切換與短時間功率支撐。它與 UPS 的邊界取決於部署位置和控制架構；BESS 則偏設施級、容量更大、時間更長。Vertiv 認為 BBU 可能移至 Gray space，以集中容量換取更長備援，但 CSP 尚未形成一致設計。</div>
+    </div></section>
+
+    <section><div class="shell"><div class="section-label">Architecture Compare</div><h2>54V 的問題不是不能工作，而是到 MW 級後代價失控</h2><div class="compare">
+      <article class="architecture"><span class="badge inference">Current / Transition</span><h3>415/480VAC → Rack PSU → 54VDC</h3><div class="path"><div class="step">Grid<br>13.8kVAC</div><div class="arrow">→</div><div class="step">UPS / PDU<br>415VAC</div><div class="arrow">→</div><div class="step">Power shelf<br>54VDC</div><div class="arrow">→</div><div class="step">Board DC/DC<br>Core V</div></div><p class="small">優點：成熟、安全流程與維修體系完整。缺點：超過 200kW 後 power shelf、busbar、銅耗與熱密度快速增加。</p></article>
+      <article class="architecture new"><span class="badge official">NVIDIA 800VDC</span><h3>13.8kVAC → Central Rectifier → 800VDC</h3><div class="path"><div class="step">Grid<br>13.8kVAC</div><div class="arrow">→</div><div class="step">Rectifier<br>800VDC</div><div class="arrow">→</div><div class="step">Busway + eFuse<br>800VDC</div><div class="arrow">→</div><div class="step">64:1 LLC<br>12VDC</div></div><p class="small">NVIDIA 指稱同導體尺寸可傳輸多 85% 電力、銅需求減少 45%、端到端效率最多提升 5%；均屬官方架構目標，實際結果依站點而異。</p></article>
+    </div></div></section>
+
+    <section id="drivers"><div class="shell"><div class="section-label">Driver Analysis</div><h2>哪些條件讓 800VDC 成立，又為何不會立刻普及？</h2><div class="grid-5 drivers">
+      <article class="card driver"><h3>電流平方損耗</h3><p>同功率下提高電壓可降低電流；I²R 損耗、導體截面與銅重量隨之下降。</p></article>
+      <article class="card driver"><h3>VR200 尚可過渡</h3><p>約 220kW 雖已逼近 54V 舒適區，但 Power Rack sidecar 仍可承接，HVDC 並非必要配置。</p></article>
+      <article class="card driver"><h3>Kyber 是拐點</h3><p>若用 54V 支援 MW 級 Kyber，NVIDIA 估 power shelves 可占 64U，且單櫃 busbar 銅耗可達 200kg。</p></article>
+      <article class="card driver"><h3>Brownfield 限制</h3><p>既有資料中心受配電、安全、維運訓練、認證與停機成本約束，不可能同步升級。</p></article>
+      <article class="card driver"><h3>價值跨區移動</h3><p>BBU 與 AC/DC 若移至 Gray space，單一 IT rack 內容減少，但列級／設施級系統價值與服務比重提高。</p></article>
+    </div></div></section>
+
+    <section id="chain"><div class="shell"><div class="section-label">Supply-chain Matrix</div><h2>真正瓶頸不只 Power Rack，而是高壓 DC 生態系的成熟度</h2><p class="section-intro">使用篩選器查看不同價值層；點擊表頭可排序。供應商僅表示布局或合作生態，不等於已取得特定平台訂單。</p>
+      <div class="table-tools" aria-label="供應鏈篩選"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="system">系統</button><button class="filter" data-filter="component">元件</button><button class="filter" data-filter="facility">設施</button></div>
+      <div class="table-wrap"><table id="supplyTable"><thead><tr><th data-sort="category">環節 ↕</th><th data-sort="function">功能 ↕</th><th>代表業者／布局</th><th>真正瓶頸</th><th>認證與時程</th><th data-sort="purity">受惠純度 ↕</th><th>證據</th></tr></thead><tbody>
+        <tr data-group="component"><td data-key="category">功率半導體</td><td data-key="function">整流、開關、DC/DC</td><td>Infineon、MPS、Navitas、onsemi、ROHM、ST、TI、Renesas</td><td>高壓效率、可靠度、短路保護與熱管理</td><td>2026–27 生態驗證</td><td data-key="purity" data-value="2"><span class="purity medium">中</span></td><td><span class="badge official">NVIDIA夥伴</span></td></tr>
+        <tr data-group="component"><td data-key="category">磁性／被動元件</td><td data-key="function">LLC 變壓、濾波與儲能</td><td>台達／乾坤、供應鏈磁性元件廠</td><td>高頻磁材、損耗、體積與供給</td><td>功率元件供給緊張</td><td data-key="purity" data-value="2"><span class="purity medium">中</span></td><td><span class="badge broker">供應鏈調查</span></td></tr>
+        <tr data-group="system"><td data-key="category">Power Rack／Shelf</td><td data-key="function">集中 AC/DC、模組冗餘</td><td>台達、光寶、Flex、Lead Wealth、Megmeet、Vertiv</td><td>效率、良率、韌體、系統整合與量產</td><td>2H26 初期；2027 放量</td><td data-key="purity" data-value="3"><span class="purity high">高</span></td><td><span class="badge broker">券商＋公司</span></td></tr>
+        <tr data-group="component"><td data-key="category">Busway／連接器／保護</td><td data-key="function">800V 配電、斷路、hot-swap</td><td>貿聯-KY／Interplex、Eaton、Schneider、Vertiv及保護元件廠</td><td>DC 拉弧、e-fuse、接觸電阻與安全標準</td><td>標準仍在成熟</td><td data-key="purity" data-value="2"><span class="purity medium">中高</span></td><td><span class="badge inference">布局推論</span></td></tr>
+        <tr data-group="facility"><td data-key="category">BBU／BESS</td><td data-key="function">瞬時支撐、短時備援、設施儲能</td><td>台達、光寶、Vertiv、Flex／Musashi</td><td>電芯／超級電容、BMS、安全與配置位置</td><td>CSP 架構分歧</td><td data-key="purity" data-value="2"><span class="purity medium">中</span></td><td><span class="badge broker">供應鏈調查</span></td></tr>
+        <tr data-group="facility"><td data-key="category">液冷</td><td data-key="function">CDU、cold plate、泵浦與控制</td><td>台達、光寶、Vertiv及散熱供應鏈</td><td>漏液、流量控制、維運與系統認證</td><td>與高密度機櫃同步放量</td><td data-key="purity" data-value="3"><span class="purity high">高</span></td><td><span class="badge official">公司布局</span></td></tr>
+        <tr data-group="facility"><td data-key="category">SST／SOFC／微電網</td><td data-key="function">簡化轉換、現場發電與能源調度</td><td>台達、Ceres Power、Bloom Energy、GE Vernova等</td><td>成本、壽命、服務能力、法規與量產</td><td>SST最快2H28；台達SOFC目標2028</td><td data-key="purity" data-value="1"><span class="purity low">長期期權</span></td><td><span class="badge broker">券商／公司</span></td></tr>
+      </tbody></table></div>
+    </div></section>
+
+    <section id="timeline"><div class="shell"><div class="section-label">Timeline & Catalysts</div><h2>不要把「開始出貨」誤讀成「滲透率完成」</h2><div class="timeline">
+      <article class="time"><div class="year">2H26</div><h3>設計驗證</h3><p>凱基預期 HVDC 電源櫃啟動出貨；光寶稱 4Q26 初期出貨。觀察良率、客戶驗收與模組供給。</p></article>
+      <article class="time"><div class="year">2027</div><h3>Kyber 導入窗口</h3><p>NVIDIA 官方指向 800VDC full-scale production 與 Kyber 銜接；凱基估 NVIDIA 滲透率 10–20%，ASIC 略高。</p></article>
+      <article class="time"><div class="year">2028</div><h3>功率密度驅動斜率</h3><p>凱基認為 400kW+、Kyber／VR300 類架構開始部署後，HVDC 滲透率明顯加速。</p></article>
+      <article class="time"><div class="year">2H28+</div><h3>設施級整合</h3><p>SST 最快進入商業化；SOFC、BESS 與微電網決定台達能否由 White space 跨入 Black space。</p></article>
+    </div><div class="callout"><strong>需持續驗證的領先指標：</strong>800V power module 良率、功率半導體與磁性元件 lead time、CSP 是否採集中 BBU、光寶新增 Tier-1 CSP 進度、台達 HVDC 市占，以及 Kyber 量產時程是否保持。</div></div></section>
+
+    <section id="scenario"><div class="shell"><div class="section-label">Scenario Framework</div><h2>EPS 很強，但現價買的是哪一段未來？</h2><p class="section-intro">切換情境查看偏保守模型。目標價為機械式 EPS × PE，用於風險框架而非精確預測；報酬以凱基 2026-07-06 報告股價計算。</p>
+      <div class="tabs" role="tablist" aria-label="估值情境"><button class="tab" data-case="bear" role="tab">Bear</button><button class="tab active" data-case="base" role="tab">Base</button><button class="tab" data-case="bull" role="tab">Bull</button></div>
+      <div class="scenario-grid" id="scenarioCards"></div>
+      <div class="callout"><strong>反向估值：</strong>以凱基報告價計，台達 1,995 元若給 32×，隱含 2027–28 平均 EPS 約 62.3 元，低於凱基 Base 的 90.9 元；光寶 224 元若給 21×，隱含 2027 EPS 約 10.7 元，介於 Bear 與 Base。這不代表便宜，因為市場也可能先下修倍數，而不是只調 EPS。</div>
+    </div></section>
+
+    <section id="takeaway"><div class="shell"><div class="section-label">Final Takeaway</div><h2>目前最合理的操作：認同方向，但用驗證節點控制價格風險</h2><div class="takeaway">
+      <article class="decision"><span class="badge positive">Portfolio View</span><h3>台達偏核心、光寶偏衛星；兩者都不適合只因題材追價</h3><ul><li><strong>市場漏看：</strong>DC/DC、保護、儲能與微電網可能比單一 Power Rack 更長壽，台達的跨空間整合是主要選擇權。</li><li><strong>市場已定價：</strong>2027–28 高成長、HVDC 領先地位與產品組合改善已是主流敘事。</li><li><strong>操作：</strong>台達等基本面驗證或估值回撤分批；光寶以 CSP design win、毛利率與品質紀律作為加減碼條件。</li></ul></article>
+      <article class="broken"><span class="badge risk-badge">Thesis Broken</span><h3>以下任一組合出現，應下修而非等待敘事自癒</h3><ul><li>Kyber／原生 HVDC 量產延後超過 12 個月。</li><li>台達 HVDC 市占明顯低於 50%，或 Power Rack 利潤率低於公司平均且無改善。</li><li>光寶未取得新增 Tier-1 CSP、主要客戶 ASIC 下修，或品質問題造成供應資格受損。</li><li>2027 EPS 共識持續下修，同時本益比仍位於歷史高檔。</li></ul></article>
+    </div></div></section>
+  </main>
+
+  <footer><div class="shell"><strong>Source basis</strong><ol class="sources">
+    <li>凱基投顧，《電源供應器產業：800V DC (III) — 大勢所趨》，2026-07-06。</li>
+    <li><a href="https://developer.nvidia.com/blog/nvidia-800-v-hvdc-architecture-will-power-the-next-generation-of-ai-factories/">NVIDIA, 800 VDC Architecture Will Power the Next Generation of AI Factories</a>.</li>
+    <li><a href="https://developer.nvidia.com/blog/building-the-800-vdc-ecosystem-for-efficient-scalable-ai-factories/">NVIDIA, Building the 800 VDC Ecosystem</a>.</li>
+    <li><a href="https://www.opencompute.org/community/power-distribution">OCP Data Center Facility — Power Distribution</a>.</li>
+    <li><a href="https://www.opencompute.org/documents/ocp-specification-diablo-400-v0-7-0-final-pdf">OCP Diablo 400 Rack and Power Specification</a>.</li>
+    <li>台達電、光寶科公開資料與凱基報告摘錄之公司指引。</li>
+  </ol><p class="disclaimer">本頁為研究資料整理與情境分析，不構成投資建議。凱基目標價、EPS、市占與供應鏈資訊均保留其原始證據層級；情境模型為作者推論。即時股價未嵌入本單檔報告，避免離線頁面呈現過期資訊。</p></div></footer>
+
+  <script>
+    const details={
+      grid:{title:'13.8kV Grid／Black space',what:'公用電網、變電站與現場發電，是每一 MW 電力進入 AI Factory 的最前端。',investment:'大型變壓器、開關設備、微電網與現場發電的 lead time，可能比伺服器本身更早形成部署瓶頸。',source:'NVIDIA／凱基',level:'官方＋券商'},
+      rectifier:{title:'Rectifier／SST',what:'集中將中壓 AC 轉為 800VDC。傳統工業級整流器先行；SST 追求更高整合與可控性。',investment:'價值由 rack PSU 轉向列級或設施級轉換。SST 最快 2H28 商業化，現階段仍是長期期權。',source:'NVIDIA／凱基',level:'官方架構＋券商時程'},
+      storage:{title:'BBU／BESS',what:'BBU 處理短時間備援或負載瞬變；BESS 偏設施級、時間更長。兩者透過 BMS／PCS 管理。',investment:'若 BBU 移往 Gray space，rack-level 數量可能下降，但集中容量、PCS 與控制價值提高。',source:'凱基（Vertiv觀點）',level:'供應鏈調查'},
+      busway:{title:'800V Busway＋Protection',what:'以兩導體高壓 DC 配送至機櫃，邊界配置 fuse、disconnect、e-fuse 或固態斷路器。',investment:'DC 拉弧、hot-swap、故障隔離與維修安全是標準化前的關鍵門檻。',source:'NVIDIA／OCP',level:'官方'},
+      rack:{title:'Power Rack／IT Rack',what:'Power Rack 可集中 AC/DC 或作 sidecar；原生 800V IT rack 則直接接受高壓 DC。',investment:'台達、光寶、Flex、Vertiv等競逐系統級價值。出貨不等於收入與利潤率已完全驗證。',source:'公司資料／凱基',level:'公司＋券商'},
+      dcdc:{title:'64:1 LLC DC/DC',what:'在靠近 compute node 處將 800V 直接降至 12V，NVIDIA稱相較傳統多級方案節省26%面積。',investment:'高頻磁性元件、GaN／SiC／Si、控制IC與模組整合將提升內容價值，但供應商分配仍未完全透明。',source:'NVIDIA',level:'官方架構'},
+      gpu:{title:'VPD／GPU Core',what:'12V 再轉為核心電壓；VPD 縮短最後一吋的大電流路徑，降低 IR drop。',investment:'當加速器 TDP 上升，板級 DC/DC 與垂直供電的價值量增加；台達已與 Infineon 合作布局。',source:'OCP／凱基',level:'官方概念＋券商調查'}
+    };
+    const detail=document.getElementById('nodeDetail');
+    function renderDetail(key){const d=details[key];detail.innerHTML=`<div><div class="small">SELECTED NODE</div><div class="detail-title">${d.title}</div></div><div><strong>功能</strong><p>${d.what}</p></div><div><strong>投資含義</strong><p>${d.investment}</p><p class="small">來源：${d.source} · ${d.level}</p></div>`}
+    document.querySelectorAll('.node').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.node').forEach(n=>n.classList.remove('active'));btn.classList.add('active');renderDetail(btn.dataset.node)}));renderDetail('grid');
+
+    document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#supplyTable tbody tr').forEach(row=>row.hidden=btn.dataset.filter!=='all'&&row.dataset.group!==btn.dataset.filter)}));
+    document.querySelectorAll('#supplyTable th[data-sort]').forEach(th=>th.addEventListener('click',()=>{const body=document.querySelector('#supplyTable tbody');const rows=[...body.rows];const key=th.dataset.sort;const asc=th.dataset.asc!=='true';document.querySelectorAll('#supplyTable th').forEach(x=>delete x.dataset.asc);th.dataset.asc=asc;rows.sort((a,b)=>{const ac=a.querySelector(`[data-key="${key}"]`),bc=b.querySelector(`[data-key="${key}"]`);const av=ac?.dataset.value||ac?.textContent||'',bv=bc?.dataset.value||bc?.textContent||'';return av.localeCompare(bv,'zh-Hant',{numeric:true})*(asc?1:-1)}).forEach(r=>body.appendChild(r))}));
+
+    const scenarios={
+      bear:{label:'Bear',delta:{eps:[37.4,54.0,82.4],pe:'24×',target:1637,upside:'-18%',conditions:['HVDC 放量延後 12 個月','HVDC 市占下降 10ppt','營益率低 Base 1.5–2.0ppt']},liteon:{eps:[8.0,10.5,14.7],pe:'15×',target:157,upside:'-30%',conditions:['新增 CSP 未取得','主要 ASIC 客戶需求下修','價格／品質壓低利潤率']}},
+      base:{label:'Base',delta:{eps:[41.54,72.01,109.84],pe:'32×',target:2910,upside:'+46%',conditions:['2027 HVDC 滲透 10–20%','台達維持領先市占','2027–28 利潤率按凱基提升']},liteon:{eps:[8.87,13.08,18.31],pe:'21×',target:275,upside:'+23%',conditions:['800VDC 於 2027 放量','既有 CSP ASIC 維持高成長','雲端產品組合改善']}},
+      bull:{label:'Bull',delta:{eps:[43.6,79.2,120.8],pe:'38×',target:3800,upside:'+90%',conditions:['Kyber／ASIC 按期且上緣滲透','DC/DC、液冷高毛利貢獻','估值維持歷史高檔中段']},liteon:{eps:[9.3,14.4,20.1],pe:'24×',target:345,upside:'+54%',conditions:['新增 Tier-1 CSP design win','液冷／BBU 同步放量','毛利率優於凱基 Base']}},
+    };
+    function companyCard(name,ticker,anchor,data){return `<article class="company"><div class="company-top"><div><span class="badge ${name==='台達電'?'positive':'official'}">${ticker}</span><h3>${name}</h3></div><div><span class="small">目標價</span><div class="price">${data.target.toLocaleString()} 元</div></div></div><div class="eps-row">${data.eps.map((v,i)=>`<div class="eps"><span>${2026+i} EPS</span><b>${v}</b></div>`).join('')}</div><div class="target"><div><span class="small">估值倍數</span><b>${data.pe}</b></div><div><span class="small">相對 ${anchor.toLocaleString()} 元</span><b>${data.upside}</b></div></div><ul class="assumptions">${data.conditions.map(x=>`<li>${x}</li>`).join('')}</ul></article>`}
+    function renderScenario(key){const s=scenarios[key];document.getElementById('scenarioCards').innerHTML=companyCard('台達電','2308 TT',1995,s.delta)+companyCard('光寶科','2301 TT',224,s.liteon)}
+    document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});btn.classList.add('active');btn.setAttribute('aria-selected','true');renderScenario(btn.dataset.case)}));renderScenario('base');
+  </script>
+</body>
+</html>
