@@ -8,13 +8,9 @@
 
 ## Featured Research
 
-<table>
-  <tr>
-    <td width="33%"><a href="https://sonnyshiau.github.io/fin_agent/800vdc-kyber-power-industry.html"><strong>800VDC × Kyber</strong></a><br>拆解 Kyber 電源架構、導入節奏與供應鏈價值重分配。</td>
-    <td width="33%"><a href="https://sonnyshiau.github.io/fin_agent/vera-rubin-rack-map.html"><strong>Vera Rubin / Rubin Ultra Rack Map</strong></a><br>映射 NVIDIA 下一代 rack-scale 系統、關鍵元件與平台演進。</td>
-    <td width="33%"><a href="https://sonnyshiau.github.io/fin_agent/ai-supply-chain-cowos.html"><strong>CoWoS 2027</strong></a><br>比較需求、產能與技術路線，定位先進封裝的真正瓶頸。</td>
-  </tr>
-</table>
+- **[800VDC × Kyber](https://sonnyshiau.github.io/fin_agent/800vdc-kyber-power-industry.html)** — 拆解 Kyber 電源架構、導入節奏與供應鏈價值重分配。
+- **[Vera Rubin / Rubin Ultra Rack Map](https://sonnyshiau.github.io/fin_agent/vera-rubin-rack-map.html)** — 映射 NVIDIA 下一代 rack-scale 系統、關鍵元件與平台演進。
+- **[CoWoS 2027](https://sonnyshiau.github.io/fin_agent/ai-supply-chain-cowos.html)** — 比較需求、產能與技術路線，定位先進封裝的真正瓶頸。
 
 ## Research Framework
 
@@ -34,6 +30,8 @@
 
 ## Evidence Discipline
 
-**Official → Company Guidance → Broker Estimate → Channel Check → Market Rumor → Independent Inference**
+**證據來源（由高至低信心）：** Official Disclosure → Company Guidance → Broker Estimate → Channel Check → Market Rumor
+
+**分析輸出：** Independent Inference，明確揭露假設、資料矛盾與推論邊界。
 
 所有結論都標示證據層級；不把傳聞包裝成事實，不以單一樂觀假設代替交叉驗證，資料不足時明確註記缺口。
