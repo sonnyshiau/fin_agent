@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="fin-agent-title fin-agent-desc">
+  <title id="fin-agent-title">FIN_AGENT — AI Infrastructure Investment Research</title>
+  <desc id="fin-agent-desc">A dark graphite-green banner connecting compute, packaging, networking, power, and cooling through a restrained technical schematic.</desc>
+
+  <rect width="1200" height="360" fill="#15362c"/>
+
+  <!-- restrained technical grid -->
+  <g fill="none" stroke="#8fb4a6" stroke-width="1" opacity="0.12">
+    <path d="M40 40H1160M40 80H1160M40 120H1160M40 160H1160M40 200H1160M40 240H1160M40 280H1160M40 320H1160"/>
+    <path d="M40 40V320M80 40V320M120 40V320M160 40V320M200 40V320M240 40V320M280 40V320M320 40V320M360 40V320M400 40V320M440 40V320M480 40V320M520 40V320M560 40V320M600 40V320M640 40V320M680 40V320M720 40V320M760 40V320M800 40V320M840 40V320M880 40V320M920 40V320M960 40V320M1000 40V320M1040 40V320M1080 40V320M1120 40V320M1160 40V320"/>
+  </g>
+
+  <!-- editorial copy -->
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="72" y="102" fill="#a7d7c5" font-size="13" font-weight="700" letter-spacing="3.4">AI INFRASTRUCTURE INVESTMENT RESEARCH</text>
+    <text x="68" y="181" fill="#f4f8f6" font-size="72" font-weight="700" letter-spacing="2">FIN_AGENT</text>
+    <text x="72" y="222" fill="#cfdfd9" font-size="20" letter-spacing="0.6">Architecture &#8594; Supply Chain &#8594; Earnings &#8594; Valuation</text>
+  </g>
+
+  <!-- rack, chip, network, and power-path schematic -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#83ad9e" stroke-width="1.5" opacity="0.44">
+      <rect x="730" y="67" width="104" height="170" rx="5"/>
+      <path d="M746 88H818M746 105H818M746 122H818M746 139H818M746 156H818M746 173H818M746 190H818M746 207H818"/>
+      <circle cx="808" cy="96.5" r="2" fill="#83ad9e" stroke="none"/>
+      <circle cx="808" cy="130.5" r="2" fill="#83ad9e" stroke="none"/>
+      <circle cx="808" cy="164.5" r="2" fill="#83ad9e" stroke="none"/>
+      <circle cx="808" cy="198.5" r="2" fill="#83ad9e" stroke="none"/>
+    </g>
+
+    <g stroke="#b6d8cc" stroke-width="1.5" opacity="0.68">
+      <rect x="913" y="93" width="108" height="108" rx="8"/>
+      <rect x="934" y="114" width="66" height="66" rx="5"/>
+      <path d="M946 126H988V168H946Z M934 132H921M934 147H921M934 162H921M1013 132H1000M1013 147H1000M1013 162H1000M952 114V101M967 114V101M982 114V101M952 193V180M967 193V180M982 193V180"/>
+      <path d="M834 111H874L895 132H913M834 189H872L894 168H913"/>
+      <circle cx="874" cy="111" r="3" fill="#b6d8cc" stroke="none"/>
+      <circle cx="872" cy="189" r="3" fill="#b6d8cc" stroke="none"/>
+    </g>
+
+    <g stroke="#d6ba70" stroke-width="2" opacity="0.84">
+      <path d="M708 263H755V247H857V226H967V201"/>
+      <circle cx="708" cy="263" r="4" fill="#d6ba70" stroke="none"/>
+      <circle cx="857" cy="226" r="4" fill="#d6ba70" stroke="none"/>
+      <path d="M1054 116H1091V147H1021"/>
+      <path d="M1071 105L1054 116L1071 127"/>
+    </g>
+
+    <g stroke="#83ad9e" stroke-width="1.25" opacity="0.38">
+      <path d="M1053 82C1080 82 1102 104 1102 131M1063 70C1097 70 1125 98 1125 132"/>
+      <path d="M1084 212C1109 231 1111 263 1091 286M1100 198C1135 225 1138 270 1111 303"/>
+      <path d="M1044 245H1087M1065 230V276"/>
+    </g>
+  </g>
+
+  <!-- topic taxonomy -->
+  <g font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="1.4">
+    <g fill="#1b4035" stroke="#779f91" stroke-width="1">
+      <rect x="72" y="279" width="112" height="34" rx="17"/>
+      <rect x="196" y="279" width="126" height="34" rx="17"/>
+      <rect x="334" y="279" width="130" height="34" rx="17"/>
+      <rect x="476" y="279" width="100" height="34" rx="17"/>
+      <rect x="588" y="279" width="104" height="34" rx="17"/>
+    </g>
+    <g fill="#dce9e4" text-anchor="middle">
+      <text x="128" y="301">COMPUTE</text>
+      <text x="259" y="301">PACKAGING</text>
+      <text x="399" y="301">NETWORKING</text>
+      <text x="526" y="301">POWER</text>
+      <text x="640" y="301">COOLING</text>
+    </g>
+  </g>
+</svg>
