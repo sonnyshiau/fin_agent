@@ -20,7 +20,7 @@
 - **電力與散熱（Power & Cooling）**：800VDC、BBU 與液冷把高密度晶片轉化為可持續運作的 rack-scale 系統。
 - **AI 工廠基礎設施（AI Factory Infrastructure）**：機櫃、網路、供電與冷卻共同落地於資料中心，系統瓶頸會反向決定各環節的需求與議價權。
 
-研究從整體架構定位瓶頸，再追蹤供應鏈價值量與稀缺性，連結基本面與 EPS，最後以估值、催化劑及 Thesis Broken 條件檢驗投資報酬。
+研究從整體架構定位瓶頸，再追蹤供應鏈價值量與稀缺性，連結基本面與 EPS，最後以估值與催化劑檢驗風險報酬，並設定 Thesis Broken 條件。
 
 ## 研究方法（Research Framework）
 

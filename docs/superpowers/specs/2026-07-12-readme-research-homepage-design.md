@@ -10,8 +10,8 @@ Use the approved **Brand-led Research Homepage** direction.
 
 - Create `docs/assets/fin-agent-readme-hero.svg` as the single signature visual.
 - Use a dark graphite-green background with restrained rack, circuit, power-path, and grid linework.
-- Keep `FIN_AGENT` dominant and retain only one supporting line, `AI INFRASTRUCTURE RESEARCH`, so the banner remains legible when GitHub renders it around 309 px wide.
-- Use source font sizes of at least 34 px for visible SVG text; remove topic pills and small embedded workflow copy. Preserve the rack, circuit, network, and power-path schematic.
+- Keep `FIN_AGENT` dominant and retain only one supporting line, `AI INFRA RESEARCH`, so the banner remains legible when GitHub renders it around 309 px wide.
+- Use source font sizes of at least 48 px for visible SVG text; the supporting line uses 52 px, which scales to about 13.4 px at 309 px width. Remove topic pills and small embedded workflow copy. Preserve the rack, circuit, network, and power-path schematic.
 - Keep all important text within the SVG safe area and maintain high contrast in both GitHub themes.
 - Do not use gradients, animated SVG, remote image services, decorative badge walls, or marketing-style illustrations.
 
@@ -19,7 +19,7 @@ Use the approved **Brand-led Research Homepage** direction.
 
 1. Local SVG brand banner.
 2. One-sentence Traditional Chinese research positioning statement.
-3. Compact topic labels for Compute, Packaging, Networking, Power, and Cooling.
+3. Compact topic labels for Compute, Advanced Packaging, Networking & Optics, Power & Cooling, and AI Factory Infrastructure.
 4. Three featured research links:
    - 800VDC × Kyber Power Industry Research.
    - Vera Rubin / Rubin Ultra Rack Map.
