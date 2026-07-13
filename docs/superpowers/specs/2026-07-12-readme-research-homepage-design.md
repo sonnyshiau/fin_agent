@@ -10,7 +10,8 @@ Use the approved **Brand-led Research Homepage** direction.
 
 - Create `docs/assets/fin-agent-readme-hero.svg` as the single signature visual.
 - Use a dark graphite-green background with restrained rack, circuit, power-path, and grid linework.
-- Display `FIN_AGENT`, `AI Infrastructure Investment Research`, and `Architecture → Supply Chain → Earnings → Valuation`.
+- Keep `FIN_AGENT` dominant and retain only one supporting line, `AI INFRASTRUCTURE RESEARCH`, so the banner remains legible when GitHub renders it around 309 px wide.
+- Use source font sizes of at least 34 px for visible SVG text; remove topic pills and small embedded workflow copy. Preserve the rack, circuit, network, and power-path schematic.
 - Keep all important text within the SVG safe area and maintain high contrast in both GitHub themes.
 - Do not use gradients, animated SVG, remote image services, decorative badge walls, or marketing-style illustrations.
 
@@ -23,24 +24,26 @@ Use the approved **Brand-led Research Homepage** direction.
    - 800VDC × Kyber Power Industry Research.
    - Vera Rubin / Rubin Ultra Rack Map.
    - AI Supply Chain: CoWoS 2027 Bottleneck.
-5. Research workflow from technical architecture through valuation.
-6. Full published-pages list, retaining Bloom Energy and Retirement Calculator links.
-7. Evidence-discipline section distinguishing official data, company guidance, broker estimates, channel checks, market rumors, and independent inference.
+5. A concise `研究版圖（Research Coverage）` section explaining how Compute, Advanced Packaging, Networking & Optics, Power & Cooling, and AI Factory Infrastructure form one system, then connecting bottlenecks to supply-chain value, fundamentals and EPS, valuation, catalysts, and Thesis Broken conditions.
+6. Research workflow from technical architecture through valuation.
+7. Full published-pages list, retaining Bloom Energy and Retirement Calculator links.
+8. Evidence-discipline section distinguishing official data, company guidance, broker estimates, channel checks, market rumors, and independent inference.
 
 ## Markdown Implementation
 
 - Use standard Markdown wherever possible.
-- Use a small HTML table only for the three featured research cards because GitHub Markdown has no responsive card primitive.
+- Use an accessible Markdown bullet list for the three featured reports. Do not use the earlier three-column HTML table proposal; bullets scan and reflow better on mobile and remain useful to screen readers.
 - Use the local SVG through a relative repository path so the README has no third-party rendering dependency.
-- Keep headings shallow and scannable; use one H1 and descriptive H2 headings.
+- Keep headings shallow and scannable; use one H1 and Traditional Chinese-first H2 headings with English in parentheses: 精選研究, 研究版圖, 研究方法, 已發布研究, and 證據紀律.
+- Use Traditional Chinese first for primary workflow labels, with English in parentheses where it improves recognition.
 - Preserve all current public URLs exactly.
 - Avoid Mermaid in the README because the research workflow is clearer as a compact numbered sequence and renders more consistently across surfaces.
 
 ## Acceptance Criteria
 
-- The first viewport shows the FIN_AGENT identity, research positioning, topic coverage, and featured research.
+- The opening shows the FIN_AGENT identity and research positioning, while the following sections make coverage and featured research easy to scan.
 - Every existing page remains linked and every link uses HTTPS.
-- The SVG contains no external resources, scripts, animation, or inaccessible low-contrast text.
+- The SVG retains its accessible title and description, `1200 × 360` viewBox, and rack/circuit visual. It contains no gradients, scripts, images, filters, animation, or external resource-bearing attributes. The standard SVG namespace is allowed.
 - The README remains readable without the SVG if image rendering is disabled.
 - Markdown passes whitespace checks and renders without broken HTML.
-- Only the new SVG, this design document, and README are included in the implementation scope.
+- Only the SVG, README, this design document, and its implementation plan are included in the completion scope.
