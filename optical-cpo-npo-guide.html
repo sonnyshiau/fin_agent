@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>光模組架構地圖：EML、VCSEL、LPO、NPO、CPO 與 LITE／TSEM</title>
+  <meta name="description" content="從光模組訊號鏈、雷射與調變器開始，精確區分 Pluggable、LPO、OBO、NPO、CPO，並連結 Lumentum 與 Tower Semiconductor 的基本面與估值。">
+  <style>
+    :root{--bg:#f3f5f2;--panel:#fff;--ink:#18201e;--muted:#65706c;--line:#dce3dd;--blue:#266b9c;--blue-soft:#e7f0f6;--green:#0c8065;--green-soft:#e5f3ee;--amber:#ad721e;--amber-soft:#f8eedc;--red:#b7443e;--red-soft:#f7e8e6;--violet:#7255a8;--violet-soft:#eee9f7;--radius:8px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",Arial,sans-serif;line-height:1.58}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.page{width:min(1160px,calc(100vw - 32px));margin:auto;padding:20px 0 56px}.topnav{position:sticky;top:0;z-index:30;display:flex;gap:6px;overflow:auto;padding:8px;margin-bottom:14px;border:1px solid var(--line);background:rgba(243,245,242,.96);backdrop-filter:blur(10px)}.topnav a{white-space:nowrap;padding:7px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:13px;color:var(--ink)}header,.section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:14px}.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:800}.asof{display:inline-flex;gap:6px;align-items:center;margin-left:8px;padding:3px 7px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:11px}h1{max-width:930px;margin:8px 0 10px;font-size:clamp(30px,5vw,54px);line-height:1.08;letter-spacing:-.035em}h2{margin:0 0 8px;font-size:clamp(23px,3vw,34px);line-height:1.2}h3{margin:0 0 6px;font-size:17px}.lead{max-width:900px;margin:0;color:var(--muted);font-size:18px}.thesis{margin-top:18px;padding:14px 16px;border-left:4px solid var(--green);background:var(--green-soft);font-size:17px}.grid-3,.grid-4,.company-grid,.model-grid,.glossary-grid{display:grid;gap:10px}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}.company-grid{grid-template-columns:1fr 1fr}.model-grid{grid-template-columns:repeat(3,1fr)}.card{border:1px solid var(--line);border-radius:7px;padding:14px;background:#fff}.card p{margin:5px 0;color:var(--muted)}.label{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.metric{font-size:24px;font-weight:850;letter-spacing:-.03em}.badge{display:inline-flex;padding:3px 7px;border-radius:999px;font-size:11px;font-weight:800}.confirmed{background:var(--green-soft);color:var(--green)}.guidance{background:var(--blue-soft);color:var(--blue)}.inference{background:var(--amber-soft);color:var(--amber)}.risk{background:var(--red-soft);color:var(--red)}.rumor{background:var(--violet-soft);color:var(--violet)}sup a{font-size:10px;border:1px solid #aac3d5;border-radius:999px;padding:1px 4px;text-decoration:none}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}.section-head p{max-width:700px;margin:0;color:var(--muted)}.signal-chain{display:grid;grid-template-columns:repeat(8,minmax(105px,1fr));gap:7px;overflow:auto;padding-bottom:6px}.signal-step{min-height:118px;padding:10px;border:1px solid var(--line);border-top:4px solid var(--blue);background:#fff}.signal-step.optical{border-top-color:var(--violet)}.signal-step.rx{border-top-color:var(--green)}.signal-step strong{display:block;margin-bottom:4px}.signal-step span{font-size:12px;color:var(--muted)}.diagram-wrap{overflow:auto;border:1px solid var(--line);border-radius:7px;background:#fbfcfb;padding:8px}.diagram-wrap svg{display:block;min-width:900px;width:100%;height:auto}.diagram-note{margin:8px 0 0;color:var(--muted);font-size:12px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:13px}th{background:#f6f8f6;color:#394541}td strong{display:block}.up{color:var(--green);font-weight:800}.down{color:var(--red);font-weight:800}.flat{color:var(--amber);font-weight:800}.glossary-tools{display:flex;gap:10px;margin:12px 0}.glossary-tools input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font:inherit}.glossary-grid{grid-template-columns:repeat(3,1fr)}.term{padding:12px;border:1px solid var(--line);border-radius:7px;background:#fff}.term h3{display:flex;justify-content:space-between;gap:8px}.term p{margin:4px 0;font-size:13px}.term .meta{color:var(--muted);font-size:12px}.term[hidden]{display:none}.snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.snapshot .card{padding:11px}.snapshot .metric{font-size:20px}.model{border:1px solid var(--line);border-radius:8px;padding:16px}.model-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.control label{display:block;font-size:11px;color:var(--muted);font-weight:700}.control input{width:100%;padding:8px;border:1px solid var(--line);border-radius:5px;font:inherit}.scenario-buttons{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.scenario-buttons button,.reset{padding:7px 10px;border:1px solid var(--line);border-radius:5px;background:#fff;font:inherit;cursor:pointer}.scenario-buttons button.active{border-color:var(--blue);background:var(--blue-soft);color:var(--blue);font-weight:800}.outputs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.output{padding:9px;background:#f6f8f6;border:1px solid var(--line)}.output b{display:block;font-size:19px}.formula{font-family:Consolas,monospace;font-size:12px;color:var(--muted);background:#f5f7f5;padding:9px;border:1px solid var(--line);overflow:auto}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}.event{padding:13px;border-right:1px solid var(--line)}.event:last-child{border-right:0}.source-list{display:grid;gap:7px}.source{scroll-margin-top:80px;padding:10px 12px;border:1px solid var(--line);border-radius:6px}.source:target{outline:3px solid #b8d4e8}.source strong{display:block}.source span{font-size:12px;color:var(--muted)}.small{font-size:12px;color:var(--muted)}.callout{padding:13px;border:1px solid #d8c59b;background:var(--amber-soft);border-radius:7px}.footer{padding:20px;color:var(--muted);font-size:12px;text-align:center}.no-js{padding:10px;background:var(--red-soft);color:var(--red)}
+    .glossary-sources{margin-top:8px!important;padding-top:8px;border-top:1px solid var(--line)}.glossary-sources a{font-weight:700}
+    @media(max-width:900px){.grid-3,.grid-4,.company-grid,.glossary-grid{grid-template-columns:1fr 1fr}.signal-chain{grid-template-columns:repeat(8,125px)}.snapshot{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr 1fr}.event:nth-child(2){border-right:0}}
+    @media(max-width:620px){.page{width:min(100% - 20px,1160px)}header,.section{padding:18px}.grid-3,.grid-4,.company-grid,.glossary-grid,.model-grid{grid-template-columns:1fr}.section-head{display:block}.outputs{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr}.event{border-right:0;border-bottom:1px solid var(--line)}.event:last-child{border-bottom:0}}
+    @media print{body{background:#fff}.topnav,.glossary-tools,.scenario-buttons,.reset{display:none}.page{width:100%}header,.section{break-inside:avoid;border-color:#bbb}.diagram-wrap{overflow:visible}.diagram-wrap svg{min-width:0}.source{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<div class="page">
+  <nav class="topnav" aria-label="報告章節">
+    <a href="#signal">訊號鏈</a><a href="#map">架構定位</a><a href="#cross">五種剖面</a><a href="#value">價值轉移</a><a href="#terms">名詞字典</a><a href="#companies">LITE／TSEM</a><a href="#valuation">估值模型</a><a href="#tracking">催化劑</a><a href="#sources">來源</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">Optical Architecture × Investment Map <span class="asof">資料截止 2026-07-14</span></div>
+    <h1>光模組不是一顆雷射：先把訊號鏈、封裝邊界與價值量畫對</h1>
+    <p class="lead">從 EML、VCSEL、CW Laser、PIC／EIC 到 Pluggable、LPO、OBO、NPO、CPO，最後把技術變化連回 Lumentum 與 Tower Semiconductor 的營收、毛利、EPS 與市場預期。</p>
+    <p class="thesis"><strong>一句話結論：</strong>真正的分類有兩條軸——「光引擎離 ASIC 多近」與「模組是否保留 DSP／retimer」；LITE 賣的是 InP 雷射與高階光元件稀缺性，TSEM 賣的是 SiPho 製程平台與鎖定產能，但截至 2026-07-13 的股價都已要求未來兩年大幅兌現。<sup><a href="#src-lite-q3">6</a></sup><sup><a href="#src-tsem-q1">8</a></sup><sup><a href="#src-yahoo-lite">13</a></sup><sup><a href="#src-yahoo-tsem">14</a></sup></p>
+    <div class="grid-3" style="margin-top:14px">
+      <div class="card"><span class="badge confirmed">Architecture</span><h3>LPO 不是「更靠近」</h3><p>LPO 通常仍是前面板可插拔模組；差異在拿掉模組 DSP，以線性電介面連到 host。<sup><a href="#src-lpo">4</a></sup></p></div>
+      <div class="card"><span class="badge guidance">Why now</span><h3>光移近，價值也重排</h3><p>短電氣通道降低 channel loss，但把良率、熱、光纖佈線與維修風險推進 package。</p></div>
+      <div class="card"><span class="badge risk">Key risk</span><h3>好產業不等於好價格</h3><p>若市場已用 FY28 Bull Case 定價，任何產能、良率或客戶節奏延遲都會同時壓 EPS 與倍數。</p></div>
+    </div>
+  </header>
+
+  <section class="section" id="signal">
+    <div class="section-head"><div><div class="eyebrow">01 · Signal Path</div><h2>一條 lane，從 bit 到 photon 再回到 bit</h2></div><p>EML、VCSEL、PIC、EIC 不是同一層級：有些是光源、有些是調變器、有些是一整顆光／電積體電路。</p></div>
+    <div class="signal-chain">
+      <div class="signal-step"><strong>ASIC SerDes</strong><span>平行資料序列化；決定 baud rate、equalization 與電介面 reach。</span></div>
+      <div class="signal-step"><strong>DSP / CDR / FEC</strong><span>補償通道、恢復 clock、修正 bit error。LPO 的核心就是縮減這一塊。</span></div>
+      <div class="signal-step"><strong>Driver / EIC</strong><span>把 SerDes swing 轉成雷射或調變器需要的電壓／電流。</span></div>
+      <div class="signal-step optical"><strong>Laser / Modulator</strong><span>VCSEL／EML 可直接形成調變光；SiPh 常由 CW laser 餵入 MZM／ring。</span></div>
+      <div class="signal-step optical"><strong>PIC + Coupler</strong><span>波導、splitter、MUX／DEMUX、modulator、PD 與 edge／grating coupling。</span></div>
+      <div class="signal-step optical"><strong>FAU / Fiber</strong><span>把多條光纖精準對準 PIC；插損、偏振與熱漂移直接吃掉 link budget。</span></div>
+      <div class="signal-step rx"><strong>PD / TIA</strong><span>photodetector 把光轉成電流，TIA 再轉成可用電壓。</span></div>
+      <div class="signal-step rx"><strong>CDR / ASIC</strong><span>恢復資料並交回 switch／XPU；retimed 架構在模組端先重建訊號。</span></div>
+    </div>
+    <p class="diagram-note">藍色＝高速電；紫色＝光源與調變光；綠色＝接收路徑。OIF 對 EIC、PIC、OE、ELS、TIA 等名詞有明確 glossary。<sup><a href="#src-oif-framework">1</a></sup></p>
+  </section>
+
+  <section class="section" id="map">
+    <div class="section-head"><div><div class="eyebrow">02 · Two-Axis Map</div><h2>不要把 LPO 畫成封裝演進的一站</h2></div><p>橫軸是物理距離；縱軸是訊號處理。相同 front-panel 位置，可以同時存在傳統 retimed pluggable 與 LPO。</p></div>
+    <div class="diagram-wrap" data-diagram="placement-matrix">
+      <svg viewBox="0 0 1080 540" role="img" aria-labelledby="matrix-title matrix-desc">
+        <title id="matrix-title">光學架構二維定位圖</title><desc id="matrix-desc">橫軸由前面板移向共同封裝，縱軸由 retimed 移向 linear direct drive。</desc>
+        <rect x="90" y="40" width="940" height="420" fill="#fff" stroke="#dce3dd"/>
+        <line x1="130" y1="430" x2="990" y2="430" stroke="#65706c" stroke-width="2"/><polygon points="990,430 976,423 976,437" fill="#65706c"/>
+        <line x1="130" y1="430" x2="130" y2="80" stroke="#65706c" stroke-width="2"/><polygon points="130,80 123,94 137,94" fill="#65706c"/>
+        <text x="450" y="500" font-size="18" fill="#394541">物理位置：Front panel → PCB → package旁 → 同一 first-level substrate</text>
+        <text transform="translate(34 365) rotate(-90)" font-size="18" fill="#394541">訊號處理：Retimed / DSP → Linear / direct drive</text>
+        <line x1="300" y1="100" x2="300" y2="430" stroke="#dce3dd"/><line x1="500" y1="100" x2="500" y2="430" stroke="#dce3dd"/><line x1="710" y1="100" x2="710" y2="430" stroke="#dce3dd"/>
+        <rect x="165" y="305" width="165" height="74" rx="7" fill="#e7f0f6" stroke="#266b9c"/><text x="248" y="334" text-anchor="middle" font-size="18" font-weight="700">Retimed Pluggable</text><text x="248" y="357" text-anchor="middle" font-size="13">Front panel + module DSP</text>
+        <rect x="165" y="155" width="165" height="74" rx="7" fill="#e5f3ee" stroke="#0c8065"/><text x="248" y="184" text-anchor="middle" font-size="21" font-weight="800">LPO</text><text x="248" y="207" text-anchor="middle" font-size="13">Front panel + linear link</text>
+        <rect x="400" y="268" width="150" height="74" rx="7" fill="#f8eedc" stroke="#ad721e"/><text x="475" y="297" text-anchor="middle" font-size="21" font-weight="800">OBO</text><text x="475" y="320" text-anchor="middle" font-size="13">OE on host PCB</text>
+        <rect x="625" y="210" width="155" height="82" rx="7" fill="#eee9f7" stroke="#7255a8"/><text x="702" y="241" text-anchor="middle" font-size="21" font-weight="800">NPO</text><text x="702" y="264" text-anchor="middle" font-size="13">Socketed near-package</text><text x="702" y="281" text-anchor="middle" font-size="11">共同高效能 substrate</text>
+        <rect x="825" y="130" width="155" height="92" rx="7" fill="#f7e8e6" stroke="#b7443e"/><text x="902" y="161" text-anchor="middle" font-size="21" font-weight="800">CPO</text><text x="902" y="184" text-anchor="middle" font-size="13">ASIC + active optics</text><text x="902" y="202" text-anchor="middle" font-size="11">same first-level substrate</text>
+        <text x="180" y="412" font-size="13" fill="#65706c">Front panel</text><text x="420" y="412" font-size="13" fill="#65706c">Host board</text><text x="630" y="412" font-size="13" fill="#65706c">Near package</text><text x="835" y="412" font-size="13" fill="#65706c">Co-package</text>
+      </svg>
+    </div>
+    <p class="diagram-note"><strong>定義邊界：</strong>OIF 將 CPO 定義為 active optical components 與 ASIC 位於共同 substrate；其 Figure 2d 把 packaged ASIC 與 engine 經 socket 裝上共同 substrate 的配置稱作 NPO。<sup><a href="#src-oif-framework">1</a></sup></p>
+  </section>
+
+  <section class="section" id="cross">
+    <div class="section-head"><div><div class="eyebrow">03 · Cross Sections</div><h2>五種架構，固定看七個邊界</h2></div><p>ASIC、PCB、package substrate、module boundary、DSP、OE 與 fiber exit 是否在同一位置，決定功耗、維修與良率風險。</p></div>
+    <div class="diagram-wrap" data-diagram="architecture-cross-sections">
+      <svg viewBox="0 0 1120 650" role="img" aria-labelledby="cross-title">
+        <title id="cross-title">Pluggable、LPO、OBO、NPO、CPO 五種剖面</title>
+        <defs><style>.t{font:700 16px Arial;fill:#18201e}.s{font:12px Arial;fill:#65706c}.asic{fill:#27312e}.pcb{fill:#31a86e}.pkg{fill:#d98a2b}.dsp{fill:#266b9c}.eic{fill:#43a9d5}.pic{fill:#b13ce0}.fiber{stroke:#d43fd4;stroke-width:3;fill:none}.elec{stroke:#266b9c;stroke-width:4;fill:none}.cw{stroke:#e09a22;stroke-width:3;stroke-dasharray:7 4;fill:none}</style></defs>
+        <g transform="translate(10,20)"><text class="t" x="100" y="20" text-anchor="middle">Retimed Pluggable</text><rect class="pcb" x="10" y="300" width="200" height="20"/><rect class="pkg" x="25" y="250" width="75" height="50"/><rect class="asic" x="38" y="218" width="50" height="32"/><text x="63" y="239" fill="#fff" text-anchor="middle" font-size="11">ASIC</text><rect x="118" y="155" width="82" height="135" fill="#fff" stroke="#266b9c" stroke-width="2"/><text class="s" x="159" y="148" text-anchor="middle">OSFP / QSFP</text><rect class="dsp" x="128" y="180" width="62" height="25"/><text x="159" y="197" fill="#fff" text-anchor="middle" font-size="10">DSP</text><rect class="eic" x="128" y="215" width="62" height="24"/><rect class="pic" x="128" y="248" width="62" height="24"/><path class="elec" d="M88 234 H128"/><path class="fiber" d="M190 260 H220"/><text class="s" x="110" y="350" text-anchor="middle">長 PCB channel；模組可換</text></g>
+        <g transform="translate(230,20)"><text class="t" x="100" y="20" text-anchor="middle">LPO</text><rect class="pcb" x="10" y="300" width="200" height="20"/><rect class="pkg" x="25" y="250" width="75" height="50"/><rect class="asic" x="38" y="218" width="50" height="32"/><text x="63" y="239" fill="#fff" text-anchor="middle" font-size="11">ASIC</text><rect x="118" y="155" width="82" height="135" fill="#fff" stroke="#0c8065" stroke-width="2"/><text class="s" x="159" y="148" text-anchor="middle">Linear pluggable</text><rect x="128" y="180" width="62" height="25" fill="#e5f3ee" stroke="#0c8065"/><text x="159" y="197" fill="#0c8065" text-anchor="middle" font-size="10">No module DSP</text><rect class="eic" x="128" y="215" width="62" height="24"/><rect class="pic" x="128" y="248" width="62" height="24"/><path class="elec" d="M88 234 H128"/><path class="fiber" d="M190 260 H220"/><text class="s" x="110" y="350" text-anchor="middle">位置不變；SI margin 更敏感</text></g>
+        <g transform="translate(450,20)"><text class="t" x="100" y="20" text-anchor="middle">OBO</text><rect class="pcb" x="10" y="300" width="200" height="20"/><rect class="pkg" x="20" y="250" width="75" height="50"/><rect class="asic" x="32" y="218" width="50" height="32"/><text x="57" y="239" fill="#fff" text-anchor="middle" font-size="11">ASIC</text><rect x="110" y="215" width="72" height="74" fill="#fff" stroke="#ad721e" stroke-width="2"/><text class="s" x="146" y="208" text-anchor="middle">OE on PCB</text><rect class="eic" x="119" y="228" width="54" height="20"/><rect class="pic" x="119" y="255" width="54" height="20"/><path class="elec" d="M82 234 H119"/><path class="fiber" d="M173 266 H220"/><text class="s" x="110" y="350" text-anchor="middle">短 PCB channel；板級維修</text></g>
+        <g transform="translate(670,20)"><text class="t" x="100" y="20" text-anchor="middle">NPO</text><rect class="pcb" x="10" y="300" width="200" height="20"/><rect x="18" y="220" width="175" height="80" fill="#d98a2b"/><text class="s" x="105" y="294" text-anchor="middle" fill="#fff">Common high-performance substrate</text><rect x="28" y="235" width="62" height="46" fill="#fff" stroke="#27312e" stroke-width="2"/><rect class="asic" x="36" y="244" width="46" height="28"/><text x="59" y="263" fill="#fff" text-anchor="middle" font-size="10">Pkg ASIC</text><rect x="111" y="232" width="68" height="52" fill="#fff" stroke="#7255a8" stroke-width="2"/><rect class="eic" x="118" y="240" width="54" height="16"/><rect class="pic" x="118" y="261" width="54" height="16"/><path class="elec" d="M90 255 H118"/><path class="fiber" d="M172 270 H220"/><text class="s" x="110" y="350" text-anchor="middle">Socketed；可 rework，密度折衷</text></g>
+        <g transform="translate(890,20)"><text class="t" x="100" y="20" text-anchor="middle">CPO</text><rect class="pcb" x="10" y="300" width="200" height="20"/><rect x="18" y="210" width="175" height="90" fill="#d98a2b"/><text class="s" x="105" y="294" text-anchor="middle">First-level substrate</text><rect class="asic" x="42" y="230" width="60" height="48"/><text x="72" y="259" fill="#fff" text-anchor="middle" font-size="11">ASIC die</text><rect class="eic" x="120" y="228" width="55" height="20"/><rect class="pic" x="120" y="257" width="55" height="20"/><path class="elec" d="M102 245 H120"/><path class="fiber" d="M175 269 H220"/><path class="cw" d="M155 215 V180 H202"/><rect x="177" y="158" width="35" height="24" fill="#f8eedc" stroke="#ad721e"/><text class="s" x="194" y="151" text-anchor="middle">ELS</text><text class="s" x="110" y="350" text-anchor="middle">最短電通道；良率／熱／維修最難</text></g>
+        <g transform="translate(50,420)"><rect width="1020" height="140" fill="#f6f8f6" stroke="#dce3dd"/><text class="t" x="20" y="30">固定圖例</text><line class="elec" x1="20" y1="55" x2="90" y2="55"/><text class="s" x="100" y="59">高速電氣路徑</text><line class="fiber" x1="240" y1="55" x2="310" y2="55"/><text class="s" x="320" y="59">調變後光路</text><line class="cw" x1="445" y1="55" x2="515" y2="55"/><text class="s" x="525" y="59">外部 CW 光源</text><rect class="dsp" x="690" y="43" width="30" height="20"/><text class="s" x="730" y="58">DSP</text><rect class="eic" x="790" y="43" width="30" height="20"/><text class="s" x="830" y="58">EIC</text><rect class="pic" x="900" y="43" width="30" height="20"/><text class="s" x="940" y="58">PIC</text><text class="s" x="20" y="100">注意：實際產品可採 retimed、linear、integrated laser 或 ELS 的不同組合；示意圖只畫分類邊界，不代表單一廠商 BOM。</text></g>
+      </svg>
+    </div>
+    <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>架構</th><th>真正差異</th><th>優點</th><th>代價／瓶頸</th><th>不是什麼</th></tr></thead><tbody>
+      <tr><td><strong>Pluggable</strong></td><td>前面板可插拔；通常含 DSP</td><td>維修、標準化、生態成熟</td><td>長電通道、faceplate density、功耗</td><td>不等於一定採 EML</td></tr>
+      <tr><td><strong>LPO</strong></td><td>線性介面，移除模組 DSP</td><td>降低模組功耗與 latency</td><td>host SI、溫漂、interop margin</td><td>不是把光引擎搬近 ASIC</td></tr>
+      <tr><td><strong>OBO</strong></td><td>OE 裝在 host PCB</td><td>縮短電通道、仍保留板級邊界</td><td>fiber routing、板級維修複雜</td><td>不是共同封裝</td></tr>
+      <tr><td><strong>NPO</strong></td><td>packaged ASIC／OE socketed near-package</td><td>密度與 rework 的折衷</td><td>socket／substrate loss、機構空間</td><td>不是所有「靠近」都叫 NPO</td></tr>
+      <tr><td><strong>CPO</strong></td><td>active optics 與 ASIC 共用 first-level substrate</td><td>最短電通道、I/O density／pJ/bit 潛力</td><td>KGD、熱、laser reliability、serviceability</td><td>不等於 laser 必須在 package 內</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="section" id="value">
+    <div class="section-head"><div><div class="eyebrow">04 · NPO/CPO Cutaway</div><h2>價值不是從「銅」搬到「光」這麼簡單</h2></div><p>需求量、ASP、毛利與議價權必須分開。元件 content 上升，若良率低或客戶壓價，供應商 EPS 未必上升。</p></div>
+    <div class="diagram-wrap" data-diagram="value-transfer">
+      <svg viewBox="0 0 1100 500" role="img" aria-labelledby="value-title"><title id="value-title">NPO CPO 放大剖面與價值轉移</title>
+        <rect x="30" y="40" width="620" height="360" rx="8" fill="#fff" stroke="#dce3dd"/><text x="50" y="72" font-size="18" font-weight="800">CPO package boundary</text>
+        <rect x="55" y="330" width="560" height="32" fill="#31a86e"/><text x="335" y="352" text-anchor="middle" fill="#fff" font-size="15">Host PCB</text>
+        <rect x="85" y="185" width="450" height="145" fill="#d98a2b"/><text x="310" y="318" text-anchor="middle" fill="#fff" font-size="14">Co-Packaged Assembly Substrate</text>
+        <rect x="125" y="220" width="150" height="82" fill="#27312e"/><text x="200" y="255" text-anchor="middle" fill="#fff" font-size="18">Switch ASIC</text><text x="200" y="279" text-anchor="middle" fill="#fff" font-size="12">SerDes / FEC</text>
+        <rect x="350" y="210" width="145" height="98" fill="#fff" stroke="#7255a8" stroke-width="3"/><text x="422" y="202" text-anchor="middle" font-size="13">Optical Engine</text><rect x="365" y="225" width="115" height="27" fill="#43a9d5"/><text x="422" y="244" text-anchor="middle" fill="#fff" font-size="12">EIC: Driver / TIA</text><rect x="365" y="263" width="115" height="28" fill="#b13ce0"/><text x="422" y="282" text-anchor="middle" fill="#fff" font-size="12">PIC: Mod / PD</text>
+        <rect x="535" y="220" width="48" height="76" fill="#e7f0f6" stroke="#266b9c"/><text x="559" y="250" text-anchor="middle" font-size="12">FAU</text><text x="559" y="267" text-anchor="middle" font-size="10">fiber</text><path d="M480 278 H535" stroke="#d43fd4" stroke-width="4"/><path d="M583 258 H720" stroke="#d43fd4" stroke-width="4"/><text x="650" y="248" text-anchor="middle" font-size="12" fill="#7255a8">Modulated optical path</text>
+        <rect x="740" y="105" width="120" height="62" rx="5" fill="#f8eedc" stroke="#ad721e" stroke-width="2"/><text x="800" y="130" text-anchor="middle" font-size="16" font-weight="800">ELSFP</text><text x="800" y="151" text-anchor="middle" font-size="12">field replaceable CW</text><path d="M740 136 H625 V235 H365" stroke="#e09a22" stroke-width="4" fill="none" stroke-dasharray="8 5"/>
+        <rect x="720" y="220" width="155" height="76" fill="#fff" stroke="#dce3dd"/><text x="798" y="245" text-anchor="middle" font-size="14" font-weight="800">Front panel connector</text><text x="798" y="269" text-anchor="middle" font-size="12">fiber exit / blind-mate</text>
+        <rect x="910" y="55" width="160" height="300" rx="7" fill="#f6f8f6" stroke="#dce3dd"/><text x="990" y="84" text-anchor="middle" font-size="17" font-weight="800">Value pools</text><text x="930" y="120" font-size="13" fill="#0c8065">↑ Host SerDes / SI</text><text x="930" y="150" font-size="13" fill="#0c8065">↑ InP CW / UHP laser</text><text x="930" y="180" font-size="13" fill="#0c8065">↑ SiPho PIC / EIC</text><text x="930" y="210" font-size="13" fill="#0c8065">↑ FAU / connector</text><text x="930" y="240" font-size="13" fill="#0c8065">↑ Packaging / KGD</text><text x="930" y="270" font-size="13" fill="#0c8065">↑ Test / burn-in</text><text x="930" y="305" font-size="13" fill="#b7443e">↓ Module DSP BOM</text><text x="930" y="332" font-size="13" fill="#ad721e">↔ Module integrator*</text>
+        <text x="45" y="445" font-size="13" fill="#65706c">ELSFP 把熱敏感且可能失效的 CW laser 留在前面板，透過 blind-mate optical connection 餵光給 OE。*</text><text x="45" y="470" font-size="12" fill="#65706c">模組廠角色可能轉向 CM、光學組裝與測試；不能直接推論整體價值歸零。</text>
+      </svg>
+    </div>
+    <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>價值池</th><th>需求量</th><th>ASP</th><th>毛利</th><th>議價權</th><th>證據與供應商分級</th></tr></thead><tbody>
+      <tr><td><strong>Module DSP / retimer</strong></td><td class="down">↓ LPO/CPO</td><td class="flat">依規格</td><td class="down">BOM pool縮小</td><td class="down">架構移出模組</td><td><span class="badge confirmed">Confirmed architecture</span> LPO MSA／OIF RTLR</td></tr>
+      <tr><td><strong>Host SerDes / EIC</strong></td><td class="up">↑</td><td class="up">高性能溢價</td><td class="flat">看整合模式</td><td class="up">SI與interop能力</td><td><span class="badge inference">Inference</span> 不等於單一 IC 廠已 design-win</td></tr>
+      <tr><td><strong>InP EML / CW laser</strong></td><td class="up">↑ lane／光功率</td><td class="up">緊缺時上行</td><td class="up">若 pricing > yield cost</td><td class="up">產能與qualification</td><td><span class="badge guidance">Company guidance</span> LITE；Coherent／Broadcom 作 benchmark</td></tr>
+      <tr><td><strong>SiPho foundry / PIC</strong></td><td class="up">↑</td><td class="flat">平台與volume折衷</td><td class="up">良率成熟後</td><td class="up">PDK、qualification</td><td><span class="badge guidance">Company guidance</span> TSEM $1.3B contracted 2027 SiPho revenue</td></tr>
+      <tr><td><strong>FAU / connector</strong></td><td class="up">↑ fiber count</td><td class="up">低插損／高密度</td><td class="flat">製程良率決定</td><td class="up">認證與alignment</td><td><span class="badge inference">Inference</span> 供應商需逐案驗證</td></tr>
+      <tr><td><strong>Packaging / test</strong></td><td class="up">↑ steps</td><td class="up">KGD與burn-in</td><td class="flat">良率風險也↑</td><td class="up">system yield bottleneck</td><td><span class="badge confirmed">OIF framework</span> socket、rework、reliability</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="section" id="terms">
+    <div class="section-head"><div><div class="eyebrow">05 · Glossary</div><h2>核心名詞字典</h2></div><p>搜尋英文縮寫或中文概念。每張卡先回答「它是什麼」，再指出最容易混淆的地方。</p></div>
+    <div class="glossary-tools"><input id="glossary-search" type="search" placeholder="搜尋：EML、線性、耦光、良率…" aria-label="搜尋名詞"></div>
+    <div class="glossary-grid" id="glossary-grid">
+      <article class="term" data-glossary-term="Pluggable Optics 可插拔光模組"><h3>Pluggable Optics <span class="badge confirmed">架構</span></h3><p>插入設備前面板的完整收發器，常見 OSFP、QSFP-DD。</p><p class="meta">位置：Front panel｜誤解：不代表一定含 EML。<sup><a href="#src-oif-framework">1</a></sup></p></article>
+      <article class="term" data-glossary-term="Retimed Optics 重定時"><h3>Retimed Optics <span class="badge confirmed">架構</span></h3><p>模組內 DSP／CDR 重建訊號，換取較大 channel margin 與 interoperability。</p><p class="meta">代價：功耗與 latency。</p></article>
+      <article class="term" data-glossary-term="LPO Linear Pluggable Optics 線性可插拔"><h3>LPO <span class="badge confirmed">架構</span></h3><p>線性可插拔光學；移除模組 DSP，由 host SerDes 直接驅動線性 TX/RX。</p><p class="meta">KPI：端到端 SI、溫漂、BER。<sup><a href="#src-lpo">4</a></sup></p></article>
+      <article class="term" data-glossary-term="LRO Linear Receive Optics"><h3>LRO <span class="badge guidance">架構</span></h3><p>保留 retimed transmitter、receiver 採線性路徑的折衷架構。</p><p class="meta">不要與全線性 LPO 混用。</p></article>
+      <article class="term" data-glossary-term="RTLR Retimed Transmitter Linear Receiver"><h3>RTLR <span class="badge confirmed">架構</span></h3><p>Retimed Transmitter / Linear Receiver；OIF EEI 的節能介面類型。</p><p class="meta">TX 有 retiming，RX 為 linear。<sup><a href="#src-rtlr">5</a></sup></p></article>
+      <article class="term" data-glossary-term="OBO On-Board Optics 板上光學"><h3>OBO <span class="badge confirmed">架構</span></h3><p>光引擎裝在 host PCB，而非前面板模組或 ASIC 共同 substrate。</p><p class="meta">價值：縮短 PCB electrical reach。</p></article>
+      <article class="term" data-glossary-term="NPO Near-Packaged Optics 近封裝"><h3>NPO <span class="badge confirmed">架構</span></h3><p>OIF 例示為 packaged ASIC 與 engine 經 socket 裝上共同 substrate。</p><p class="meta">重點：socketed／rework 邊界。<sup><a href="#src-oif-framework">1</a></sup></p></article>
+      <article class="term" data-glossary-term="CPO Co-Packaged Optics 共同封裝"><h3>CPO <span class="badge confirmed">架構</span></h3><p>active optical components 與 host ASIC 位於同一 first-level substrate。</p><p class="meta">不是 laser 必須整合在 OE 內。<sup><a href="#src-oif-framework">1</a></sup></p></article>
+      <article class="term" data-glossary-term="ELS External Laser Source 外部雷射"><h3>ELS <span class="badge confirmed">架構</span></h3><p>位於 OE 外部的高功率 CW 光源，餵光給 PIC 上的調變器。</p><p class="meta">KPI：功率、RIN、linewidth、可靠度。</p></article>
+      <article class="term" data-glossary-term="ELSFP External Laser Small Form Factor Pluggable"><h3>ELSFP <span class="badge confirmed">架構</span></h3><p>前面板可更換外部雷射模組，以 blind-mate optical connector 餵光。</p><p class="meta">功能：隔熱、維修、laser redundancy。<sup><a href="#src-elsfp">3</a></sup></p></article>
+      <article class="term" data-glossary-term="OCS Optical Circuit Switch 光路交換"><h3>OCS <span class="badge guidance">架構</span></h3><p>在光域直接切換光路，避免每一跳 O-E-O conversion。</p><p class="meta">投資：LITE Systems 成長引擎之一。</p></article>
+      <article class="term" data-glossary-term="DFB Distributed Feedback Laser 分佈回授"><h3>DFB Laser <span class="badge confirmed">光元件</span></h3><p>腔內具週期光柵的單模半導體雷射，常作 CW source 或 EML 的 laser section。</p><p class="meta">KPI：linewidth、SMSR、RIN。</p></article>
+      <article class="term" data-glossary-term="CW Laser Continuous Wave 連續波"><h3>CW Laser <span class="badge confirmed">光元件</span></h3><p>輸出連續未調變光，由外部 MZM／ring modulator 寫入資料。</p><p class="meta">不是一種特定材料；常見 InP DFB。</p></article>
+      <article class="term" data-glossary-term="EML Electro-absorption Modulated Laser 電吸收調變雷射"><h3>EML <span class="badge confirmed">光元件</span></h3><p>DFB laser 與 electro-absorption modulator 單片整合，適合高速、較長距離。</p><p class="meta">KPI：OMA、ER、chirp、TDECQ；材料常為 InP。<sup><a href="#src-rp-eml">15</a></sup></p></article>
+      <article class="term" data-glossary-term="VCSEL Vertical Cavity Surface Emitting Laser 垂直共振腔面射"><h3>VCSEL <span class="badge confirmed">光元件</span></h3><p>垂直出光、可 wafer-level test、易做 array；資料中心多見短距 MMF。</p><p class="meta">KPI：頻寬、功耗、mode、溫度。<sup><a href="#src-rp-vcsel">16</a></sup></p></article>
+      <article class="term" data-glossary-term="MZM Mach-Zehnder Modulator 馬赫曾德調變器"><h3>MZM <span class="badge confirmed">光元件</span></h3><p>利用兩臂相位差轉換成光強變化；線性佳、尺寸通常大於 ring。</p><p class="meta">KPI：Vπ、insertion loss、bandwidth。</p></article>
+      <article class="term" data-glossary-term="MRM Micro-Ring Modulator 微環"><h3>MRM / Ring <span class="badge confirmed">光元件</span></h3><p>利用微環共振改變透射光，面積與功耗低但對波長／溫度敏感。</p><p class="meta">KPI：Q、ER、thermal tuning、linewidth tolerance。</p></article>
+      <article class="term" data-glossary-term="SOA Semiconductor Optical Amplifier 半導體光放大"><h3>SOA <span class="badge confirmed">光元件</span></h3><p>以半導體增益區放大光功率；MOPA 架構可把 seed laser 後級放大。</p><p class="meta">風險：noise figure、saturation、mode stability。</p></article>
+      <article class="term" data-glossary-term="Pump Laser 泵浦雷射"><h3>Pump Laser <span class="badge guidance">光元件</span></h3><p>提供光放大器所需能量的高功率雷射，不等於資料傳輸 laser。</p><p class="meta">LITE 將其列入 scale-across components。</p></article>
+      <article class="term" data-glossary-term="PIC Photonic Integrated Circuit 光子積體電路"><h3>PIC <span class="badge confirmed">光元件</span></h3><p>整合波導、splitter、MUX、modulator、photodetector 的光子 IC。</p><p class="meta">PIC 是功能層；SiPh／InP 是平台材料。</p></article>
+      <article class="term" data-glossary-term="Silicon Photonics SiPh 矽光子"><h3>SiPh <span class="badge confirmed">光元件</span></h3><p>以矽製程建立 PIC，利於 CMOS 尺度製造；通常仍需外部 III-V laser。</p><p class="meta">價值：foundry、PDK、yield、heterogeneous integration。<sup><a href="#src-intel-siph">17</a></sup></p></article>
+      <article class="term" data-glossary-term="InP Indium Phosphide 磷化銦"><h3>InP <span class="badge guidance">材料</span></h3><p>適合 1.3/1.55 µm laser、EML、SOA 的 III-V 材料平台。</p><p class="meta">投資：wafer capacity、epitaxy、yield 與 qualification。</p></article>
+      <article class="term" data-glossary-term="PD Photodiode 光偵測器"><h3>PD <span class="badge confirmed">光元件</span></h3><p>把入射光轉成 photocurrent；SiPh 常整合 Ge photodetector。</p><p class="meta">KPI：responsivity、bandwidth、dark current。</p></article>
+      <article class="term" data-glossary-term="APD Avalanche Photodiode 雪崩光二極體"><h3>APD <span class="badge confirmed">光元件</span></h3><p>利用 avalanche gain 提升靈敏度，代價是高偏壓、noise 與成本。</p><p class="meta">與一般 PIN PD 不同。</p></article>
+      <article class="term" data-glossary-term="SerDes Serializer Deserializer 串並轉換"><h3>SerDes <span class="badge confirmed">電晶片</span></h3><p>將平行資料轉為高速 serial lane，再於接收端還原。</p><p class="meta">KPI：baud rate、jitter、equalization、pJ/bit。</p></article>
+      <article class="term" data-glossary-term="DSP Digital Signal Processor 數位訊號處理"><h3>DSP <span class="badge confirmed">電晶片</span></h3><p>補償 electrical／optical impairment，執行 equalization、CDR、FEC 相關功能。</p><p class="meta">LPO 不是完全沒有 DSP，而是移除 module DSP。</p></article>
+      <article class="term" data-glossary-term="CDR Clock Data Recovery 時脈資料恢復"><h3>CDR <span class="badge confirmed">電晶片</span></h3><p>從接收資料恢復 sampling clock 並重新定時。</p><p class="meta">Retimer 的核心功能之一。</p></article>
+      <article class="term" data-glossary-term="FEC Forward Error Correction 前向錯誤更正"><h3>FEC <span class="badge confirmed">電晶片</span></h3><p>加入冗餘碼以修正 transmission errors，換取 coding overhead 與 latency。</p><p class="meta">KPI：pre/post-FEC BER、coding gain。</p></article>
+      <article class="term" data-glossary-term="Driver 調變器驅動"><h3>Driver <span class="badge confirmed">電晶片</span></h3><p>提供 EML、MZM、MRM 或 VCSEL 所需 swing／bias／current。</p><p class="meta">與 laser diode driver 的需求不同。</p></article>
+      <article class="term" data-glossary-term="TIA Transimpedance Amplifier 跨阻放大器"><h3>TIA <span class="badge confirmed">電晶片</span></h3><p>把 photodiode 的微小電流轉成可處理電壓。</p><p class="meta">KPI：gain、input noise、bandwidth、linearity。</p></article>
+      <article class="term" data-glossary-term="EIC Electrical Integrated Circuit 電積體電路"><h3>EIC <span class="badge confirmed">電晶片</span></h3><p>OE 的 electrical portion，可包含 driver、TIA、post amplifier。</p><p class="meta">EIC 與 PIC 共同構成 optical engine。<sup><a href="#src-oif-framework">1</a></sup></p></article>
+      <article class="term" data-glossary-term="Gearbox 變速齒輪"><h3>Gearbox <span class="badge confirmed">電晶片</span></h3><p>轉換 host lane 數／速率與 optical lane 配置，例如 8×100G 對 4×200G。</p><p class="meta">不一定執行完整 coherent DSP。</p></article>
+      <article class="term" data-glossary-term="PAM4 Pulse Amplitude Modulation 4"><h3>PAM4 <span class="badge confirmed">訊號</span></h3><p>四個振幅電平，每 symbol 傳 2 bits；同 baud rate 可加倍 bit rate。</p><p class="meta">代價：較小 eye opening、較高 SNR/FEC 要求。</p></article>
+      <article class="term" data-glossary-term="NRZ Non Return to Zero"><h3>NRZ <span class="badge confirmed">訊號</span></h3><p>二電平調變，每 symbol 傳 1 bit，電路與眼圖較直觀。</p><p class="meta">slow-and-wide 架構會用更多 lanes／wavelengths。</p></article>
+      <article class="term" data-glossary-term="OE Optical Engine 光引擎"><h3>OE <span class="badge confirmed">封裝</span></h3><p>在 ASIC 與 fiber 間完成 electrical-to-optical／reverse conversion 的 active element。</p><p class="meta">可包含 PIC、EIC、coupler 與局部封裝。</p></article>
+      <article class="term" data-glossary-term="FAU Fiber Array Unit 光纖陣列單元"><h3>FAU <span class="badge confirmed">封裝</span></h3><p>固定多根光纖 pitch 與角度，對準 PIC coupler。</p><p class="meta">KPI：insertion loss、uniformity、reliability。</p></article>
+      <article class="term" data-glossary-term="Edge Coupler 邊緣耦合"><h3>Edge Coupler <span class="badge confirmed">耦光</span></h3><p>從 PIC die edge 水平耦光；可有低插損與寬頻優勢。</p><p class="meta">代價：dicing／facet／alignment 要求。</p></article>
+      <article class="term" data-glossary-term="Grating Coupler 光柵耦合"><h3>Grating Coupler <span class="badge confirmed">耦光</span></h3><p>以表面光柵讓光垂直／斜向進出 PIC，便於 wafer-level test。</p><p class="meta">代價：頻寬、偏振與 insertion loss。</p></article>
+      <article class="term" data-glossary-term="Interposer 中介層"><h3>Interposer <span class="badge confirmed">封裝</span></h3><p>在多顆 die 間提供高密度互連；可為矽、有機或其他材料。</p><p class="meta">不等同 package substrate；層級需在圖上分清。</p></article>
+      <article class="term" data-glossary-term="KGD Known Good Die 已知良裸晶"><h3>KGD <span class="badge confirmed">測試</span></h3><p>封裝前已充分測試的良品 die，降低昂貴 MCM 因單顆失效報廢。</p><p class="meta">CPO 的測試與良率核心。</p></article>
+      <article class="term" data-glossary-term="Active Alignment 主動對準"><h3>Active Alignment <span class="badge confirmed">製程</span></h3><p>通光並監測功率，在最佳位置固定 fiber／lens／PIC。</p><p class="meta">精度高但 cycle time、設備與良率成本高。</p></article>
+      <article class="term" data-glossary-term="Burn-in 老化篩選"><h3>Burn-in <span class="badge confirmed">測試</span></h3><p>以溫度／電流應力提早篩除 infant mortality。</p><p class="meta">laser reliability 與 co-package repair cost 使其更重要。</p></article>
+      <article class="term" data-glossary-term="Link Budget 鏈路預算"><h3>Link Budget <span class="badge confirmed">系統</span></h3><p>TX 輸出、connector／fiber／coupler loss 與 RX sensitivity 的總收支。</p><p class="meta">更多 connector、splitter、ELS routing 都會消耗 budget。</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="companies">
+    <div class="section-head"><div><div class="eyebrow">06 · Company Read-Through</div><h2>LITE 賣稀缺性，TSEM 賣平台與產能承諾</h2></div><p>兩者都受惠光學升級，但 earnings mechanism 完全不同：一個是光元件／系統供應商，一個是 specialty foundry。</p></div>
+    <div class="company-grid">
+      <article class="card"><span class="badge guidance">LITE · Strong delivery / rich pricing</span><h3>Lumentum：InP、laser chips、OCS 與 module 的多引擎組合</h3><p><strong>公司本質：</strong>賣光元件稀缺性與系統整合，不只是「光模組股」。FY26 Q3 Components 佔 66%、Systems 佔 34%。<sup><a href="#src-lite-q3">6</a></sup></p><p><strong>管理層訊號：</strong>Q3 revenue $808.4M、non-GAAP GM 47.9%、OM 32.2%；CEO 指向 pricing discipline、laser-chip mix 與 scale-across components，並預期 CPO／OCS 提升 earnings power。<sup><a href="#src-lite-q3">6</a></sup></p><p><strong>核心矛盾：</strong>基本面正在加速，但 $768.15 股價已要求 FY27–FY28 獲利大幅成長。<sup><a href="#src-yahoo-lite">13</a></sup></p><p><strong>操作框架：</strong>Base case 偏「等待回撤／衛星倉」，不是否定產業，而是避免用 perfect pricing 買供給擴張前的 peak scarcity。</p></article>
+      <article class="card"><span class="badge guidance">TSEM · Contracted visibility / execution</span><h3>Tower：SiPho foundry 的 PDK、qualification 與 capacity corridor</h3><p><strong>公司本質：</strong>賣 specialty foundry platform 與合格產能；客戶 prepayment 把 demand signal 轉成 capacity commitment。</p><p><strong>管理層訊號：</strong>Q1 revenue $414M、gross profit $111M、operating profit $65M；Q2 guide $455M。公司揭露 2027 年最大 SiPho 客戶群 contracted revenue $1.3B，並以 2028 年 revenue $2.8B／net profit $750M 為財務模型。<sup><a href="#src-tsem-q1">8</a></sup></p><p><strong>核心矛盾：</strong>$229.68 股價已提前資本化 2028 模型，仍要驗證 CapEx、yield 與 gross-margin conversion。<sup><a href="#src-yahoo-tsem">14</a></sup></p><p><strong>操作框架：</strong>適合分批衛星／持有觀察，關鍵不是 SiPho TAM，而是 $1.3B 合約能否準時轉 revenue 與 profit。</p></article>
+    </div>
+    <div class="snapshot"><div class="card"><div class="label">LITE FY26 Q3 Revenue</div><div class="metric">$808.4M</div><div class="small">YoY +90.1%</div></div><div class="card"><div class="label">LITE Q4 Guide</div><div class="metric">$960M–1.01B</div><div class="small">Non-GAAP EPS $2.85–3.05</div></div><div class="card"><div class="label">TSEM Q1 Revenue</div><div class="metric">$414M</div><div class="small">YoY +15%</div></div><div class="card"><div class="label">TSEM 2027 SiPho</div><div class="metric">$1.3B</div><div class="small">Contracted revenue disclosure</div></div></div>
+    <div class="company-grid" style="margin:12px 0">
+      <div class="table-wrap"><table><thead><tr><th colspan="7">LITE non-GAAP Base bridge（$B，EPS除外）</th></tr><tr><th>期間</th><th>Components</th><th>Systems</th><th>Revenue</th><th>GM / OM</th><th>EPS</th><th>CapEx / FCF</th></tr></thead><tbody>
+        <tr data-model-period="LITE-FY26"><td>FY26E</td><td>1.95</td><td>1.04</td><td>2.99</td><td>45% / 28.5%</td><td>$7.41</td><td>0.40 / 0.22</td></tr>
+        <tr data-model-period="LITE-FY27"><td>FY27E</td><td>2.70</td><td>1.55</td><td>4.25</td><td>48% / 33%</td><td>$11.91</td><td>0.52 / 0.64</td></tr>
+        <tr data-model-period="LITE-FY28"><td>FY28E</td><td>3.45</td><td>2.10</td><td>5.55</td><td>50% / 36%</td><td>$16.92</td><td>0.48 / 1.11</td></tr>
+      </tbody></table><p class="small">FY26 revenue＝9M actual＋Q4 guidance midpoint；FY27–28 segment mix、margin、CapEx、FCF 為 Agent Base scenario，不是 sell-side consensus。</p></div>
+      <div class="table-wrap"><table><thead><tr><th colspan="7">TSEM Base bridge（$B，EPS除外）</th></tr><tr><th>期間</th><th>SiPho</th><th>Other</th><th>Revenue</th><th>GM / OM</th><th>EPS</th><th>CapEx / FCF</th></tr></thead><tbody>
+        <tr data-model-period="TSEM-CY26"><td>CY26E</td><td>0.55</td><td>1.28</td><td>1.83</td><td>30% / 19%</td><td>$2.66</td><td>0.65 / 0.18</td></tr>
+        <tr data-model-period="TSEM-CY27"><td>CY27E</td><td>1.30</td><td>1.05</td><td>2.35</td><td>37% / 26%</td><td>$4.67</td><td>0.55 / 0.28</td></tr>
+        <tr data-model-period="TSEM-CY28"><td>CY28E</td><td>1.60</td><td>1.20</td><td>2.80</td><td>42% / 31%</td><td>$6.64</td><td>0.45 / 0.42</td></tr>
+      </tbody></table><p class="small">CY27 SiPho $1.3B 與 CY28 total revenue $2.8B 來自公司揭露；其餘 mix、margin、CapEx、FCF 為 Agent Base scenario。CY28 簡化 net income 約 $746M，對照管理層 $750M target。</p></div>
+    </div>
+    <div class="callout"><strong>資料口徑警告：</strong>LITE FY26 Q3 的 non-GAAP margin 與 EPS 排除 SBC、amortization 等項目；TSEM 的 2028 $750M 是公司目標，不是已實現獲利。估值模型同時展示來源事實與 Agent scenario，兩者不混用。</div>
+  </section>
+
+  <section class="section" id="valuation" data-model-formula="eps-pe-ev-ebitda-v1">
+    <div class="section-head"><div><div class="eyebrow">07 · Interactive Valuation</div><h2>固定快照＋可調情境：看股價究竟在相信什麼</h2></div><p>所有欄位皆為 USD；Revenue／Net cash 為十億美元、Shares 為百萬股。目標價以情境 EPS × P/E 計算，EV/EBITDA 作交叉檢查。</p></div>
+    <noscript><div class="no-js">JavaScript 未啟用；下方仍保留固定 Base/Bull/Bear 假設表，但無法即時重算。</div></noscript>
+    <div class="company-grid">
+      <div class="model" data-model="LITE"><h3>LITE · FY28 情境模型</h3><div class="scenario-buttons"><button data-scenario="bear" data-company="LITE">Bear</button><button class="active" data-scenario="base" data-company="LITE">Base</button><button data-scenario="bull" data-company="LITE">Bull</button></div><div class="model-controls">
+        <div class="control"><label>FY28 Revenue ($B)</label><input data-field="revenue" type="number" min="2" max="10" step="0.05"></div><div class="control"><label>Operating margin (%)</label><input data-field="opMargin" type="number" min="5" max="50" step="0.5"></div><div class="control"><label>Tax rate (%)</label><input data-field="taxRate" type="number" min="0" max="35" step="0.5"></div><div class="control"><label>Diluted shares (M)</label><input data-field="shares" type="number" min="60" max="150" step="0.5"></div><div class="control"><label>Target P/E (x)</label><input data-field="multiple" type="number" min="10" max="80" step="1"></div><div class="control"><label>Net cash ($B)</label><input data-field="netCash" type="number" min="-3" max="5" step="0.05"></div><div class="control"><label>D&A (% revenue)</label><input data-field="daMargin" type="number" min="0" max="15" step="0.5"></div><div class="control"><label>FCF margin (%)</label><input data-field="fcfMargin" type="number" min="0" max="40" step="0.5"></div>
+      </div><div class="outputs"><div class="output"><span>EPS</span><b data-output="eps">—</b></div><div class="output"><span>Target price</span><b data-output="target">—</b></div><div class="output"><span>EV/EBITDA @ spot</span><b data-output="evEbitda">—</b></div><div class="output"><span>FCF yield @ spot</span><b data-output="fcfYield">—</b></div></div><p class="formula">EPS = Revenue × Op margin × (1 − tax) ÷ diluted shares<br>EBITDA = Operating income + D&amp;A；Target = EPS × P/E</p></div>
+      <div class="model" data-model="TSEM"><h3>TSEM · CY28 情境模型</h3><div class="scenario-buttons"><button data-scenario="bear" data-company="TSEM">Bear</button><button class="active" data-scenario="base" data-company="TSEM">Base</button><button data-scenario="bull" data-company="TSEM">Bull</button></div><div class="model-controls">
+        <div class="control"><label>CY28 Revenue ($B)</label><input data-field="revenue" type="number" min="1" max="5" step="0.05"></div><div class="control"><label>Operating margin (%)</label><input data-field="opMargin" type="number" min="5" max="40" step="0.5"></div><div class="control"><label>Tax rate (%)</label><input data-field="taxRate" type="number" min="0" max="35" step="0.5"></div><div class="control"><label>Diluted shares (M)</label><input data-field="shares" type="number" min="90" max="140" step="0.5"></div><div class="control"><label>Target P/E (x)</label><input data-field="multiple" type="number" min="10" max="60" step="1"></div><div class="control"><label>Net cash ($B)</label><input data-field="netCash" type="number" min="-2" max="4" step="0.05"></div><div class="control"><label>D&A (% revenue)</label><input data-field="daMargin" type="number" min="0" max="30" step="0.5"></div><div class="control"><label>FCF margin (%)</label><input data-field="fcfMargin" type="number" min="0" max="35" step="0.5"></div>
+      </div><div class="outputs"><div class="output"><span>EPS</span><b data-output="eps">—</b></div><div class="output"><span>Target price</span><b data-output="target">—</b></div><div class="output"><span>EV/EBITDA @ spot</span><b data-output="evEbitda">—</b></div><div class="output"><span>FCF yield @ spot</span><b data-output="fcfYield">—</b></div></div><p class="formula">簡化情境不含非營業損益；Base 的 CY28 net profit 另與管理層 $750M target 對照。</p></div>
+    </div>
+    <button class="reset" id="reset-models">重設為 Base</button>
+    <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>公司／情境</th><th>FY/CY28 Revenue</th><th>Op margin</th><th>Tax</th><th>Shares</th><th>Target P/E</th><th>性質</th></tr></thead><tbody>
+      <tr><td>LITE Bear</td><td>$4.3B</td><td>28%</td><td>17%</td><td>99M</td><td>28×</td><td><span class="badge inference">Agent assumption</span></td></tr><tr><td>LITE Base</td><td>$5.55B</td><td>36%</td><td>17%</td><td>98M</td><td>38×</td><td><span class="badge inference">Agent assumption</span></td></tr><tr><td>LITE Bull</td><td>$7.0B</td><td>40%</td><td>16.5%</td><td>98M</td><td>48×</td><td><span class="badge inference">Agent assumption</span></td></tr>
+      <tr><td>TSEM Bear</td><td>$2.25B</td><td>21%</td><td>14%</td><td>113M</td><td>24×</td><td><span class="badge inference">Agent assumption</span></td></tr><tr><td>TSEM Base</td><td>$2.8B</td><td>31%</td><td>14%</td><td>112.5M</td><td>32×</td><td><span class="badge guidance">Revenue target + scenario</span></td></tr><tr><td>TSEM Bull</td><td>$3.2B</td><td>34%</td><td>13%</td><td>112.5M</td><td>38×</td><td><span class="badge inference">Agent assumption</span></td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="section" id="tracking">
+    <div class="section-head"><div><div class="eyebrow">08 · Catalysts & Thesis Broken</div><h2>兩個時間軸：下一季看訊號，兩年看兌現</h2></div><p>產品週期投資不是等新聞確認；要先定義下一份新聞可能寫什麼，以及什麼數字會推翻原論點。</p></div>
+    <div class="timeline"><div class="event"><div class="label">0–3M</div><h3>Pricing / allocation</h3><p>200G EML、CW laser、pump laser allocation；LITE Q4/FY27 指引與 TSEM SiPho capacity prepayment。</p></div><div class="event"><div class="label">3–6M</div><h3>Revenue conversion</h3><p>1.6T module ramp、laser-chip mix、TSEM quarterly revenue／margin 是否連續上升。</p></div><div class="event"><div class="label">6–18M</div><h3>CPO/NPO qualification</h3><p>ELSFP、OE、FAU、socket／rework、system yield 與真正 volume purchase order。</p></div><div class="event"><div class="label">18–24M</div><h3>Capacity proof</h3><p>LITE InP capacity 與 TSEM $1.3B 2027 contracted SiPho revenue 是否轉成 FCF。</p></div></div>
+    <div class="grid-3" style="margin-top:12px"><div class="card"><span class="badge risk">LITE Thesis Broken</span><p>laser-chip mix 下滑、Q4後 margin reversal、capacity ramp 未帶來出貨、1.6T／CPO 延遲，或 FCF 持續顯著落後 non-GAAP income。</p></div><div class="card"><span class="badge risk">TSEM Thesis Broken</span><p>$1.3B contracted revenue 延後／取消、客戶預付款回轉、SiPho yield／qualification 失敗、CY28 revenue／profit model 下修。</p></div><div class="card"><span class="badge rumor">仍待驗證</span><p>NVIDIA 下一代由 COUPE 轉 Tower NPO、特定 laser vendor design win、VCSEL CPO 量產份額；目前只列 channel／secondary thesis，不升格為 confirmed fact。<sup><a href="#src-stt-cpo">9</a></sup></p></div></div>
+  </section>
+
+  <section class="section" id="evidence">
+    <div class="section-head"><div><div class="eyebrow">09 · Evidence Map</div><h2>哪些是事實，哪些只是合理推論</h2></div><p>Confidence 評估證據品質，不代表投資報酬機率。</p></div>
+    <div class="table-wrap"><table><thead><tr><th>Claim</th><th>分類</th><th>信心</th><th>判讀</th></tr></thead><tbody>
+      <tr><td>CPO／NPO／ELSFP 邊界</td><td><span class="badge confirmed">Standard</span></td><td>High</td><td>OIF 原始 IA 可直接驗證。</td></tr>
+      <tr><td>LITE Q3、Q4 guide、TSEM Q1 與 2028 model</td><td><span class="badge guidance">Company</span></td><td>High</td><td>SEC filing／earnings release。</td></tr>
+      <tr><td>NPO 可能提高 laser spec／content</td><td><span class="badge inference">Inference</span></td><td>Medium</td><td>邏輯合理，但依 lane rate、optical loss、modulator 而變。</td></tr>
+      <tr><td>EML-based 與 SiPh-based module 應有不同 GM</td><td><span class="badge inference">Diagnostic</span></td><td>Medium</td><td>可作追問框架，不能單憑 module GM 反推出單一原因。</td></tr>
+      <tr><td>NVIDIA 特定下一代 NPO design</td><td><span class="badge rumor">Channel / rumor</span></td><td>Low</td><td>時間軸、產品世代與供應商仍需公司／客戶驗證。</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="section" id="sources">
+    <div class="section-head"><div><div class="eyebrow">10 · Source Ledger</div><h2>原始來源與二手推論分開存放</h2></div><p>URL、日期、層級與信心同時保留；引用日期為本報告資料截止日。</p></div>
+    <div class="source-list">
+      <div class="source" id="src-oif-framework"><strong>1 · OIF Co-Packaging Framework Document 01.0</strong><span>2022-02-03 · Standard / High · 定義 CPO、NPO、OE、EIC、PIC、ELS、serviceability。</span><a href="https://www.oiforum.com/wp-content/uploads/OIF-Co-Packaging-FD-01.0.pdf">原文 PDF</a></div>
+      <div class="source" id="src-oif-3t"><strong>2 · OIF 3.2Tb/s Co-Packaged Module IA 01.0</strong><span>2023-03-29 · Standard / High · CPO module、common substrate、external laser option。</span><a href="https://www.oiforum.com/wp-content/uploads/OIF-Co-Packaging-3.2T-Module-01.0.pdf">原文 PDF</a></div>
+      <div class="source" id="src-elsfp"><strong>3 · OIF ELSFP Implementation Agreement 01.0</strong><span>2023-10-06 · Standard / High · 前面板可更換 CW laser、blind-mate electro-optic connection。</span><a href="https://www.oiforum.com/wp-content/uploads/OIF-ELSFP-01.0.pdf">原文 PDF</a></div>
+      <div class="source" id="src-lpo"><strong>4 · LPO MSA Specification 100G-DR-LPO Rev 1</strong><span>2024-09-18 · Standard / High · Linear pluggable electrical／optical interface。</span><a href="https://www.lpo-msa.org/files/live/sites/lpomsa/files/specs/LPO_MSA_Specification_v1p0_final.pdf">原文 PDF</a></div>
+      <div class="source" id="src-rtlr"><strong>5 · OIF EEI-112G-RTLR IA 01.0</strong><span>2025-09-30 · Standard / High · Retimed transmitter / linear receiver。</span><a href="https://www.oiforum.com/wp-content/uploads/OIF-EEI-112G-RTLR-01.0.pdf">原文 PDF</a></div>
+      <div class="source" id="src-lite-q3"><strong>6 · Lumentum FY26 Q3 Earnings Release</strong><span>2026-05-05 · Company / High · Revenue、GAAP/non-GAAP margins、EPS、Q4 guide、CEO commentary。</span><a href="https://www.sec.gov/Archives/edgar/data/1633978/000162828026030530/lite_ex991xq3fy26.htm">SEC Exhibit 99.1</a></div>
+      <div class="source" id="src-lite-10q"><strong>7 · Lumentum FY26 Q3 Form 10-Q</strong><span>2026-05-06 · Filing / High · Cash、debt、cash flow、CapEx、shares、product definitions。</span><a href="https://www.sec.gov/Archives/edgar/data/1633978/000162828026030777/lite-20260328.htm">SEC 10-Q</a></div>
+      <div class="source" id="src-tsem-q1"><strong>8 · Tower Semiconductor Q1 2026 Results</strong><span>2026-05-13 · Company / High · Q1 results、Q2 guide、$1.3B 2027 SiPho contracted revenue、2028 model。</span><a href="https://www.sec.gov/Archives/edgar/data/928876/000117891326002607/exhibit_99-1.htm">SEC Exhibit 99.1</a></div>
+      <div class="source" id="src-stt-cpo"><strong>9 · Simple Tech Trend：Nvidia 從 CPO 轉 NPO？四個爭議</strong><span>2026-07-14 · Secondary / Medium-Low · 架構與 laser-spec 傳導鏈；特定 design route 未獲官方確認。</span><a href="https://www.simpletechtrend.com/post/cpo-npo-four-debates-nvidia-laser-vcsel-margin">文章</a></div>
+      <div class="source" id="src-stt-jpm"><strong>10 · Simple Tech Trend：Lumentum JPM 2026 Fireside Chat</strong><span>2026 · Secondary / Medium · InP capacity bottleneck 與 management interpretation。</span><a href="https://www.simpletechtrend.com/post/lumentum-jpm-2026-fireside-chat-inp-bottleneck">文章</a></div>
+      <div class="source" id="src-stt-tsem"><strong>11 · Simple Tech Trend：TSEM Q1 2026</strong><span>2026 · Secondary / Medium · SiPho contract、capacity 與估值解讀。</span><a href="https://www.simpletechtrend.com/post/tsem-q1-2026-earnings-sipho-1-3b-contract">文章</a></div>
+      <div class="source" id="src-stt-lite"><strong>12 · Simple Tech Trend：Lumentum FY26 Q3</strong><span>2026 · Secondary / Medium · 1.6T、EML、OCS 與 margin 解讀；數字由 SEC 交叉驗證。</span><a href="https://www.simpletechtrend.com/post/fy26-q3-lumentum-lite-earnings-analysis-1-6t-eml-ramp">文章</a></div>
+      <div class="source" id="src-yahoo-lite"><strong>13 · Yahoo Finance Chart API：LITE</strong><span>2026-07-13 close · Market data / Medium · Snapshot price $768.15。</span><a href="https://query1.finance.yahoo.com/v8/finance/chart/LITE?range=5d&amp;interval=1d">JSON</a></div>
+      <div class="source" id="src-yahoo-tsem"><strong>14 · Yahoo Finance Chart API：TSEM</strong><span>2026-07-13 close · Market data / Medium · Snapshot price $229.68。</span><a href="https://query1.finance.yahoo.com/v8/finance/chart/TSEM?range=5d&amp;interval=1d">JSON</a></div>
+      <div class="source" id="src-rp-eml"><strong>15 · RP Photonics：Electroabsorption Modulators</strong><span>Technical encyclopedia / Medium · EAM／EML operating principle。</span><a href="https://www.rp-photonics.com/electroabsorption_modulators.html">原文</a></div>
+      <div class="source" id="src-rp-vcsel"><strong>16 · RP Photonics：VCSELs</strong><span>Technical encyclopedia / Medium · VCSEL structure、arrays、applications。</span><a href="https://www.rp-photonics.com/vcsels.html">原文</a></div>
+      <div class="source" id="src-intel-siph"><strong>17 · Intel：Silicon Photonics Overview</strong><span>Company technical / Medium · Silicon photonics integration and manufacturing context。</span><a href="https://www.intel.com/content/www/us/en/architecture-and-technology/silicon-photonics/silicon-photonics-overview.html">原文</a></div>
+    </div>
+  </section>
+
+  <footer class="footer">本報告僅供技術與投資研究，不構成買賣建議。情境模型是敏感度工具，不是報酬承諾。最後更新：2026-07-14。</footer>
+</div>
+
+<script type="application/json" id="sources-data">[
+{"id":"oif-framework","title":"OIF Co-Packaging Framework Document 01.0","url":"https://www.oiforum.com/wp-content/uploads/OIF-Co-Packaging-FD-01.0.pdf","date":"2022-02-03","level":"Standard","confidence":"High"},
+{"id":"oif-3t","title":"OIF 3.2Tb/s Co-Packaged Module IA","url":"https://www.oiforum.com/wp-content/uploads/OIF-Co-Packaging-3.2T-Module-01.0.pdf","date":"2023-03-29","level":"Standard","confidence":"High"},
+{"id":"elsfp","title":"OIF ELSFP IA 01.0","url":"https://www.oiforum.com/wp-content/uploads/OIF-ELSFP-01.0.pdf","date":"2023-10-06","level":"Standard","confidence":"High"},
+{"id":"lpo","title":"LPO MSA 100G-DR-LPO Rev 1","url":"https://www.lpo-msa.org/files/live/sites/lpomsa/files/specs/LPO_MSA_Specification_v1p0_final.pdf","date":"2024-09-18","level":"Standard","confidence":"High"},
+{"id":"rtlr","title":"OIF EEI-112G-RTLR IA 01.0","url":"https://www.oiforum.com/wp-content/uploads/OIF-EEI-112G-RTLR-01.0.pdf","date":"2025-09-30","level":"Standard","confidence":"High"},
+{"id":"lite-q3","title":"Lumentum FY26 Q3 Earnings Release","url":"https://www.sec.gov/Archives/edgar/data/1633978/000162828026030530/lite_ex991xq3fy26.htm","date":"2026-05-05","level":"Company filing","confidence":"High"},
+{"id":"lite-10q","title":"Lumentum FY26 Q3 Form 10-Q","url":"https://www.sec.gov/Archives/edgar/data/1633978/000162828026030777/lite-20260328.htm","date":"2026-05-06","level":"Company filing","confidence":"High"},
+{"id":"tsem-q1","title":"Tower Semiconductor Q1 2026 Results","url":"https://www.sec.gov/Archives/edgar/data/928876/000117891326002607/exhibit_99-1.htm","date":"2026-05-13","level":"Company filing","confidence":"High"},
+{"id":"stt-cpo","title":"Simple Tech Trend CPO/NPO Four Debates","url":"https://www.simpletechtrend.com/post/cpo-npo-four-debates-nvidia-laser-vcsel-margin","date":"2026-07-14","level":"Secondary research","confidence":"Medium"},
+{"id":"stt-jpm","title":"Simple Tech Trend Lumentum JPM 2026","url":"https://www.simpletechtrend.com/post/lumentum-jpm-2026-fireside-chat-inp-bottleneck","date":"2026","level":"Secondary research","confidence":"Medium"},
+{"id":"stt-tsem","title":"Simple Tech Trend TSEM Q1 2026","url":"https://www.simpletechtrend.com/post/tsem-q1-2026-earnings-sipho-1-3b-contract","date":"2026","level":"Secondary research","confidence":"Medium"},
+{"id":"stt-lite","title":"Simple Tech Trend Lumentum FY26 Q3","url":"https://www.simpletechtrend.com/post/fy26-q3-lumentum-lite-earnings-analysis-1-6t-eml-ramp","date":"2026","level":"Secondary research","confidence":"Medium"},
+{"id":"yahoo-lite","title":"Yahoo Finance LITE Chart API","url":"https://query1.finance.yahoo.com/v8/finance/chart/LITE?range=5d&interval=1d","date":"2026-07-13","level":"Market data","confidence":"Medium"},
+{"id":"yahoo-tsem","title":"Yahoo Finance TSEM Chart API","url":"https://query1.finance.yahoo.com/v8/finance/chart/TSEM?range=5d&interval=1d","date":"2026-07-13","level":"Market data","confidence":"Medium"},
+{"id":"rp-eml","title":"RP Photonics Electroabsorption Modulators","url":"https://www.rp-photonics.com/electroabsorption_modulators.html","date":"accessed 2026-07-14","level":"Technical reference","confidence":"Medium"},
+{"id":"rp-vcsel","title":"RP Photonics VCSELs","url":"https://www.rp-photonics.com/vcsels.html","date":"accessed 2026-07-14","level":"Technical reference","confidence":"Medium"},
+{"id":"intel-siph","title":"Intel Silicon Photonics Overview","url":"https://www.intel.com/content/www/us/en/architecture-and-technology/silicon-photonics/silicon-photonics-overview.html","date":"accessed 2026-07-14","level":"Company technical","confidence":"Medium"}
+]</script>
+
+<script type="application/json" id="claims-data">[
+{"id":"c1","text":"CPO places active optics on a common substrate containing ASICs.","level":"Standard","confidence":"High","sourceIds":["oif-framework"]},
+{"id":"c2","text":"OIF describes socketed packaged ASIC and engine on a common substrate as NPO.","level":"Standard","confidence":"High","sourceIds":["oif-framework"]},
+{"id":"c3","text":"Pluggable optics are inserted at the system front panel.","level":"Standard","confidence":"High","sourceIds":["oif-framework"]},
+{"id":"c4","text":"LPO uses a linear host-to-module interface and removes module retiming DSP.","level":"Standard","confidence":"High","sourceIds":["lpo"]},
+{"id":"c5","text":"ELSFP is a field-replaceable faceplate pluggable CW laser source for CPO systems.","level":"Standard","confidence":"High","sourceIds":["elsfp"]},
+{"id":"c6","text":"Co-packaging shortens high-speed electrical channels and can reduce channel loss.","level":"Standard","confidence":"High","sourceIds":["oif-framework"]},
+{"id":"c7","text":"Co-packaged engines are less field serviceable than front-panel pluggables.","level":"Standard","confidence":"High","sourceIds":["oif-framework"]},
+{"id":"c8","text":"LITE FY26 Q3 revenue was $808.4M and non-GAAP gross margin was 47.9%.","level":"Company filing","confidence":"High","sourceIds":["lite-q3"]},
+{"id":"c9","text":"LITE guided FY26 Q4 revenue to $960M-$1.01B and non-GAAP EPS to $2.85-$3.05.","level":"Company guidance","confidence":"High","sourceIds":["lite-q3"]},
+{"id":"c10","text":"LITE Q3 Components revenue was $533.3M and Systems revenue was $275.1M.","level":"Company filing","confidence":"High","sourceIds":["lite-q3"]},
+{"id":"c11","text":"LITE held $3.172B cash and investments against $3.282B debt at March 28 2026.","level":"Company filing","confidence":"High","sourceIds":["lite-10q"]},
+{"id":"c12","text":"LITE nine-month operating cash flow was $388.4M and property/equipment purchases were $284.5M.","level":"Company filing","confidence":"High","sourceIds":["lite-10q"]},
+{"id":"c13","text":"LITE management attributed margin expansion to operating rigor, pricing discipline and product mix.","level":"Management statement","confidence":"High","sourceIds":["lite-q3"]},
+{"id":"c14","text":"TSEM Q1 2026 revenue was $414M, gross profit $111M and operating profit $65M.","level":"Company filing","confidence":"High","sourceIds":["tsem-q1"]},
+{"id":"c15","text":"TSEM guided Q2 2026 revenue to $455M plus or minus 5%.","level":"Company guidance","confidence":"High","sourceIds":["tsem-q1"]},
+{"id":"c16","text":"TSEM disclosed $1.3B of contracted 2027 SiPho revenue from its largest SiPho customers.","level":"Company guidance","confidence":"High","sourceIds":["tsem-q1"]},
+{"id":"c17","text":"TSEM targets $2.8B annual revenue and $750M net profit in 2028.","level":"Company target","confidence":"High","sourceIds":["tsem-q1"]},
+{"id":"c18","text":"TSEM Q1 operating cash flow included $290M of silicon-photonics customer prepayments.","level":"Company filing","confidence":"High","sourceIds":["tsem-q1"]},
+{"id":"c19","text":"LITE snapshot price was $768.15 at the July 13 2026 US close.","level":"Market data","confidence":"Medium","sourceIds":["yahoo-lite"]},
+{"id":"c20","text":"TSEM snapshot price was $229.68 at the July 13 2026 US close.","level":"Market data","confidence":"Medium","sourceIds":["yahoo-tsem"]},
+{"id":"c21","text":"A move from slow-wide CPO to faster-lane NPO could raise laser requirements.","level":"Agent inference","confidence":"Medium","sourceIds":["stt-cpo","oif-framework"]},
+{"id":"c22","text":"InP capacity is a potential near-term optical supply bottleneck.","level":"Secondary management interpretation","confidence":"Medium","sourceIds":["stt-jpm","lite-q3"]},
+{"id":"c23","text":"Converging EML- and SiPh-module gross margins can indicate laser pricing or yield pressure, but is not diagnostic alone.","level":"Analytical framework","confidence":"Medium","sourceIds":["stt-cpo"]},
+{"id":"c24","text":"Reported NVIDIA CPO/NPO alternatives should not be conflated with currently shipping product generations.","level":"Secondary research","confidence":"Low","sourceIds":["stt-cpo"]},
+{"id":"c25","text":"At snapshot prices both LITE and TSEM require strong FY28 earnings conversion.","level":"Agent inference","confidence":"Medium","sourceIds":["lite-q3","tsem-q1","yahoo-lite","yahoo-tsem"]}
+]</script>
+
+<script type="application/json" id="glossary-data">[
+{"id":"pluggable","name":"Pluggable Optics","category":"Architecture","sourceIds":["oif-framework"]},{"id":"retimed","name":"Retimed Optics","category":"Architecture","sourceIds":["oif-framework"]},{"id":"lpo","name":"LPO","category":"Architecture","sourceIds":["lpo"]},{"id":"lro","name":"LRO","category":"Architecture","sourceIds":["rtlr"]},{"id":"rtlr","name":"RTLR","category":"Architecture","sourceIds":["rtlr"]},{"id":"obo","name":"OBO","category":"Architecture","sourceIds":["oif-framework"]},{"id":"npo","name":"NPO","category":"Architecture","sourceIds":["oif-framework"]},{"id":"cpo","name":"CPO","category":"Architecture","sourceIds":["oif-framework"]},{"id":"els","name":"ELS","category":"Architecture","sourceIds":["oif-framework"]},{"id":"elsfp","name":"ELSFP","category":"Architecture","sourceIds":["elsfp"]},{"id":"ocs","name":"OCS","category":"Architecture","sourceIds":["lite-q3"]},
+{"id":"dfb","name":"DFB Laser","category":"Optical","sourceIds":["rp-eml"]},{"id":"cw","name":"CW Laser","category":"Optical","sourceIds":["oif-framework"]},{"id":"eml","name":"EML","category":"Optical","sourceIds":["rp-eml"]},{"id":"vcsel","name":"VCSEL","category":"Optical","sourceIds":["rp-vcsel"]},{"id":"mzm","name":"MZM","category":"Optical","sourceIds":["intel-siph"]},{"id":"mrm","name":"MRM / Ring","category":"Optical","sourceIds":["intel-siph"]},{"id":"soa","name":"SOA","category":"Optical","sourceIds":["stt-cpo"]},{"id":"pump","name":"Pump Laser","category":"Optical","sourceIds":["lite-q3"]},{"id":"pic","name":"PIC","category":"Optical","sourceIds":["oif-framework"]},{"id":"siph","name":"SiPh","category":"Optical","sourceIds":["intel-siph"]},{"id":"inp","name":"InP","category":"Material","sourceIds":["stt-jpm"]},{"id":"pd","name":"PD","category":"Optical","sourceIds":["oif-framework"]},{"id":"apd","name":"APD","category":"Optical","sourceIds":["oif-framework"]},
+{"id":"serdes","name":"SerDes","category":"Electrical","sourceIds":["oif-framework"]},{"id":"dsp","name":"DSP","category":"Electrical","sourceIds":["oif-framework"]},{"id":"cdr","name":"CDR","category":"Electrical","sourceIds":["oif-framework"]},{"id":"fec","name":"FEC","category":"Electrical","sourceIds":["oif-framework"]},{"id":"driver","name":"Driver","category":"Electrical","sourceIds":["oif-framework"]},{"id":"tia","name":"TIA","category":"Electrical","sourceIds":["oif-framework"]},{"id":"eic","name":"EIC","category":"Electrical","sourceIds":["oif-framework"]},{"id":"gearbox","name":"Gearbox","category":"Electrical","sourceIds":["lpo"]},{"id":"pam4","name":"PAM4","category":"Signal","sourceIds":["oif-framework"]},{"id":"nrz","name":"NRZ","category":"Signal","sourceIds":["oif-framework"]},
+{"id":"oe","name":"OE","category":"Packaging","sourceIds":["oif-framework"]},{"id":"fau","name":"FAU","category":"Packaging","sourceIds":["oif-3t"]},{"id":"edge","name":"Edge Coupler","category":"Packaging","sourceIds":["intel-siph"]},{"id":"grating","name":"Grating Coupler","category":"Packaging","sourceIds":["intel-siph"]},{"id":"interposer","name":"Interposer","category":"Packaging","sourceIds":["oif-3t"]},{"id":"kgd","name":"KGD","category":"Test","sourceIds":["oif-framework"]},{"id":"alignment","name":"Active Alignment","category":"Process","sourceIds":["oif-framework"]},{"id":"burnin","name":"Burn-in","category":"Test","sourceIds":["oif-framework"]},{"id":"link-budget","name":"Link Budget","category":"System","sourceIds":["oif-3t"]}
+]</script>
+
+<script type="application/json" id="research-snapshot">{
+"asOf":"2026-07-14","priceAsOf":"2026-07-13 US close",
+"LITE":{"spot":768.15,"fy26":{"revenue":2.993,"basis":"9M actual plus Q4 guidance midpoint"},"cashAndInvestments":3.1723,"debt":3.2818,"q3DilutedShares":96.2,"forecast":[{"period":"FY26E","components":1.95,"systems":1.043,"revenue":2.993,"grossMargin":45,"opMargin":28.5,"eps":7.41,"capex":0.40,"fcf":0.22,"level":"Guidance-derived plus agent assumptions"},{"period":"FY27E","components":2.70,"systems":1.55,"revenue":4.25,"grossMargin":48,"opMargin":33,"eps":11.91,"capex":0.52,"fcf":0.64,"level":"Agent Base scenario"},{"period":"FY28E","components":3.45,"systems":2.10,"revenue":5.55,"grossMargin":50,"opMargin":36,"eps":16.92,"capex":0.48,"fcf":1.11,"level":"Agent Base scenario"}],"scenarios":{"bear":{"revenue":4.3,"opMargin":28,"taxRate":17,"shares":99,"multiple":28,"netCash":0,"daMargin":5,"fcfMargin":12},"base":{"revenue":5.55,"opMargin":36,"taxRate":17,"shares":98,"multiple":38,"netCash":0.3,"daMargin":5,"fcfMargin":20},"bull":{"revenue":7,"opMargin":40,"taxRate":16.5,"shares":98,"multiple":48,"netCash":0.8,"daMargin":5,"fcfMargin":25}}},
+"TSEM":{"spot":229.68,"cy26":{"revenue":1.83,"basis":"Q1 actual, Q2 guide and sequential-growth scenario"},"cashAndDeposits":1.4985,"debt":0.1559,"dilutedShares":112.5,"forecast":[{"period":"CY26E","sipho":0.55,"other":1.28,"revenue":1.83,"grossMargin":30,"opMargin":19,"eps":2.66,"capex":0.65,"fcf":0.18,"level":"Agent Base scenario"},{"period":"CY27E","sipho":1.30,"other":1.05,"revenue":2.35,"grossMargin":37,"opMargin":26,"eps":4.67,"capex":0.55,"fcf":0.28,"level":"Contracted SiPho revenue plus agent assumptions"},{"period":"CY28E","sipho":1.60,"other":1.20,"revenue":2.80,"grossMargin":42,"opMargin":31,"eps":6.64,"capex":0.45,"fcf":0.42,"level":"Company revenue target plus agent assumptions"}],"scenarios":{"bear":{"revenue":2.25,"opMargin":21,"taxRate":14,"shares":113,"multiple":24,"netCash":1.0,"daMargin":18,"fcfMargin":8},"base":{"revenue":2.8,"opMargin":31,"taxRate":14,"shares":112.5,"multiple":32,"netCash":1.2,"daMargin":18,"fcfMargin":15},"bull":{"revenue":3.2,"opMargin":34,"taxRate":13,"shares":112.5,"multiple":38,"netCash":1.4,"daMargin":17,"fcfMargin":20}}}
+}</script>
+
+<script>
+(() => {
+  const snapshot = JSON.parse(document.getElementById('research-snapshot').textContent);
+  const sourceEntries = JSON.parse(document.getElementById('sources-data').textContent);
+  const glossaryEntries = JSON.parse(document.getElementById('glossary-data').textContent);
+  const scenarioState = {LITE:'base', TSEM:'base'};
+  const money = value => '$' + value.toFixed(2);
+  function renderGlossarySources() {
+    const sourceMap = new Map(sourceEntries.map(source => [source.id, source]));
+    document.querySelectorAll('[data-glossary-term]').forEach((card, index) => {
+      const entry = glossaryEntries[index];
+      if (!entry || !entry.sourceIds?.length) return;
+      const row = document.createElement('p');
+      row.className = 'meta glossary-sources';
+      row.append('來源：');
+      entry.sourceIds.forEach((sourceId, sourceIndex) => {
+        if (sourceIndex) row.append(' · ');
+        const source = sourceMap.get(sourceId);
+        const link = document.createElement('a');
+        link.href = `#src-${sourceId}`;
+        link.textContent = source ? source.title : sourceId;
+        row.append(link);
+      });
+      card.append(row);
+    });
+  }
+  function setScenario(company, scenario) {
+    scenarioState[company] = scenario;
+    const model = document.querySelector(`[data-model="${company}"]`);
+    const values = snapshot[company].scenarios[scenario];
+    Object.entries(values).forEach(([field, value]) => {
+      const input = model.querySelector(`[data-field="${field}"]`);
+      if (input) input.value = value;
+    });
+    model.querySelectorAll('[data-scenario]').forEach(button => button.classList.toggle('active', button.dataset.scenario === scenario));
+    calculateValuation(model);
+  }
+  function calculateValuation(model) {
+    const company = model.dataset.model;
+    const get = field => Number(model.querySelector(`[data-field="${field}"]`).value);
+    const revenue = get('revenue'), opMargin = get('opMargin') / 100, taxRate = get('taxRate') / 100;
+    const shares = get('shares'), multiple = get('multiple'), netCash = get('netCash');
+    const daMargin = get('daMargin') / 100, fcfMargin = get('fcfMargin') / 100;
+    const operatingIncome = revenue * opMargin;
+    const netIncome = operatingIncome * (1 - taxRate);
+    const eps = netIncome * 1000 / shares;
+    const target = eps * multiple;
+    const ebitda = operatingIncome + revenue * daMargin;
+    const marketCap = snapshot[company].spot * shares / 1000;
+    const enterpriseValue = marketCap - netCash;
+    const evEbitda = enterpriseValue / ebitda;
+    const fcfYield = revenue * fcfMargin / marketCap * 100;
+    const outputs = {eps:money(eps), target:money(target), evEbitda:evEbitda.toFixed(1)+'×', fcfYield:fcfYield.toFixed(1)+'%'};
+    Object.entries(outputs).forEach(([key, value]) => model.querySelector(`[data-output="${key}"]`).textContent = value);
+  }
+  document.querySelectorAll('[data-scenario]').forEach(button => button.addEventListener('click', () => setScenario(button.dataset.company, button.dataset.scenario)));
+  document.querySelectorAll('.model input').forEach(input => input.addEventListener('input', event => calculateValuation(event.target.closest('.model'))));
+  document.getElementById('reset-models').addEventListener('click', () => { setScenario('LITE','base'); setScenario('TSEM','base'); });
+  const search = document.getElementById('glossary-search');
+  search.addEventListener('input', () => { const q=search.value.trim().toLowerCase(); document.querySelectorAll('[data-glossary-term]').forEach(card => card.hidden = q && !card.textContent.toLowerCase().includes(q)); });
+  renderGlossarySources();
+  setScenario('LITE','base'); setScenario('TSEM','base');
+  window.reportModel = {snapshot, scenarioState, calculateValuation, setScenario};
+})();
+</script>
+</body>
+</html>
