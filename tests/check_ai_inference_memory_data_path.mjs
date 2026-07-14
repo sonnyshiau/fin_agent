@@ -13,6 +13,9 @@ const { JSDOM } = await import(pathToFileURL(jsdomPath).href);
 
 const htmlPath = path.join(root, "ai-inference-memory-data-path.html");
 const html = fs.readFileSync(htmlPath, "utf8");
+if (!html.includes('<link rel="icon" href="data:,">')) {
+  throw new Error("Expected an embedded empty favicon to prevent an external request.");
+}
 const requiredText = [
   "On-chip SRAM",
   "GPU HBM",
