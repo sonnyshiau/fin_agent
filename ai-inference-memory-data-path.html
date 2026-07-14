@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLM Inference Memory Data Path</title>
+  <meta name="description" content="動態呈現 LLM Prefill、Decode 與 KV Cache 在 SRAM、HBM、Host DRAM、NVMe 之間的資料流。">
+  <style>
+    :root {
+      --bg: #f1f4f2;
+      --surface: #ffffff;
+      --surface-2: #f8faf8;
+      --ink: #17201d;
+      --muted: #65716c;
+      --line: #d9e1dc;
+      --line-strong: #aebbb4;
+      --weight: #2676ad;
+      --weight-soft: #e5f0f7;
+      --kv: #7654aa;
+      --kv-soft: #eee9f7;
+      --activation: #118067;
+      --activation-soft: #e3f2ed;
+      --stall: #bb4843;
+      --stall-soft: #f7e8e7;
+      --amber: #aa711f;
+      --amber-soft: #f8eedc;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { color-scheme: light; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .page { width: min(1160px, calc(100vw - 32px)); margin: 0 auto; padding: 22px 0 48px; }
+    header, .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+    header { padding: 26px; margin-bottom: 12px; }
+    .eyebrow { color: var(--weight); font-size: 12px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { max-width: 920px; margin: 7px 0 10px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; letter-spacing: -.035em; }
+    h2 { margin: 0; font-size: 21px; line-height: 1.25; }
+    h3 { margin: 0; font-size: 16px; }
+    p { margin: 0; }
+    .lead { max-width: 900px; color: var(--muted); font-size: 17px; }
+    .thesis-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 18px; }
+    .thesis-item { padding: 12px 14px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); }
+    .thesis-item b { display: block; margin-bottom: 3px; font-size: 13px; }
+    .thesis-item span { color: var(--muted); font-size: 12px; }
+
+    .controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px; margin-bottom: 12px; }
+    .control-group { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .control-label { margin-right: 2px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .button, .speed-label {
+      min-height: 38px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, color .18s ease;
+    }
+    .button:hover, .speed-label:hover { border-color: var(--line-strong); background: var(--surface-2); }
+    .button:focus-visible, .speed-label:has(input:focus-visible) { outline: 3px solid #bcd6e7; outline-offset: 2px; }
+    .scenario-button[aria-pressed="true"] { border-color: var(--weight); background: var(--weight-soft); color: #155a87; font-weight: 850; }
+    .transport-button { width: 40px; padding-inline: 0; font-size: 15px; }
+    .speed-label { position: relative; display: inline-flex; align-items: center; }
+    .speed-label input { position: absolute; opacity: 0; pointer-events: none; }
+    .speed-label:has(input:checked) { border-color: var(--activation); background: var(--activation-soft); color: #08634f; font-weight: 850; }
+
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 12px; }
+    .diagram-panel { min-width: 0; padding: 16px; }
+    .panel-head { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+    .panel-head p { color: var(--muted); font-size: 12px; text-align: right; }
+    .diagram-wrap { overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: #fbfcfb; }
+    svg { display: block; width: 100%; height: auto; }
+
+    .zone { fill: #fff; stroke: var(--line); stroke-width: 1.5; }
+    .zone-label { fill: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+    .node rect { fill: #fff; stroke: var(--line-strong); stroke-width: 2; transition: fill .2s, stroke .2s, filter .2s; }
+    .node .node-title { fill: var(--ink); font-size: 17px; font-weight: 850; }
+    .node .node-sub { fill: var(--muted); font-size: 11px; }
+    .node .node-metric { fill: var(--muted); font-size: 10px; font-weight: 700; }
+    .node.active rect { stroke: var(--active-color, var(--activation)); stroke-width: 4; filter: drop-shadow(0 4px 5px rgba(23,32,29,.12)); }
+    .node.active.weight rect { --active-color: var(--weight); fill: var(--weight-soft); }
+    .node.active.kv rect { --active-color: var(--kv); fill: var(--kv-soft); }
+    .node.active.activation rect { --active-color: var(--activation); fill: var(--activation-soft); }
+    .node.active.stall rect { --active-color: var(--stall); fill: var(--stall-soft); }
+    .data-path { fill: none; stroke: #c7d0cb; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; transition: stroke .18s, stroke-width .18s, opacity .18s; }
+    .data-path.secondary { stroke-dasharray: 9 8; }
+    .data-path.active { stroke-width: 8; opacity: 1; }
+    .data-path.active.weight { stroke: var(--weight); }
+    .data-path.active.kv { stroke: var(--kv); }
+    .data-path.active.activation { stroke: var(--activation); }
+    .data-path.active.stall { stroke: var(--stall); stroke-dasharray: 10 8; }
+    .path-label { fill: var(--muted); font-size: 10px; font-weight: 750; paint-order: stroke; stroke: #fbfcfb; stroke-width: 5px; stroke-linejoin: round; }
+    #flow-particle { r: 8; fill: var(--activation); stroke: #fff; stroke-width: 3; filter: drop-shadow(0 2px 3px rgba(0,0,0,.28)); }
+    #flow-particle.weight { fill: var(--weight); }
+    #flow-particle.kv { fill: var(--kv); }
+    #flow-particle.activation { fill: var(--activation); }
+    #flow-particle.stall { fill: var(--stall); }
+
+    .step-panel { display: flex; flex-direction: column; min-height: 100%; padding: 18px; }
+    .scenario-status { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 13px; border-bottom: 1px solid var(--line); }
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: var(--activation-soft); color: var(--activation); font-size: 11px; font-weight: 850; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    body[data-playback="paused"] .status-pill { background: var(--amber-soft); color: var(--amber); }
+    .step-count { color: var(--muted); font-size: 12px; }
+    .step-main { padding: 20px 0; }
+    .step-kicker { color: var(--muted); font-size: 11px; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+    #step-title { margin: 6px 0 8px; font-size: 23px; line-height: 1.22; }
+    #step-detail { color: var(--muted); font-size: 14px; }
+    .route-readout { display: grid; grid-template-columns: 1fr 18px 1fr; align-items: center; gap: 5px; padding: 11px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); }
+    .route-box { min-width: 0; }
+    .route-box span { display: block; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .route-box b { display: block; overflow: hidden; margin-top: 2px; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .route-arrow { color: var(--line-strong); text-align: center; }
+    .bottleneck { margin-top: auto; padding: 12px; border-left: 4px solid var(--amber); background: var(--amber-soft); font-size: 12px; }
+    .bottleneck b { display: block; margin-bottom: 2px; }
+
+    .support-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 12px; margin-top: 12px; }
+    .support-panel { padding: 18px; }
+    .hierarchy { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 13px; }
+    .tier { padding: 12px; border: 1px solid var(--line); border-top: 4px solid var(--weight); border-radius: 7px; background: var(--surface-2); }
+    .tier:nth-child(2) { border-top-color: var(--kv); }
+    .tier:nth-child(3) { border-top-color: var(--amber); }
+    .tier:nth-child(4) { border-top-color: var(--stall); }
+    .tier b, .tier span { display: block; }
+    .tier b { font-size: 13px; }
+    .tier span { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 13px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; padding: 9px; border: 1px solid var(--line); border-radius: 6px; font-size: 12px; }
+    .legend-swatch { width: 22px; height: 5px; border-radius: 5px; background: var(--activation); }
+    .legend-item.weight .legend-swatch { background: var(--weight); }
+    .legend-item.kv .legend-swatch { background: var(--kv); }
+    .legend-item.stall .legend-swatch { background: var(--stall); }
+    .note { margin-top: 10px; color: var(--muted); font-size: 11px; }
+    footer { padding: 18px 4px 0; color: var(--muted); font-size: 11px; text-align: center; }
+
+    @media (max-width: 900px) {
+      .controls { align-items: flex-start; flex-direction: column; }
+      .workspace { grid-template-columns: 1fr; }
+      .step-panel { min-height: 330px; }
+      .thesis-strip, .hierarchy { grid-template-columns: 1fr 1fr; }
+      .support-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .page { width: min(100% - 20px, 1160px); padding-top: 10px; }
+      header, .diagram-panel, .step-panel, .support-panel { padding: 16px; }
+      .thesis-strip, .hierarchy, .legend { grid-template-columns: 1fr; }
+      .control-group { width: 100%; }
+      .scenario-button { flex: 1 1 calc(50% - 7px); }
+      .panel-head { display: block; }
+      .panel-head p { margin-top: 4px; text-align: left; }
+      .diagram-wrap { overflow-x: auto; }
+      .diagram-wrap svg { min-width: 700px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      #flow-particle { display: none; }
+    }
+  </style>
+</head>
+<body data-scenario="prefill" data-playback="playing" data-speed="normal">
+  <main class="page">
+    <header>
+      <div class="eyebrow">LLM Inference · Memory Hierarchy</div>
+      <h1>一個 Token，如何穿過 GPU 的 Memory Data Path</h1>
+      <p class="lead">切換 Prefill、Decode、KV Hit 與 KV Miss，觀察 Weights、KV Cache 與 Activation 在 On-chip SRAM、GPU HBM、Host DRAM、NVMe 之間如何流動。</p>
+      <div class="thesis-strip">
+        <div class="thesis-item"><b>Prefill：算得多</b><span>大量 prompt tokens 形成大 GEMM，權重重用率與 arithmetic intensity 較高。</span></div>
+        <div class="thesis-item"><b>Decode：搬得多</b><span>每輪只產生少量 token，反覆讀 weights 與歷史 KV，容易受 HBM bandwidth 限制。</span></div>
+        <div class="thesis-item"><b>Offload：容量換延遲</b><span>DRAM／NVMe 擴大有效容量，但 KV 必須 reload 回 HBM 才能高效 decode。</span></div>
+      </div>
+    </header>
+
+    <section class="panel controls" aria-label="動畫控制列">
+      <div class="control-group" aria-label="推理情境">
+        <span class="control-label">Scenario</span>
+        <button class="button scenario-button" type="button" data-scenario="prefill" aria-pressed="true">Prefill</button>
+        <button class="button scenario-button" type="button" data-scenario="decode" aria-pressed="false">Decode</button>
+        <button class="button scenario-button" type="button" data-scenario="hit" aria-pressed="false">KV Hit</button>
+        <button class="button scenario-button" type="button" data-scenario="miss" aria-pressed="false">KV Miss</button>
+      </div>
+      <div class="control-group">
+        <span class="control-label">Playback</span>
+        <button class="button transport-button" id="play-button" type="button" aria-label="播放">▶</button>
+        <button class="button transport-button" id="pause-button" type="button" aria-label="暫停">Ⅱ</button>
+        <button class="button transport-button" id="replay-button" type="button" aria-label="重播">↺</button>
+        <span class="control-label" style="margin-left:6px">Speed</span>
+        <label class="speed-label"><input id="speed-slow" name="speed" type="radio" value="slow">0.6×</label>
+        <label class="speed-label"><input id="speed-normal" name="speed" type="radio" value="normal" checked>1×</label>
+        <label class="speed-label"><input id="speed-fast" name="speed" type="radio" value="fast">1.8×</label>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel diagram-panel">
+        <div class="panel-head">
+          <div><div class="eyebrow">Live Data Path</div><h2>Memory Hierarchy 與雙向資料流</h2></div>
+          <p>實線＝hot path　虛線＝offload / reload path</p>
+        </div>
+        <div class="diagram-wrap">
+          <svg id="data-path-svg" viewBox="0 0 1200 720" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">LLM 推理 Memory Data Path 動態圖</title>
+            <desc id="diagram-desc">顯示 Request、GPU Compute、On-chip SRAM、GPU HBM、Host DRAM、NVMe SSD 與輸出 Token 的資料路徑。</desc>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#9eaaa4"/></marker>
+              <marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="context-stroke"/></marker>
+            </defs>
+
+            <rect class="zone" x="260" y="42" width="570" height="586" rx="16"/>
+            <text class="zone-label" x="286" y="72">ACCELERATOR DOMAIN</text>
+            <rect class="zone" x="850" y="42" width="310" height="586" rx="16"/>
+            <text class="zone-label" x="876" y="72">CAPACITY TIERS</text>
+
+            <path id="path-request-compute" class="data-path" d="M180 336 C230 336 260 336 320 336" marker-end="url(#arrow)"/>
+            <path id="path-compute-output" class="data-path" d="M600 336 C640 336 650 662 1040 662" marker-end="url(#arrow)"/>
+            <path id="path-compute-sram" class="data-path" d="M430 258 C430 220 430 198 430 168" marker-end="url(#arrow)"/>
+            <path id="path-hbm-compute" class="data-path" d="M700 318 C650 318 620 318 600 318" marker-end="url(#arrow)"/>
+            <path id="path-compute-hbm" class="data-path" d="M600 364 C640 364 662 364 700 364" marker-end="url(#arrow)"/>
+            <path id="path-hbm-dram" class="data-path secondary" d="M812 410 C812 450 880 455 918 455" marker-end="url(#arrow)"/>
+            <path id="path-dram-nvme" class="data-path secondary" d="M1000 505 C1000 530 1000 548 1000 570" marker-end="url(#arrow)"/>
+            <path id="path-nvme-dram" class="data-path secondary" d="M960 570 C960 548 960 530 960 505" marker-end="url(#arrow)"/>
+            <path id="path-dram-hbm" class="data-path secondary" d="M918 425 C875 425 842 400 812 385" marker-end="url(#arrow)"/>
+
+            <text class="path-label" x="204" y="323">Prompt / Token</text>
+            <text class="path-label" x="625" y="305">Read</text>
+            <text class="path-label" x="625" y="389">Write</text>
+            <text class="path-label" x="830" y="445">Offload</text>
+            <text class="path-label" x="1015" y="541">Evict</text>
+            <text class="path-label" x="906" y="401">Reload</text>
+
+            <g class="node" id="request-node">
+              <rect x="30" y="285" width="150" height="102" rx="10"/>
+              <text class="node-title" x="105" y="323" text-anchor="middle">Request</text>
+              <text class="node-sub" x="105" y="348" text-anchor="middle">Prompt / Token</text>
+              <text class="node-metric" x="105" y="369" text-anchor="middle">INPUT</text>
+            </g>
+            <g class="node" id="compute-node">
+              <rect x="320" y="258" width="280" height="152" rx="12"/>
+              <text class="node-title" x="460" y="305" text-anchor="middle">GPU Compute</text>
+              <text class="node-sub" x="460" y="333" text-anchor="middle">Tensor Core · Attention · FFN</text>
+              <text class="node-metric" x="460" y="365" text-anchor="middle">FLOPS × ARITHMETIC INTENSITY</text>
+              <rect x="386" y="378" width="148" height="5" rx="3" fill="#dce5e0" stroke="none"/>
+            </g>
+            <g class="node" id="sram-node">
+              <rect x="320" y="92" width="280" height="76" rx="10"/>
+              <text class="node-title" x="460" y="121" text-anchor="middle">On-chip SRAM</text>
+              <text class="node-sub" x="460" y="145" text-anchor="middle">Register · Shared Memory · L2</text>
+            </g>
+            <g class="node" id="hbm-node">
+              <rect x="700" y="250" width="112" height="160" rx="10"/>
+              <text class="node-title" x="756" y="286" text-anchor="middle">GPU HBM</text>
+              <text class="node-sub" x="756" y="312" text-anchor="middle">Weights</text>
+              <text class="node-sub" x="756" y="334" text-anchor="middle">Active KV</text>
+              <text class="node-sub" x="756" y="356" text-anchor="middle">Workspace</text>
+              <text class="node-metric" x="756" y="388" text-anchor="middle">HOT · TB/s</text>
+            </g>
+            <g class="node" id="dram-node">
+              <rect x="918" y="385" width="164" height="120" rx="10"/>
+              <text class="node-title" x="1000" y="420" text-anchor="middle">Host DRAM</text>
+              <text class="node-sub" x="1000" y="446" text-anchor="middle">DDR5 / LPDDR</text>
+              <text class="node-sub" x="1000" y="469" text-anchor="middle">Warm KV · Staging</text>
+              <text class="node-metric" x="1000" y="490" text-anchor="middle">WARM · GB/s</text>
+            </g>
+            <g class="node" id="nvme-node">
+              <rect x="918" y="570" width="164" height="76" rx="10"/>
+              <text class="node-title" x="1000" y="600" text-anchor="middle">NVMe SSD</text>
+              <text class="node-sub" x="1000" y="624" text-anchor="middle">Cold / Evicted KV</text>
+            </g>
+            <g class="node" id="output-node">
+              <rect x="1040" y="630" width="120" height="64" rx="10"/>
+              <text class="node-title" x="1100" y="657" text-anchor="middle">Output</text>
+              <text class="node-sub" x="1100" y="679" text-anchor="middle">New Token</text>
+            </g>
+
+            <circle id="flow-particle" class="activation" cx="0" cy="0">
+              <animateMotion id="particle-motion" dur="1.8s" begin="indefinite" fill="freeze" restart="always">
+                <mpath id="particle-mpath" href="#path-request-compute"/>
+              </animateMotion>
+            </circle>
+          </svg>
+        </div>
+      </div>
+
+      <aside class="panel step-panel" aria-live="polite">
+        <div class="scenario-status">
+          <span class="status-pill"><span class="status-dot"></span><span id="playback-label">RUNNING</span></span>
+          <span class="step-count"><b id="step-index">1</b> / <span id="step-total">4</span></span>
+        </div>
+        <div class="step-main">
+          <div class="step-kicker" id="scenario-name">PREFILL PATH</div>
+          <h2 id="step-title">Prompt 進入 GPU</h2>
+          <p id="step-detail">整段 prompt 形成可平行處理的 token batch。</p>
+        </div>
+        <div class="route-readout">
+          <div class="route-box"><span>Source</span><b id="route-source">Request</b></div>
+          <div class="route-arrow">→</div>
+          <div class="route-box"><span>Destination</span><b id="route-destination">GPU Compute</b></div>
+        </div>
+        <div class="bottleneck"><b id="bottleneck-title">核心限制：Compute utilization</b><span id="bottleneck-detail">Prefill 能用較大 GEMM 提高 Tensor Core 使用率，但長 context 的 attention 成本仍會增加。</span></div>
+      </aside>
+    </section>
+
+    <section class="support-grid">
+      <div class="panel support-panel">
+        <div class="eyebrow">Memory Temperature</div>
+        <h2>越靠近 Compute，越快、越貴、容量越小</h2>
+        <div class="hierarchy">
+          <div class="tier"><b>On-chip SRAM</b><span>當下 tile 與 working set；最低 latency、最小容量。</span></div>
+          <div class="tier"><b>GPU HBM</b><span>Weights 與 active KV；即時 decode 的主要 bandwidth 層。</span></div>
+          <div class="tier"><b>Host DRAM</b><span>Warm KV 與 staging；容量較大，但 reload 有額外 hop。</span></div>
+          <div class="tier"><b>NVMe SSD</b><span>Cold KV；大容量，必須預取才能避免 decode stall。</span></div>
+        </div>
+      </div>
+      <div class="panel support-panel">
+        <div class="eyebrow">Data Semantics</div>
+        <h2>顏色代表搬動的是什麼</h2>
+        <div class="legend">
+          <div class="legend-item weight"><span class="legend-swatch"></span><span><b>Weights</b> · Model parameters</span></div>
+          <div class="legend-item kv"><span class="legend-swatch"></span><span><b>KV Cache</b> · Historical context</span></div>
+          <div class="legend-item"><span class="legend-swatch"></span><span><b>Activation</b> · Prompt / Token</span></div>
+          <div class="legend-item stall"><span class="legend-swatch"></span><span><b>Stall</b> · Miss / Slow hop</span></div>
+        </div>
+        <p class="note">動畫時間只用來呈現先後關係，不代表 SRAM、HBM、DRAM 與 NVMe 的精確 latency 比例。實際瓶頸取決於模型架構、batch、context length、precision 與 interconnect。</p>
+      </div>
+    </section>
+
+    <footer>Standalone technical visualization · No external assets or runtime APIs</footer>
+  </main>
+
+  <script>
+    (() => {
+      const scenarios = {
+        prefill: {
+          label: "PREFILL PATH",
+          bottleneck: ["核心限制：Compute utilization", "Prefill 能用較大 GEMM 提高 Tensor Core 使用率，但長 context 的 attention 成本仍會增加。"],
+          steps: [
+            { path: "path-request-compute", nodes: ["request-node", "compute-node"], route: ["Request", "GPU Compute"], kind: "activation", title: "Prompt 進入 GPU", detail: "整段 prompt 形成可平行處理的 token batch。" },
+            { path: "path-hbm-compute", nodes: ["hbm-node", "compute-node"], route: ["GPU HBM", "GPU Compute"], kind: "weight", title: "從 HBM 讀取 Weights", detail: "大型 GEMM 重用權重，Prefill 通常具有較高 arithmetic intensity。" },
+            { path: "path-compute-sram", nodes: ["compute-node", "sram-node"], route: ["GPU Compute", "On-chip SRAM"], kind: "activation", title: "On-chip 工作集", detail: "Register、Shared Memory 與 L2 承接當下 tile 與 activation。" },
+            { path: "path-compute-hbm", nodes: ["compute-node", "hbm-node"], route: ["GPU Compute", "GPU HBM"], kind: "kv", title: "寫入 Active KV Cache", detail: "各層 K/V tensor 寫入 HBM，供後續 decode 重用。" }
+          ]
+        },
+        decode: {
+          label: "DECODE LOOP",
+          bottleneck: ["核心限制：HBM bandwidth", "低並發 decode 每輪只生成少量 token，卻仍要讀取 weights 與歷史 KV，資料搬移比例升高。"],
+          steps: [
+            { path: "path-request-compute", nodes: ["request-node", "compute-node"], route: ["Current Token", "GPU Compute"], kind: "activation", title: "輸入目前 Token", detail: "Decode 一次生成少量 token，並行度通常低於 prefill。" },
+            { path: "path-hbm-compute", nodes: ["hbm-node", "compute-node"], route: ["GPU HBM", "Tensor Core / FFN"], kind: "weight", title: "Weight Streaming", detail: "每層 weights 從 HBM 串流至計算單元。" },
+            { path: "path-hbm-compute", nodes: ["hbm-node", "compute-node"], route: ["Active KV", "Attention"], kind: "kv", title: "讀取歷史 KV", detail: "Attention 讀取先前所有有效 context 的 K/V。" },
+            { path: "path-compute-hbm", nodes: ["compute-node", "hbm-node"], route: ["New K/V", "Active KV Pool"], kind: "kv", title: "Append 新 K/V", detail: "新 token 的 K/V 加入 active cache。" },
+            { path: "path-compute-output", nodes: ["compute-node", "output-node"], route: ["GPU Compute", "Output Token"], kind: "activation", title: "輸出新 Token", detail: "完成本輪 decode，下一輪再次讀取 weights 與 KV。" }
+          ]
+        },
+        hit: {
+          label: "KV CACHE HIT",
+          bottleneck: ["關鍵指標：Cache hit rate", "目標 KV 已在 HBM，可避免 host memory round trip 或歷史 K/V 重算。"],
+          steps: [
+            { path: "path-hbm-compute", nodes: ["hbm-node", "compute-node"], route: ["Active KV in HBM", "Attention"], kind: "kv", title: "HBM KV Hit", detail: "需要的 KV block 已在 HBM，直接進入 attention。" },
+            { path: "path-compute-output", nodes: ["compute-node", "output-node"], route: ["GPU Compute", "Output Token"], kind: "activation", title: "低延遲完成 Decode", detail: "沒有 host-memory 或 storage round trip。" }
+          ]
+        },
+        miss: {
+          label: "KV MISS / RELOAD",
+          bottleneck: ["核心限制：Data movement latency", "資料層級每多一個 hop，就增加 decode stall、能耗與 tail latency；預取是否及時非常重要。"],
+          steps: [
+            { path: "path-hbm-dram", nodes: ["hbm-node", "dram-node"], route: ["GPU HBM", "Host DRAM"], kind: "stall", title: "HBM Miss：查找 Host DRAM", detail: "GPU active pool 中沒有目標 KV block。" },
+            { path: "path-dram-nvme", nodes: ["dram-node", "nvme-node"], route: ["Host DRAM", "NVMe SSD"], kind: "stall", title: "DRAM Miss：查找 NVMe", detail: "更冷的 KV block 位於較大、較慢的儲存層。" },
+            { path: "path-nvme-dram", nodes: ["nvme-node", "dram-node"], route: ["NVMe SSD", "Host DRAM"], kind: "kv", title: "NVMe → DRAM", detail: "先將 KV block 提升至 host memory。" },
+            { path: "path-dram-hbm", nodes: ["dram-node", "hbm-node"], route: ["Host DRAM", "GPU HBM"], kind: "kv", title: "DRAM → HBM Reload", detail: "KV 必須回到 GPU 可高效存取的 active tier。" },
+            { path: "path-hbm-compute", nodes: ["hbm-node", "compute-node"], route: ["Active KV", "Attention"], kind: "kv", title: "恢復 Decode", detail: "Reload 完成後 attention 才能繼續。" }
+          ]
+        }
+      };
+
+      const speedDurations = { slow: 3300, normal: 2100, fast: 1150 };
+      const speedMotion = { slow: "2.8s", normal: "1.65s", fast: ".82s" };
+      const pathNodeMap = {
+        "path-request-compute": ["request-node", "compute-node"],
+        "path-compute-output": ["compute-node", "output-node"],
+        "path-compute-sram": ["compute-node", "sram-node"],
+        "path-hbm-compute": ["hbm-node", "compute-node"],
+        "path-compute-hbm": ["compute-node", "hbm-node"],
+        "path-hbm-dram": ["hbm-node", "dram-node"],
+        "path-dram-nvme": ["dram-node", "nvme-node"],
+        "path-nvme-dram": ["nvme-node", "dram-node"],
+        "path-dram-hbm": ["dram-node", "hbm-node"]
+      };
+
+      let activeScenario = "prefill";
+      let activeStep = 0;
+      let playback = "playing";
+      let speed = "normal";
+      let timer = null;
+
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => [...document.querySelectorAll(selector)];
+      const svg = $("#data-path-svg");
+      const motion = $("#particle-motion");
+      const mpath = $("#particle-mpath");
+      const particle = $("#flow-particle");
+
+      function clearTimer() {
+        if (timer !== null) window.clearTimeout(timer);
+        timer = null;
+      }
+
+      function clearHighlights() {
+        $$(".data-path").forEach((path) => path.classList.remove("active", "weight", "kv", "activation", "stall"));
+        $$(".node").forEach((node) => node.classList.remove("active", "weight", "kv", "activation", "stall"));
+      }
+
+      function restartParticle(pathId, kind) {
+        mpath.setAttribute("href", `#${pathId}`);
+        motion.setAttribute("dur", speedMotion[speed]);
+        particle.setAttribute("class", kind);
+        const reduced = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!reduced && typeof motion.beginElement === "function") motion.beginElement();
+      }
+
+      function renderStep(index) {
+        const scenario = scenarios[activeScenario];
+        activeStep = ((index % scenario.steps.length) + scenario.steps.length) % scenario.steps.length;
+        const step = scenario.steps[activeStep];
+        clearHighlights();
+
+        const path = document.getElementById(step.path);
+        path.classList.add("active", step.kind);
+        path.setAttribute("marker-end", "url(#arrow-active)");
+        (step.nodes || pathNodeMap[step.path]).forEach((id) => document.getElementById(id).classList.add("active", step.kind));
+
+        $("#step-index").textContent = String(activeStep + 1);
+        $("#step-total").textContent = String(scenario.steps.length);
+        $("#scenario-name").textContent = scenario.label;
+        $("#step-title").textContent = step.title;
+        $("#step-detail").textContent = step.detail;
+        $("#route-source").textContent = step.route[0];
+        $("#route-destination").textContent = step.route[1];
+        $("#bottleneck-title").textContent = scenario.bottleneck[0];
+        $("#bottleneck-detail").textContent = scenario.bottleneck[1];
+        restartParticle(step.path, step.kind);
+      }
+
+      function scheduleNext() {
+        clearTimer();
+        if (playback !== "playing") return;
+        timer = window.setTimeout(() => {
+          renderStep(activeStep + 1);
+          scheduleNext();
+        }, speedDurations[speed]);
+      }
+
+      function setPlayback(state) {
+        playback = state;
+        document.body.dataset.playback = state;
+        $("#playback-label").textContent = state === "playing" ? "RUNNING" : "PAUSED";
+        if (state === "paused") {
+          clearTimer();
+          if (svg && typeof svg.pauseAnimations === "function") svg.pauseAnimations();
+        } else {
+          if (svg && typeof svg.unpauseAnimations === "function") svg.unpauseAnimations();
+          scheduleNext();
+        }
+      }
+
+      function setSpeed(nextSpeed) {
+        speed = nextSpeed;
+        document.body.dataset.speed = speed;
+        if (playback === "playing") {
+          restartParticle(scenarios[activeScenario].steps[activeStep].path, scenarios[activeScenario].steps[activeStep].kind);
+          scheduleNext();
+        }
+      }
+
+      function replay() {
+        renderStep(0);
+        setPlayback("playing");
+      }
+
+      function activateScenario(name) {
+        if (!scenarios[name]) return;
+        clearTimer();
+        activeScenario = name;
+        document.body.dataset.scenario = name;
+        $$("button[data-scenario]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.scenario === name)));
+        renderStep(0);
+        setPlayback("playing");
+      }
+
+      $$("button[data-scenario]").forEach((button) => button.addEventListener("click", () => activateScenario(button.dataset.scenario)));
+      $("#play-button").addEventListener("click", () => setPlayback("playing"));
+      $("#pause-button").addEventListener("click", () => setPlayback("paused"));
+      $("#replay-button").addEventListener("click", replay);
+      $$('input[name="speed"]').forEach((input) => input.addEventListener("change", () => setSpeed(input.value)));
+
+      window.memoryDataPath = { activateScenario, renderStep, setPlayback, setSpeed, replay };
+      activateScenario("prefill");
+    })();
+  </script>
+</body>
+</html>

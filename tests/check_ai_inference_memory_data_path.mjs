@@ -33,7 +33,7 @@ const dom = new JSDOM(html, {
   pretendToBeVisual: true
 });
 const { document } = dom.window;
-const buttons = [...document.querySelectorAll("[data-scenario]")];
+const buttons = [...document.querySelectorAll("button[data-scenario]")];
 if (buttons.length !== 4) throw new Error("Expected four scenario buttons.");
 
 for (const button of buttons) {
