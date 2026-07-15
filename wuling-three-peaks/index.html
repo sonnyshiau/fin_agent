@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="2026/9/4-9/6 武陵三秀兩天一夜行程首頁：池有、品田、桃山，不走喀拉業。">
+  <link rel="icon" href="data:,">
+  <title>武陵三秀兩天一夜｜9/4-9/6 行程首頁</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f1;
+      --surface: #ffffff;
+      --surface-soft: #fafbf7;
+      --ink: #18211c;
+      --muted: #68736b;
+      --line: #d8dfd6;
+      --forest: #1f6f4a;
+      --forest-soft: #e3f2e9;
+      --blue: #26495f;
+      --blue-soft: #e4edf2;
+      --amber: #ad6b12;
+      --amber-soft: #fff2d7;
+      --risk: #a33a2b;
+      --risk-soft: #fde6e1;
+      --shadow: 0 14px 36px rgba(24, 33, 28, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(31, 111, 74, 0.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(31, 111, 74, 0.04) 1px, transparent 1px),
+        var(--bg);
+      background-size: 32px 32px;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration-color: rgba(31, 111, 74, 0.38);
+      text-underline-offset: 3px;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .intro {
+      padding: 24px;
+      display: grid;
+      align-content: space-between;
+      min-height: 378px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--forest);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2rem, 5vw, 4.15rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .thesis {
+      max-width: 760px;
+      margin-top: 14px;
+      color: #354039;
+      font-size: 1.03rem;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .meta-card,
+    .time-card,
+    .route-node,
+    .day-card,
+    .decision-card,
+    .check-item,
+    .source-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+    }
+
+    .meta-card {
+      padding: 12px;
+      min-height: 98px;
+    }
+
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .label::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--forest);
+    }
+
+    .meta-card strong,
+    .time-card strong,
+    .metric strong {
+      display: block;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    .meta-card span,
+    .time-card span,
+    .small {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .time-stack {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .time-card {
+      padding: 14px;
+    }
+
+    .time-card.primary {
+      background: var(--forest-soft);
+      border-color: #b8d9c5;
+    }
+
+    .time-card.watch {
+      background: var(--amber-soft);
+      border-color: #edcb8f;
+    }
+
+    .time-card.risk {
+      background: var(--risk-soft);
+      border-color: #efb2a9;
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      margin-top: 10px;
+    }
+
+    .time {
+      min-width: 64px;
+      color: var(--blue);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .route-strip {
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .route-track {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(116px, 1fr));
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .route-node {
+      position: relative;
+      min-height: 90px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .route-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      width: 10px;
+      height: 2px;
+      background: var(--forest);
+      transform: translateY(-50%);
+    }
+
+    .node-index {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 8px;
+      border-radius: 999px;
+      background: var(--forest);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .route-node strong {
+      display: block;
+      font-size: 0.95rem;
+      line-height: 1.25;
+    }
+
+    .route-node span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .section {
+      margin-top: 16px;
+      padding: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+
+    .section-head p {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr 1.2fr;
+      gap: 12px;
+    }
+
+    .day-card {
+      padding: 14px;
+      background: #fff;
+    }
+
+    .day-card h3 {
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .day-card .date {
+      color: var(--forest);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .day-card ul,
+    .decision-card ul,
+    .check-list {
+      padding: 0;
+      margin: 12px 0 0;
+      list-style: none;
+    }
+
+    .day-card li,
+    .decision-card li {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+      color: #354039;
+      font-size: 0.92rem;
+    }
+
+    .day-card li:first-child,
+    .decision-card li:first-child {
+      border-top: 0;
+    }
+
+    .day-card li span:first-child,
+    .decision-card li span:first-child {
+      color: var(--blue);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.92rem;
+    }
+
+    th {
+      background: #eef3ed;
+      color: #314239;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td:nth-child(2),
+    td:nth-child(3) {
+      white-space: nowrap;
+      color: var(--blue);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .decision-card {
+      padding: 14px;
+      background: #fff;
+    }
+
+    .decision-card.good {
+      border-color: #b8d9c5;
+      background: var(--forest-soft);
+    }
+
+    .decision-card.watch {
+      border-color: #edcb8f;
+      background: var(--amber-soft);
+    }
+
+    .decision-card.risk {
+      border-color: #efb2a9;
+      background: var(--risk-soft);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 8px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.76rem;
+      font-weight: 900;
+      color: #fff;
+      background: var(--forest);
+    }
+
+    .watch .badge {
+      background: var(--amber);
+    }
+
+    .risk .badge {
+      background: var(--risk);
+    }
+
+    .check-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .check-item {
+      padding: 12px;
+      background: #fff;
+      min-height: 104px;
+    }
+
+    .check-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .source-card {
+      padding: 12px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .source-card strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 4px;
+      font-size: 0.92rem;
+    }
+
+    footer {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .day-grid,
+      .decision-grid,
+      .source-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .intro {
+        min-height: auto;
+      }
+
+      .hero-meta,
+      .check-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section-head {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 24px, 1120px);
+        padding-top: 18px;
+      }
+
+      .intro,
+      .section,
+      .route-strip {
+        padding: 14px;
+      }
+
+      .hero-meta,
+      .check-list {
+        grid-template-columns: 1fr;
+      }
+
+      .day-card li,
+      .decision-card li {
+        grid-template-columns: 64px minmax(0, 1fr);
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-label="行程總覽">
+      <header class="panel intro">
+        <div>
+          <p class="eyebrow">Wuling Three Peaks · 2026/09/04-09/06</p>
+          <h1>武陵三秀兩天一夜行程首頁</h1>
+          <p class="thesis">池有、品田、桃山；刪喀拉業。D1 住新達山屋，D2 從桃山下武陵。這是一張行前決策頁，不是遊記。</p>
+        </div>
+        <div class="hero-meta">
+          <article class="meta-card">
+            <span class="label">Route</span>
+            <strong>三秀，不走喀拉業</strong>
+            <span>武陵山莊進出，順走池有、品田、桃山。</span>
+          </article>
+          <article class="meta-card">
+            <span class="label">Pace</span>
+            <strong>上河時間為基準</strong>
+            <span>D1 約 9.5-10.5h 不含大休；D2 約 7.5-8h 不含大休。</span>
+          </article>
+          <article class="meta-card">
+            <span class="label">Decision</span>
+            <strong>先保下山品質</strong>
+            <span>11:30 未到新達，品田改備案；雨霧強風不進 V 斷崖。</span>
+          </article>
+        </div>
+      </header>
+
+      <aside class="panel time-stack" aria-label="關鍵時間">
+        <article class="time-card primary">
+          <span class="label">Day 0</span>
+          <strong>9/4 晚上抵達武陵</strong>
+          <span>駕駛睡眠比壓縮行程重要。抵達後只做裝備、水、頭燈與離線地圖確認。</span>
+        </article>
+        <article class="time-card">
+          <span class="label">Day 1</span>
+          <strong>武陵山莊 → 池有 → 新達 → 品田</strong>
+          <div class="time-row"><span class="time">05:30</span><span>武陵山莊起登，先把池有登山口與三叉營地當第一段。</span></div>
+          <div class="time-row"><span class="time">11:20</span><span>理想狀態抵達新達山屋，放裝、午餐、補水。</span></div>
+          <div class="time-row"><span class="time">16:00</span><span>最好已回新達山屋，不把品田回程拖進傍晚。</span></div>
+        </article>
+        <article class="time-card watch">
+          <span class="label">Day 2</span>
+          <strong>新達 → 桃山 → 武陵山莊</strong>
+          <div class="time-row"><span class="time">05:30</span><span>新達出發，往桃山山屋與桃山推進。</span></div>
+          <div class="time-row"><span class="time">10:30</span><span>最晚離開桃山下切，避免午後天氣與摸黑風險。</span></div>
+          <div class="time-row"><span class="time">14:10</span><span>保守目標回武陵山莊，留洗整與開車緩衝。</span></div>
+        </article>
+        <article class="time-card risk">
+          <span class="label">Abort Rules</span>
+          <strong>品田是第一個可刪點</strong>
+          <span>V 斷崖遇雨、強風、濃霧直接取消；D1 太慢也取消，不用硬湊三座。</span>
+        </article>
+      </aside>
+    </section>
+
+    <section class="panel route-strip" aria-label="路線帶">
+      <div class="route-track">
+        <article class="route-node"><span class="node-index">0</span><strong>武陵山莊</strong><span>9/5 05:30 起登</span></article>
+        <article class="route-node"><span class="node-index">1</span><strong>池有登山口</strong><span>進入主爬升</span></article>
+        <article class="route-node"><span class="node-index">2</span><strong>池有山</strong><span>第一座百岳</span></article>
+        <article class="route-node"><span class="node-index">3</span><strong>新達山屋</strong><span>D1 住宿核心</span></article>
+        <article class="route-node"><span class="node-index">4</span><strong>品田山</strong><span>視天氣與時間決策</span></article>
+        <article class="route-node"><span class="node-index">5</span><strong>新達山屋</strong><span>回宿營點</span></article>
+        <article class="route-node"><span class="node-index">6</span><strong>桃山</strong><span>D2 主目標</span></article>
+        <article class="route-node"><span class="node-index">7</span><strong>武陵山莊</strong><span>9/6 午後回到車上</span></article>
+      </div>
+    </section>
+
+    <section class="panel section" aria-labelledby="itinerary-heading">
+      <div class="section-head">
+        <h2 id="itinerary-heading">完整時間表</h2>
+        <p>時間以順走三秀規劃。實際行動時只看兩個硬控制點：D1 新達抵達時間、D2 桃山離開時間。</p>
+      </div>
+      <div class="day-grid">
+        <article class="day-card">
+          <p class="date">Day 0 · 2026/9/4 Fri</p>
+          <h3>晚上開車到武陵</h3>
+          <ul>
+            <li><span>晚間</span><span>抵達武陵山莊或武陵住宿點。</span></li>
+            <li><span>睡前</span><span>確認入園、山屋、水況、頭燈、雨具、離線地圖。</span></li>
+            <li><span>原則</span><span>不要凌晨抵達後硬起登，駕駛疲勞會放大 D1 風險。</span></li>
+          </ul>
+        </article>
+        <article class="day-card">
+          <p class="date">Day 1 · 2026/9/5 Sat</p>
+          <h3>武陵山莊 → 池有 → 品田 → 新達</h3>
+          <ul>
+            <li><span>05:30</span><span>武陵山莊出發。</span></li>
+            <li><span>06:40</span><span>池有登山口，開始主要爬升。</span></li>
+            <li><span>09:10</span><span>三叉營地，短休後往池有。</span></li>
+            <li><span>10:00</span><span>完成池有山來回，往新達推進。</span></li>
+            <li><span>11:20</span><span>新達山屋放裝、午餐、補水。</span></li>
+            <li><span>12:10</span><span>輕裝往品田山；若天氣差或太晚就取消。</span></li>
+            <li><span>16:00</span><span>理想狀態已回新達山屋。</span></li>
+          </ul>
+        </article>
+        <article class="day-card">
+          <p class="date">Day 2 · 2026/9/6 Sun</p>
+          <h3>新達 → 桃山 → 武陵山莊</h3>
+          <ul>
+            <li><span>05:30</span><span>新達山屋出發。</span></li>
+            <li><span>09:10</span><span>抵達桃山山屋附近，短休整裝。</span></li>
+            <li><span>09:30</span><span>桃山山頂，拍照不拖太久。</span></li>
+            <li><span>10:30</span><span>最晚離開桃山下切。</span></li>
+            <li><span>13:40</span><span>桃山登山口。</span></li>
+            <li><span>14:10</span><span>回武陵山莊，保留洗整與返程緩衝。</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section" aria-labelledby="pace-heading">
+      <div class="section-head">
+        <h2 id="pace-heading">上河基準拆解</h2>
+        <p>表內時間保留「上河基準」與「建議含休」兩種口徑。含休時間已把重裝、拍照、午餐與高山節奏放進去。</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>段落</th>
+              <th>上河基準</th>
+              <th>建議含休</th>
+              <th>決策備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>武陵山莊 → 池有登山口</td>
+              <td>約 70 分</td>
+              <td>70-85 分</td>
+              <td>前段不要衝，D1 後面還有品田回程。</td>
+            </tr>
+            <tr>
+              <td>池有登山口 → 三叉營地</td>
+              <td>約 150 分</td>
+              <td>150-180 分</td>
+              <td>重裝爬升主菜，這段會決定 D1 是否準時到新達。</td>
+            </tr>
+            <tr>
+              <td>三叉營地 → 池有山 → 回主線</td>
+              <td>約 40 分</td>
+              <td>45-60 分</td>
+              <td>第一座山，拍照可控，不要在這裡花掉品田時間。</td>
+            </tr>
+            <tr>
+              <td>主線 → 新達山屋</td>
+              <td>約 60-80 分</td>
+              <td>70-95 分</td>
+              <td>11:30 前不到新達，品田改備案。</td>
+            </tr>
+            <tr>
+              <td>新達山屋 → 品田山 → 新達山屋</td>
+              <td>約 180-210 分</td>
+              <td>210-240 分</td>
+              <td>V 斷崖遇雨霧強風取消，不用硬攻。</td>
+            </tr>
+            <tr>
+              <td>新達山屋 → 桃山山屋 → 桃山</td>
+              <td>約 220 分</td>
+              <td>230-260 分</td>
+              <td>D2 早走，讓桃山下切保有膝蓋與天氣餘裕。</td>
+            </tr>
+            <tr>
+              <td>桃山 → 桃山登山口 → 武陵山莊</td>
+              <td>約 250 分</td>
+              <td>260-300 分</td>
+              <td>長下坡，登山杖、護膝與節奏比速度重要。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel section" aria-labelledby="decision-heading">
+      <div class="section-head">
+        <h2 id="decision-heading">撤退與刪減策略</h2>
+        <p>這趟行程的勝負不是多撿一座山，而是 D2 能穩定下武陵且不摸黑。</p>
+      </div>
+      <div class="decision-grid">
+        <article class="decision-card good">
+          <span class="badge">A 案</span>
+          <h3>完整完成三秀</h3>
+          <ul>
+            <li><span>條件</span><span>D1 11:30 前到新達，天氣穩，隊伍狀況正常。</span></li>
+            <li><span>做法</span><span>新達放裝後攻品田，D2 走桃山下山。</span></li>
+          </ul>
+        </article>
+        <article class="decision-card watch">
+          <span class="badge">B 案</span>
+          <h3>刪品田，保桃山</h3>
+          <ul>
+            <li><span>條件</span><span>D1 抵達新達偏晚、有人疲勞或午後天氣轉差。</span></li>
+            <li><span>做法</span><span>新達休息過夜，D2 照原計畫走桃山下山。</span></li>
+          </ul>
+        </article>
+        <article class="decision-card risk">
+          <span class="badge">C 案</span>
+          <h3>天氣差保守案</h3>
+          <ul>
+            <li><span>條件</span><span>品田 V 斷崖雨、霧、強風，或 D2 午後雷雨機率高。</span></li>
+            <li><span>做法</span><span>取消品田，必要時桃山也只到安全時間點就撤。</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section" aria-labelledby="check-heading">
+      <div class="section-head">
+        <h2 id="check-heading">行前檢查</h2>
+        <p>只列會影響這條路線成敗的項目。一般裝備清單另開，不把首頁變成雜訊。</p>
+      </div>
+      <div class="check-list">
+        <article class="check-item"><strong>入園與山屋</strong><span class="small">確認雪霸入園核准、新達山屋床位、出園回報流程。</span></article>
+        <article class="check-item"><strong>水況</strong><span class="small">新達與桃山山屋為雨水收集，枯水期不穩；出發前一週重查。</span></article>
+        <article class="check-item"><strong>天氣</strong><span class="small">9 月仍有颱風、午後雷雨與濃霧；品田是天氣敏感點。</span></article>
+        <article class="check-item"><strong>頭燈</strong><span class="small">D1 和 D2 都有延誤可能；頭燈不能只當備品。</span></article>
+        <article class="check-item"><strong>離線地圖</strong><span class="small">下載 GPX、山屋位置、桃山下切路線與撤退節點。</span></article>
+        <article class="check-item"><strong>膝蓋保護</strong><span class="small">桃山下武陵是長下坡，登山杖和節奏控管是核心。</span></article>
+        <article class="check-item"><strong>雨具保暖</strong><span class="small">稜線風雨會把簡單路段變難，外層和乾衣要分開保護。</span></article>
+        <article class="check-item"><strong>駕駛睡眠</strong><span class="small">9/4 晚上抵達後先睡，避免用駕駛疲勞換 D1 早起。</span></article>
+      </div>
+    </section>
+
+    <section class="panel section" aria-labelledby="sources-heading">
+      <div class="section-head">
+        <h2 id="sources-heading">資料來源基礎</h2>
+        <p>頁面把來源分成上河時間、山友實走、攻略資訊與官方山屋資料；實際出發前仍需重查開放狀態。</p>
+      </div>
+      <div class="source-grid">
+        <article class="source-card"><strong>上河 G04 步程圖</strong>使用者提供的大霸、聖稜、武陵四秀步程示意圖，作為本頁時間基準。</article>
+        <article class="source-card"><strong><a href="https://hiking.biji.co/index.php?act=info&q=review&review_id=13634">健行筆記實走紀錄</a></strong>參考兩天一夜四秀實走節奏，並刪除喀拉業段。</article>
+        <article class="source-card"><strong><a href="https://zh-tw.hikingbook.net/posts/%E6%AD%A6%E9%99%B5%E5%9B%9B%E7%A7%80%E5%85%A8%E6%94%BB%E7%95%A5-%E8%B7%AF%E7%B7%9A%E5%BB%BA%E8%AD%B0-%E8%A1%8C%E7%A8%8B%E5%9C%B0%E5%9C%96-%E4%BD%8F%E5%AE%BF%E4%BA%A4%E9%80%9A%E4%B8%80%E8%B5%B7%E6%89%93%E5%8C%85%E5%B8%B6%E8%B5%B0">Hikingbook 攻略</a></strong>參考順走/逆走、品田風險與武陵四秀路線說明。</article>
+        <article class="source-card"><strong><a href="https://hike.taiwan.gov.tw/bed_1.aspx">登山申請一站式服務網</a></strong>山屋床位、水源、通訊與官方申請查詢入口。</article>
+      </div>
+    </section>
+
+    <footer>
+      最後整理：2026/7/15。出發前請重新確認雪霸公告、路線開放、山屋水況與中央氣象署預報。
+    </footer>
+  </main>
+</body>
+</html>
