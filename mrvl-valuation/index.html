@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Marvell Technology FY27–FY29 估值、TAM 與 Bull/Base/Bear 情境分析">
+  <link rel="icon" href="data:,">
+  <title>MRVL｜FY27–FY29 估值與預期差</title>
+  <style>
+    :root{--bg:#071018;--panel:#0d1924;--panel2:#101f2c;--line:#243746;--text:#edf5f7;--muted:#99aeba;--cyan:#59d9d1;--blue:#70a7ff;--green:#72dda0;--amber:#f4c76b;--red:#ff827f;--ink:#061014;--shadow:0 16px 44px #0005}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 80% 0,#123146 0,transparent 34%),var(--bg);color:var(--text);font:15px/1.65 Inter,"Noto Sans TC",system-ui,sans-serif}a{color:var(--cyan)}a:hover{color:#b8fff9}button{font:inherit}header,main,footer{width:min(1160px,calc(100% - 40px));margin:auto}header{padding:54px 0 24px}.eyebrow,.section-label{color:var(--cyan);font-size:.73rem;letter-spacing:.16em;text-transform:uppercase;font-weight:800}.meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.84rem}.pill{border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:#08141d}.pill.live{border-color:#3e887b;color:#a4f2db}h1{font-size:clamp(2.45rem,6vw,5.3rem);line-height:.98;letter-spacing:-.055em;margin:.25em 0 .22em;max-width:920px}h1 span{color:var(--cyan)}h2{font-size:clamp(1.55rem,3vw,2.3rem);letter-spacing:-.035em;margin:.18em 0 .35em}h3{font-size:1rem;margin:.15em 0 .4em}.lede{font-size:clamp(1.05rem,2vw,1.34rem);max-width:860px;color:#c8d8df;margin:0 0 24px}.conclusion{border-left:4px solid var(--cyan);background:linear-gradient(90deg,#14303b,#0c1822);padding:18px 22px;border-radius:0 14px 14px 0;max-width:1000px}.conclusion strong{color:#fff}.grid{display:grid;gap:14px}.thesis{grid-template-columns:repeat(3,1fr);margin:24px 0}.card,.panel{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.card{padding:18px}.card .kicker{color:var(--muted);font-size:.78rem}.card .big{font-size:1.65rem;font-weight:800;letter-spacing:-.04em;margin:2px 0}.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--amber)}.panel{padding:28px;margin:18px 0}.section-intro{color:var(--muted);max-width:820px;margin-top:0}.metric-grid{grid-template-columns:repeat(4,1fr)}.metric{padding:15px;border:1px solid var(--line);border-radius:12px;background:#07131c}.metric b{display:block;font-size:1.45rem}.metric small{color:var(--muted)}.chain{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:20px}.chain>div{position:relative;padding:16px 12px;border:1px solid var(--line);border-radius:12px;background:#08151f}.chain>div:not(:last-child):after{content:"→";position:absolute;right:-10px;top:34%;z-index:2;color:var(--cyan);font-weight:900}.chain strong{display:block;color:#fff}.chain small{color:var(--muted)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:700px}th,td{text-align:right;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}thead{background:#09151f;color:#aebfc7}tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}.tag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:.72rem;font-weight:750}.fact{background:#173c32;color:#a8f0ce}.guide{background:#193450;color:#acd3ff}.estimate{background:#463a20;color:#ffdf93}.inference{background:#422b47;color:#eec2f5}.tam-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.tam-row{padding:16px;border-radius:12px;background:#07131c;border:1px solid var(--line)}.tam-head{display:flex;justify-content:space-between;gap:10px}.bar{height:8px;background:#1b2b36;border-radius:10px;margin:11px 0;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:inherit}.warn{font-size:.78rem;color:var(--amber)}.scenario-controls{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.scenario-controls button{border:1px solid var(--line);background:#07131c;color:var(--text);padding:9px 18px;border-radius:999px;cursor:pointer}.scenario-controls button[aria-pressed="true"]{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:800}.scenario-summary{display:flex;gap:28px;align-items:end;margin:14px 0 20px}.scenario-summary b{font-size:2rem}.scenario-summary span{display:block;color:var(--muted);font-size:.76rem}.case-grid{grid-template-columns:repeat(3,1fr)}.case{border-top:3px solid var(--amber)}.case.bear{border-top-color:var(--red)}.case.bull{border-top-color:var(--green)}.case ul,.risk-list{margin:8px 0 0;padding-left:18px}.matrix td[data-price]{font-variant-numeric:tabular-nums}.matrix td.active{background:#17433d;color:#b5ffeb;font-weight:800}.gap-grid{grid-template-columns:1fr 1fr}.priced{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.priced>div{padding:13px;border:1px solid var(--line);border-radius:10px}.priced b{float:right}.low b{color:var(--green)}.medium b{color:var(--amber)}.high b{color:var(--red)}.stack{display:flex;height:14px;border-radius:99px;overflow:hidden;background:#162833;margin:14px 0}.stack i:nth-child(1){width:43%;background:var(--blue)}.stack i:nth-child(2){width:31%;background:var(--cyan)}.stack i:nth-child(3){width:26%;background:var(--amber)}.callout{border:1px solid #365d62;background:#0b2429;border-radius:12px;padding:16px}.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.timeline>div{border-left:2px solid var(--cyan);padding-left:14px}.timeline p{color:var(--muted);margin:.25em 0}.risk-grid{grid-template-columns:1fr 1fr}.broken{border-color:#713d40;background:linear-gradient(145deg,#25171c,#111922)}.source-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}.source-list a{display:block;border:1px solid var(--line);border-radius:10px;padding:12px;text-decoration:none;background:#07131c}.source-list small{display:block;color:var(--muted)}footer{padding:24px 0 60px;color:var(--muted);font-size:.8rem}.restricted{border-color:#b17943}.skip{position:absolute;left:-9999px}.skip:focus{left:10px;top:10px;z-index:9;background:#fff;color:#000;padding:8px}
+    @media(max-width:900px){.thesis,.case-grid,.metric-grid{grid-template-columns:repeat(2,1fr)}.chain{grid-template-columns:1fr}.chain>div:not(:last-child):after{content:"↓";right:16px;top:auto;bottom:-17px}.tam-grid,.gap-grid,.timeline,.risk-grid{grid-template-columns:1fr}}
+    @media(max-width:620px){header,main,footer{width:min(100% - 24px,1160px)}header{padding-top:34px}.panel{padding:19px}.thesis,.case-grid,.metric-grid,.priced,.source-list{grid-template-columns:1fr}.scenario-summary{gap:16px}.scenario-summary b{font-size:1.55rem}h1{font-size:2.55rem}.meta{font-size:.75rem}}
+  </style>
+</head>
+<body data-scenario="base">
+<a class="skip" href="#main">跳至主要內容</a>
+<header>
+  <div class="eyebrow">MARVELL TECHNOLOGY · INVESTMENT BRIEF</div>
+  <h1>MRVL <span>估值重置</span><br>但還不是便宜股</h1>
+  <p class="lede">從 Custom XPU、XPU attach、switching 到 optics，把 FY27–FY29 的營收路徑、TAM 捕獲與估值預期差放進同一個可檢驗模型。</p>
+  <div class="meta"><span class="pill live">市場資料：2026-07-17 13:44 UTC</span><span class="pill">財年截至次年 1 月</span><span class="pill">USD · Non-GAAP EPS</span></div>
+  <div class="conclusion"><span class="section-label">一句話結論</span><br><strong>在 $179.40、距高點回撤 43% 後，MRVL 已從「完美定價」回到可分批研究區，但 44× FY27 EPS 仍不便宜；Base $225 的報酬約 25%，真正尚未完整定價的是整套 XPU attach＋scale-up switching＋光互連，而非單獨 CXL。</strong></div>
+  <div class="grid thesis">
+    <div class="card"><span class="kicker">公司本質</span><div class="big">AI 資料流鏟子</div><div>同時卡位 custom compute 與 connectivity，稀缺性來自平台整合與先進製程交付。</div></div>
+    <div class="card"><span class="kicker">核心矛盾</span><div class="big neutral">好公司 ≠ 便宜股</div><div>管理層 FY28 約 $16.5B 已被市場大致接受；能否超越取決於 attach 與 optics 新曲線。</div></div>
+    <div class="card"><span class="kicker">預期階段</span><div class="big">強勢兌現期</div><div>FY27 看 interconnect，FY28 看 custom ramp；任何時程滑動都會同時打 EPS 與估值倍數。</div></div>
+  </div>
+</header>
+<main id="main">
+  <section class="panel" id="valuation-now">
+    <div class="section-label">01 · VALUATION NOW</div><h2>目前回撤合理嗎？合理，但安全邊際仍有限</h2>
+    <p class="section-intro"><span class="tag fact">市場資料</span> 即時價取 2026-07-17 13:44 UTC 快照；共識取 2026-07-15 觀察值。盤中價格會變，倍數需隨之更新。</p>
+    <div class="grid metric-grid">
+      <div class="metric"><small>現價</small><b>$179.40</b><small>市值 $159.72B</small></div>
+      <div class="metric"><small>距近期高點 $316.43</small><b class="down">−43.3%</b><small>估值壓縮多於基本面下修</small></div>
+      <div class="metric"><small>FY27 / FY28 Forward P/E</small><b>44.3× / 29.0×</b><small>依 Base EPS $4.05 / $6.18</small></div>
+      <div class="metric"><small>Base FY29 目標價</small><b class="up">$225</b><small>25× $9.00；潛在報酬 +25.4%</small></div>
+    </div>
+    <p><span class="tag estimate">公開共識</span> FY27：Revenue $11.53B / EPS $4.05；FY28：Revenue $16.69B / EPS $6.18。分析師目標價平均 $252.56，區間 $110–$385（2026-07-15）；它反映各家不同時間與假設，不能當內在價值。</p>
+  </section>
+
+  <section class="panel" id="company-position">
+    <div class="section-label">02 · COMPANY POSITION</div><h2>不是只賣 ASIC，而是賣「XPU 周圍的資料移動層」</h2>
+    <p class="section-intro">AI rack 的瓶頸從運算延伸到 memory pooling、scale-up、scale-out 與跨資料中心互連。Marvell 的上行來自同一客戶可同時採用多種 silicon，而風險是 design win 高度集中、量產節奏不由 Marvell 單方面控制。</p>
+    <div class="chain">
+      <div><strong>Custom Compute</strong><small>Custom XPU / accelerator</small></div>
+      <div><strong>Attach Silicon</strong><small>CXL、DPU、memory / I/O attach</small></div>
+      <div><strong>Scale-up</strong><small>PCIe/CXL switch、NPO/CPO fabric</small></div>
+      <div><strong>Scale-out</strong><small>51.2T Ethernet switch、DSP</small></div>
+      <div><strong>Interconnect</strong><small>800G/1.6T optics、DCI modules</small></div>
+    </div>
+    <p><span class="tag fact">已確認</span> Q1 FY27 data center revenue $1.833B，占總營收 76%。<span class="tag inference">推論</span> 多產品 attach 若落在同一 hyperscaler 平台，單一 XPU 的可服務內容價值會上升；但需扣除產品重疊與客戶自研。</p>
+  </section>
+
+  <section class="panel" id="financial-model">
+    <div class="section-label">03 · FINANCIAL MODEL</div><h2>FY27–FY29 財務模型</h2>
+    <p class="section-intro">Base 的 FY27 / FY28 營收錨定管理層約 $11.5B / $16.5B 與公開共識；FY29 為本分析推演，不是公司指引。點選情境會更新全表。</p>
+    <div class="table-wrap"><table><thead><tr><th>財年</th><th>Revenue</th><th>YoY</th><th>Gross margin</th><th>Operating margin</th><th>EPS</th><th>現價 P/E</th></tr></thead><tbody>
+      <tr data-year="FY27"><th>FY27 <span class="tag guide">指引錨</span></th><td data-field="revenue">$11.5B</td><td data-field="growth">40.1%</td><td data-field="gross-margin">58.8%</td><td data-field="operating-margin">35.2%</td><td data-field="eps">$4.05</td><td data-field="pe">44.3×</td></tr>
+      <tr data-year="FY28"><th>FY28 <span class="tag guide">指引錨</span></th><td data-field="revenue">$16.6B</td><td data-field="growth">44.3%</td><td data-field="gross-margin">57.8%</td><td data-field="operating-margin">36.5%</td><td data-field="eps">$6.18</td><td data-field="pe">29.0×</td></tr>
+      <tr data-year="FY29"><th>FY29 <span class="tag inference">情境推演</span></th><td data-field="revenue">$21.0B</td><td data-field="growth">26.5%</td><td data-field="gross-margin">57.5%</td><td data-field="operating-margin">38.0%</td><td data-field="eps">$9.00</td><td data-field="pe">19.9×</td></tr>
+    </tbody></table></div>
+    <p><span class="tag fact">已確認</span> Q1 FY27 revenue $2.418B、non-GAAP GM 58.9%、EPS $0.80；Q2 指引 revenue $2.7B ±5%、EPS $0.93 ±$0.05。<span class="tag guide">公司指引</span> FY27 約 +40% 接近 $11.5B；FY28 約 +45% 接近 $16.5B。</p>
+  </section>
+
+  <section class="panel" id="tam-capture">
+    <div class="section-label">04 · TAM CAPTURE</div><h2>$94B 是天花板地圖，不是收入預測</h2>
+    <div class="tam-grid">
+      <div class="tam-row"><div class="tam-head"><strong>Data-center semiconductor TAM</strong><b>$94.0B</b></div><div class="bar"><i style="width:100%"></i></div><div class="warn">2028E；含 Marvell 不一定能服務的市場。</div></div>
+      <div class="tam-row"><div class="tam-head"><strong>Custom accelerated devices</strong><b>$55.4B</b></div><div class="bar"><i style="width:59%"></i></div><div class="warn">Custom XPU + attach devices；TAM ≠ revenue。</div></div>
+      <div class="tam-row"><div class="tam-head"><strong>Custom XPU</strong><b>$40.8B</b></div><div class="bar"><i style="width:43%"></i></div><div class="warn">需乘可服務率、勝率、量產率與 Marvell content。</div></div>
+      <div class="tam-row"><div class="tam-head"><strong>Implied XPU attach</strong><b>$14.6B</b></div><div class="bar"><i style="width:16%"></i></div><div class="warn">$55.4B − $40.8B；不是公司給的收入目標。</div></div>
+    </div>
+    <div class="callout" style="margin-top:16px"><strong>Base 捕獲框架：</strong>先從公司 FY28 $16.5B 指引出發，再檢查 custom、switching、optics 是否在同一平台重複計算。TAM 只用來約束長期上限，不拿來直接乘市占率湊營收。</div>
+  </section>
+
+  <section class="panel" id="scenarios">
+    <div class="section-label">05 · SCENARIOS</div><h2>Bull / Base / Bear</h2>
+    <div class="scenario-controls" role="group" aria-label="選擇估值情境"><button data-scenario="bear" aria-pressed="false">Bear</button><button data-scenario="base" aria-pressed="true">Base</button><button data-scenario="bull" aria-pressed="false">Bull</button></div>
+    <div class="scenario-summary"><div><span>FY29 目標價</span><b id="scenario-target">$225</b></div><div><span>相對現價報酬</span><b id="scenario-return" class="up">+25.4%</b></div><div><span>FY29 Exit P/E</span><b id="scenario-multiple">25×</b></div></div>
+    <div class="grid case-grid">
+      <div class="card case bear"><h3>Bear · $141</h3><ul><li>FY28 custom ramp 延後或低於量產預期</li><li>FY29 EPS $6.40，成熟期 22×</li><li>下行 −21.5%；高 Beta 仍可能過度修正</li></ul></div>
+      <div class="card case"><h3>Base · $225</h3><ul><li>FY28 $16.6B、FY29 正常化至 +27%</li><li>FY29 EPS $9.00，成長股 25×</li><li>上行 +25.4%；風報比改善但不壓倒性</li></ul></div>
+      <div class="card case bull"><h3>Bull · $392</h3><ul><li>多個 custom / attach 平台同步放量</li><li>FY29 EPS $14.00，仍給 28×</li><li>上行 +118.5%；需要近乎全面兌現</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel" id="sensitivity">
+    <div class="section-label">06 · SENSITIVITY</div><h2>FY29 EPS × Exit P/E</h2><p class="section-intro">最重要的風險不是單一預估誤差，而是 EPS 不及預期時市場同步下修倍數。綠色格為 Base。</p>
+    <div class="table-wrap"><table id="sensitivity-grid" class="matrix"><thead><tr><th>P/E \ EPS</th><th>$6</th><th>$8</th><th>$9</th><th>$10</th><th>$12</th><th>$14</th></tr></thead><tbody><tr><th>20×</th><td>$120</td><td>$160</td><td>$180</td><td>$200</td><td>$240</td><td>$280</td></tr><tr><th>22×</th><td>$132</td><td>$176</td><td>$198</td><td>$220</td><td>$264</td><td>$308</td></tr><tr><th>25×</th><td>$150</td><td>$200</td><td class="active">$225</td><td>$250</td><td>$300</td><td>$350</td></tr><tr><th>28×</th><td>$168</td><td>$224</td><td>$252</td><td>$280</td><td>$336</td><td>$392</td></tr><tr><th>30×</th><td>$180</td><td>$240</td><td>$270</td><td>$300</td><td>$360</td><td>$420</td></tr></tbody></table></div>
+  </section>
+
+  <section class="panel" id="expectation-gap">
+    <div class="section-label">07 · EXPECTATION GAP</div><h2>市場已買 custom XPU；還沒買足的是 attach 與光連接的疊加</h2>
+    <div class="grid gap-grid">
+      <div><h3>哪些已被 price in？</h3><div class="priced"><div class="high">FY27 interconnect <b>高</b></div><div class="high">FY28 custom XPU <b>高</b></div><div class="medium">1.6T optics <b>中</b></div><div class="medium">51.2T switching <b>中</b></div><div class="low">Scale-up switch <b>低</b></div><div class="low">CXL / DPU attach <b>低</b></div><div class="low">NPO / CPO <b>低</b></div><div class="low">DCI modules <b>低</b></div></div></div>
+      <div><h3>預期差橋接</h3><p>FY28 約 $16.5B 指引是起點，不是「已知收入」；Bull 多出的 $3.2B 必須由 attach、switching、optics 與額外 custom ramps 共同貢獻。</p><div class="stack" aria-label="Bull 增量來源示意"><i></i><i></i><i></i></div><p><span style="color:var(--blue)">■</span> XPU/attach　<span style="color:var(--cyan)">■</span> optics/DCI　<span style="color:var(--amber)">■</span> switching/其他</p><p class="warn">重疊警告：CXL、DPU 與 custom platform revenue 可能是同一顆 XPU 的 attach content；不得將產品 TAM 全額相加。</p></div>
+    </div>
+  </section>
+
+  <section class="panel" id="cxl">
+    <div class="section-label">08 · CXL VERDICT</div><h2>CXL 不是現在的主引擎，是可能放大的 attach option</h2>
+    <div class="grid gap-grid"><div><h3>已確認</h3><p>XConn 的 PCIe/CXL switch revenue 預期於 2H FY27 開始，FY28 約 $100M。相對 $16.5B 公司級 FY28 指引，單獨只約 0.6%，不足以改變估值主軸。</p></div><div><h3>真正未定價的條件</h3><p>若 CXL 從獨立 switch 產品，升級為 hyperscaler custom XPU 的標準 attach silicon，並跨多個平台複製，才會同時提高 content per XPU、客戶切換成本與長期 TAM 捕獲。</p></div></div>
+    <div class="callout"><strong>判斷：</strong>不要為「CXL 題材」單獨加估值倍數。先追蹤 design win、每顆 XPU attach 數量、量產季度與 $100M 之外的可驗證收入，再決定是否把 option 移入 Base。</div>
+  </section>
+
+  <section class="panel" id="timeline">
+    <div class="section-label">09 · CATALYST TIMELINE</div><h2>未來 12–18 個月要看什麼</h2>
+    <div class="timeline"><div><h3>FY27 · 驗證斜率</h3><p>Q2 $2.7B 指引、interconnect >70% growth、scale-out switch >$600M、CXL switch 2H 起量。</p></div><div><h3>FY28 · 驗證平台</h3><p>公司 revenue 約 $16.5B；custom >2×；scale-out switch $1B；DCI 年化 $1B；scale-up optics >$300M。</p></div><div><h3>FY29 · 驗證持久性</h3><p>Celestial 年化目標 $1B、更多 XPU attach、成長能否維持且 operating leverage 抵銷毛利稀釋。</p></div></div>
+  </section>
+
+  <section class="panel" id="risks">
+    <div class="section-label">10 · RISKS & THESIS BROKEN</div><h2>論點失效條件要先寫，不等股價告訴你</h2>
+    <div class="grid risk-grid"><div><h3>主要風險</h3><ul class="risk-list"><li>Hyperscaler 客戶集中，設計或量產延後會造成非線性缺口。</li><li>Custom silicon 可能有較低毛利，營收成長不等於 EPS 同幅成長。</li><li>Broadcom、自研 silicon、雙供與替代架構壓縮勝率。</li><li>Celestial、XConn 整合與 NVIDIA preferred shares 帶來稀釋。</li><li>CoWoS/先進製程供給與客戶系統導入時程不完全受控。</li></ul></div><div class="card broken"><h3>Thesis Broken</h3><ul class="risk-list"><li>FY27 revenue outlook 下修至低於 $11.0B。</li><li>FY28 約 $16.5B 路徑被下修超過 10%，或 custom 未能 >2×。</li><li>Interconnect growth 連續兩季明顯低於公司全年 >70% 框架。</li><li>Non-GAAP gross margin 持續低於 56%，且 operating leverage 未補償。</li><li>已命名 custom / attach 平台延後兩季以上或失去 design slot。</li><li>併購與 preferred conversion 的稀釋超出模型、但 EPS 指引未上修。</li></ul></div></div>
+  </section>
+
+  <section class="panel" id="sources">
+    <div class="section-label">11 · PUBLIC SOURCE LEDGER</div><h2>公開來源與證據分類</h2>
+    <p class="section-intro">公開版只保留公司、監管與可公開市場資料；內部券商材料僅用於交叉驗證假設，未轉載名稱、段落、圖表或專有預估表。</p>
+    <div class="source-list">
+      <a href="https://investor.marvell.com/news-events/press-releases/detail/1023/marvell-technology-inc-reports-first-quarter-of-fiscal-year-2027-financial-results"><strong>Marvell Q1 FY27 earnings release</strong><small>2026-05-27 · actuals / Q2 guidance</small></a>
+      <a href="https://investor.marvell.com/financial-information/financial-results"><strong>Q1 FY27 results & presentation hub</strong><small>FY27/FY28 growth, segment milestones</small></a>
+      <a href="https://www.sec.gov/Archives/edgar/data/1835632/000183563226000019/mrvl-20260502.htm"><strong>Marvell Form 10-Q</strong><small>2026-05-02 quarter · cash, debt, acquisitions, dilution</small></a>
+      <a href="https://investor.marvell.com/news-events/press-releases/detail/1007/marvell-completes-acquisition-of-xconn-technologies"><strong>XConn acquisition & revenue milestones</strong><small>PCIe/CXL switch · Q3 FY27 start / FY28 $100M</small></a>
+      <a href="https://investor.marvell.com/news-events/press-releases/detail/1005/marvell-completes-acquisition-of-celestial-ai"><strong>Celestial AI completion & milestones</strong><small>Photonic Fabric · FY28/FY29 annualized run-rate targets</small></a>
+      <a href="https://investor.marvell.com/news-events/ir-calendar/detail/20250617-custom-ai-investor-event"><strong>Custom AI Investor Event</strong><small>2028 data-center and custom silicon TAM framework</small></a>
+      <a href="https://stockanalysis.com/stocks/mrvl/forecast/"><strong>Public consensus snapshot</strong><small>Observed 2026-07-15 · revenue/EPS and target range</small></a>
+      <a href="https://finance.yahoo.com/quote/MRVL/"><strong>MRVL market data</strong><small>Price cross-check · observed 2026-07-17</small></a>
+    </div>
+  </section>
+</main>
+<footer>資料截至 2026-07-17。這是情境分析與研究框架，不是個人化投資建議。財務數字採 USD；EPS 與 margins 為 non-GAAP 假設，除非另有標示。</footer>
+<noscript><div style="padding:20px;color:#fff">JavaScript 已停用；Base 結論、FY27–FY29 模型、TAM、CXL 判斷與 Thesis Broken 仍完整顯示。</div></noscript>
+<script id="valuation-model" type="application/json">
+{
+  "as_of":"2026-07-17","market":{"price":179.40,"market_cap_b":159.722,"cash_b":3.844,"debt_b":4.961,"enterprise_value_b":160.839,"recent_high":316.43},
+  "tam":{"data_center_2028_b":94.0,"custom_devices_2028_b":55.4,"custom_xpu_2028_b":40.8,"xpu_attach_2028_b":14.6},
+  "scenarios":{
+    "bear":{"label":"Bear","years":{"FY27":{"revenue_b":11.3,"gross_margin":58.5,"operating_margin":34.0,"eps":3.85},"FY28":{"revenue_b":14.8,"gross_margin":57.5,"operating_margin":34.5,"eps":5.25},"FY29":{"revenue_b":17.0,"gross_margin":57.0,"operating_margin":34.0,"eps":6.40}},"exit_pe":22,"target_price":140.8,"return_pct":-0.21516164994425857},
+    "base":{"label":"Base","years":{"FY27":{"revenue_b":11.5,"gross_margin":58.8,"operating_margin":35.2,"eps":4.05},"FY28":{"revenue_b":16.6,"gross_margin":57.8,"operating_margin":36.5,"eps":6.18},"FY29":{"revenue_b":21.0,"gross_margin":57.5,"operating_margin":38.0,"eps":9.00}},"exit_pe":25,"target_price":225.0,"return_pct":0.254180602006689},
+    "bull":{"label":"Bull","years":{"FY27":{"revenue_b":11.7,"gross_margin":59.0,"operating_margin":36.0,"eps":4.20},"FY28":{"revenue_b":19.7,"gross_margin":57.0,"operating_margin":37.0,"eps":7.60},"FY29":{"revenue_b":27.0,"gross_margin":57.0,"operating_margin":40.0,"eps":14.00}},"exit_pe":28,"target_price":392.0,"return_pct":1.1850613154960978}
+  }
+}
+</script>
+<script>
+(()=>{const model=JSON.parse(document.querySelector('#valuation-model').textContent);const money=v=>`$${Number(v).toFixed(v>=100?0:2)}`;function activateScenario(name){const s=model.scenarios[name];document.body.dataset.scenario=name;document.querySelectorAll('button[data-scenario]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scenario===name)));document.querySelector('#scenario-target').textContent=money(s.target_price);const ret=s.return_pct*100;const retEl=document.querySelector('#scenario-return');retEl.textContent=`${ret>=0?'+':''}${ret.toFixed(1)}%`;retEl.className=ret>=0?'up':'down';document.querySelector('#scenario-multiple').textContent=`${s.exit_pe}×`;let prev=8.2;for(const [year,v] of Object.entries(s.years)){const row=document.querySelector(`#financial-model tr[data-year="${year}"]`);row.querySelector('[data-field="revenue"]').textContent=`$${v.revenue_b.toFixed(1)}B`;row.querySelector('[data-field="growth"]').textContent=`${((v.revenue_b/prev-1)*100).toFixed(1)}%`;row.querySelector('[data-field="gross-margin"]').textContent=`${v.gross_margin.toFixed(1)}%`;row.querySelector('[data-field="operating-margin"]').textContent=`${v.operating_margin.toFixed(1)}%`;row.querySelector('[data-field="eps"]').textContent=money(v.eps);row.querySelector('[data-field="pe"]').textContent=`${(model.market.price/v.eps).toFixed(1)}×`;prev=v.revenue_b}}document.querySelectorAll('button[data-scenario]').forEach(b=>b.addEventListener('click',()=>activateScenario(b.dataset.scenario)));activateScenario('base')})();
+</script>
+</body></html>
