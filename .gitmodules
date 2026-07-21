@@ -1,0 +1,4 @@
+[submodule "tools/fomo-kernel"]
+	path = tools/fomo-kernel
+	url = https://github.com/sonnyshiau/fomo-kernel.git
+	branch = codex-ibkr
