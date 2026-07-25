@@ -8,6 +8,7 @@
 
 ## 精選研究（Featured Research）
 
+- **[Crusoe Energy-to-Intelligence](crusoe-ai-factory-dashboard.html)** — 從能源、AI 資料中心、GPU 系統到 Cloud，拆解 Crusoe 的垂直整合模式、護城河與重資本風險。
 - **[光模組架構 × CPO／NPO](https://sonnyshiau.github.io/fin_agent/optical-cpo-npo-guide.html)** — 從 EML、VCSEL 與訊號鏈精確區分 Pluggable、LPO、OBO、NPO、CPO，並連結 LITE／TSEM 估值。
 - **[800VDC × Kyber](https://sonnyshiau.github.io/fin_agent/800vdc-kyber-power-industry.html)** — 拆解 Kyber 電源架構、導入節奏與供應鏈價值重分配。
 - **[Vera Rubin / Rubin Ultra Rack Map](https://sonnyshiau.github.io/fin_agent/vera-rubin-rack-map.html)** — 映射 NVIDIA 下一代 rack-scale 系統、關鍵元件與平台演進。
@@ -33,6 +34,7 @@
 
 ## 已發布研究（Published Research）
 
+- [Crusoe AI Factory 研究儀表板](crusoe-ai-factory-dashboard.html) — Energy-to-Intelligence 系統路徑、商業模式、競爭定位、關鍵事實與投資風險。
 - [光模組架構、CPO／NPO 與 LITE／TSEM 研究報告](https://sonnyshiau.github.io/fin_agent/optical-cpo-npo-guide.html) — 光模組訊號鏈、五種架構、價值轉移、名詞字典與可調式估值情境。
 - [800VDC × Kyber 電源產業投資研究](https://sonnyshiau.github.io/fin_agent/800vdc-kyber-power-industry.html) — 800VDC 架構、Kyber 導入與電源供應鏈情境分析。
 - [Vera Rubin / Rubin Ultra Rack 架構圖](https://sonnyshiau.github.io/fin_agent/vera-rubin-rack-map.html) — NVIDIA 下一代 AI rack-scale 架構與支援系統地圖。
