@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Crusoe AI Factory 研究儀表板：從能源、資料中心與 GPU Cloud 理解其商業模式、護城河與風險。">
+  <title>Crusoe｜Energy-to-Intelligence 研究儀表板</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      color-scheme: dark;
+      --canvas: #0b1116;
+      --surface: #111a21;
+      --surface-raised: #17232b;
+      --ink: #e8f0f2;
+      --muted: #8fa2aa;
+      --line: #293942;
+      --line-strong: #435965;
+      --energy: #f2a541;
+      --compute: #58b7c4;
+      --output: #7dcb9d;
+      --risk: #e2746b;
+      --max: 1440px;
+      --rail: 230px;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    p, h1, h2, h3, dl, dd, ol, ul { margin-top: 0; }
+    p:last-child, dd:last-child { margin-bottom: 0; }
+    strong, b { font-weight: 760; }
+    .mono, .kicker, .section-tag, .evidence-label, .node-index, .rail-code, .metric-value {
+      font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 10px;
+      left: 10px;
+      transform: translateY(-160%);
+      padding: 9px 13px;
+      border: 1px solid var(--compute);
+      background: var(--surface-raised);
+      text-decoration: none;
+    }
+    .skip-link:focus { transform: translateY(0); }
+    :focus-visible {
+      outline: 3px solid var(--compute);
+      outline-offset: 4px;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: #0d151a;
+    }
+    .topbar-inner {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+    .topbar strong { color: var(--ink); }
+    .topbar-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--output);
+      box-shadow: 0 0 0 3px rgba(125, 203, 157, .12);
+    }
+
+    .masthead {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(38px, 6vw, 76px) 0 30px;
+      border-bottom: 1px solid var(--line);
+    }
+    .masthead::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .22;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 82%);
+    }
+    .masthead-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(300px, .72fr);
+      gap: clamp(36px, 7vw, 96px);
+      align-items: end;
+    }
+    .kicker, .section-tag {
+      margin-bottom: 12px;
+      color: var(--compute);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 850px;
+      margin-bottom: 20px;
+      font-family: "Arial Narrow", "Roboto Condensed", "Segoe UI", sans-serif;
+      font-size: clamp(42px, 6.6vw, 92px);
+      font-weight: 760;
+      line-height: .98;
+      letter-spacing: -.05em;
+    }
+    .headline-accent { color: var(--energy); }
+    .lede {
+      max-width: 790px;
+      margin-bottom: 0;
+      color: #bdcbd0;
+      font-size: clamp(16px, 1.6vw, 21px);
+      line-height: 1.6;
+    }
+    .identity-ledger {
+      margin: 0;
+      border-top: 1px solid var(--line-strong);
+    }
+    .identity-ledger div {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .identity-ledger dt {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .identity-ledger dd {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .thesis-bar {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      margin-top: 36px;
+      padding-top: 17px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .thesis-bar .label {
+      color: var(--energy);
+      font-family: "Cascadia Mono", Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+    .thesis-bar p { margin: 0; }
+    .thesis-bar .confidence {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--rail);
+      gap: 40px;
+      align-items: start;
+    }
+    main { min-width: 0; }
+    section {
+      scroll-margin-top: 74px;
+      padding-block: clamp(50px, 7vw, 88px);
+      border-top: 1px solid var(--line);
+    }
+    main section:first-child { border-top: 0; }
+    .context-rail {
+      position: sticky;
+      top: 18px;
+      margin-top: 52px;
+      padding-left: 22px;
+      border-left: 1px solid var(--line);
+    }
+    .rail-title {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .rail-nav { display: grid; }
+    .rail-nav a {
+      position: relative;
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 8px;
+      align-items: center;
+      min-height: 48px;
+      padding: 7px 4px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 180ms ease, padding-left 180ms ease;
+    }
+    .rail-nav a::before {
+      content: "";
+      position: absolute;
+      left: -23px;
+      width: 2px;
+      height: 0;
+      background: var(--compute);
+      transition: height 180ms ease;
+    }
+    .rail-nav a:hover { color: var(--ink); }
+    .rail-nav a.is-active {
+      padding-left: 5px;
+      color: var(--ink);
+    }
+    .rail-nav a.is-active::before { height: 27px; }
+    .rail-nav a[data-layer="energy"].is-active::before { background: var(--energy); }
+    .rail-nav a[data-layer="output"].is-active::before { background: var(--output); }
+    .rail-code { font-size: 10px; color: var(--line-strong); }
+    .rail-nav a.is-active .rail-code { color: currentColor; }
+    .rail-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(230px, .55fr);
+      gap: 38px;
+      margin-bottom: 32px;
+      align-items: end;
+    }
+    h2 {
+      margin-bottom: 0;
+      font-family: "Arial Narrow", "Roboto Condensed", "Segoe UI", sans-serif;
+      font-size: clamp(29px, 4vw, 50px);
+      line-height: 1.08;
+      letter-spacing: -.035em;
+    }
+    .section-summary {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    h3 {
+      margin-bottom: 10px;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .system-frame {
+      padding: clamp(18px, 2.6vw, 32px);
+      border: 1px solid var(--line-strong);
+      background: #0e171d;
+    }
+    .frame-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 26px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    .frame-header span:last-child { color: var(--output); }
+    .pipeline {
+      position: relative;
+      z-index: 0;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .pipeline::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 35px;
+      right: 7%;
+      left: 7%;
+      height: 2px;
+      background: var(--compute);
+      transform-origin: left;
+      animation: route-draw 1050ms cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .pipeline-node {
+      min-width: 0;
+      padding: 15px 13px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      opacity: .74;
+      transition: opacity 240ms ease, border-color 240ms ease, background-color 240ms ease;
+    }
+    .pipeline-node::before {
+      content: "";
+      display: block;
+      width: 12px;
+      height: 12px;
+      margin: -22px auto 17px;
+      border: 4px solid var(--canvas);
+      border-radius: 50%;
+      background: var(--compute);
+      box-shadow: 0 0 0 1px var(--line-strong);
+    }
+    .pipeline-node[data-layer="energy"]::before { background: var(--energy); }
+    .pipeline-node[data-layer="output"]::before { background: var(--output); }
+    .pipeline-node.is-active {
+      border-color: var(--compute);
+      background: var(--surface-raised);
+      opacity: 1;
+    }
+    .pipeline-node[data-layer="energy"].is-active { border-color: var(--energy); }
+    .pipeline-node[data-layer="output"].is-active { border-color: var(--output); }
+    .node-index {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .pipeline-node strong {
+      display: block;
+      min-height: 48px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .pipeline-node small, .pipeline-node em {
+      display: block;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .pipeline-node small {
+      min-height: 66px;
+      margin-top: 10px;
+      color: var(--muted);
+    }
+    .pipeline-node em {
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: #b9c7cb;
+      font-style: normal;
+    }
+
+    .architecture-note {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 25px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .architecture-note b { color: var(--energy); font-size: 12px; }
+    .architecture-note p { color: var(--muted); font-size: 13px; }
+
+    .comparison-band {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 22px;
+      border: 1px solid var(--line);
+    }
+    .comparison-band article { padding: 19px; }
+    .comparison-band article + article { border-left: 1px solid var(--line); }
+    .comparison-band .positive h3 { color: var(--output); }
+    .comparison-band .negative h3 { color: var(--risk); }
+    .comparison-band p { color: var(--muted); font-size: 13px; }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--line-strong);
+      list-style: none;
+    }
+    .timeline li {
+      position: relative;
+      padding: 24px 20px 0 0;
+    }
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 0;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--canvas);
+      box-shadow: 0 0 0 1px var(--compute);
+    }
+    .timeline time {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--compute);
+      font-family: "Cascadia Mono", Consolas, monospace;
+      font-size: 11px;
+    }
+    .timeline p { color: var(--muted); font-size: 12px; }
+    .timeline strong { display: block; margin-bottom: 8px; font-size: 14px; }
+
+    .pivot-callout {
+      display: grid;
+      grid-template-columns: minmax(160px, .4fr) 1fr;
+      gap: 28px;
+      margin-top: 34px;
+      padding: 24px;
+      border-left: 3px solid var(--energy);
+      background: var(--surface);
+    }
+    .pivot-callout b {
+      color: var(--energy);
+      font-family: "Arial Narrow", "Roboto Condensed", sans-serif;
+      font-size: 25px;
+      line-height: 1.1;
+    }
+    .pivot-callout p { color: #c2d0d4; font-size: 14px; }
+
+    .business-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .business-model {
+      padding: 26px 28px 28px 0;
+    }
+    .business-model + .business-model {
+      padding-right: 0;
+      padding-left: 28px;
+      border-left: 1px solid var(--line);
+    }
+    .model-code {
+      color: var(--compute);
+      font-size: 10px;
+      letter-spacing: .1em;
+    }
+    .business-model h3 { margin: 12px 0 8px; font-size: 24px; }
+    .business-model > p { min-height: 69px; color: var(--muted); font-size: 13px; }
+    .business-model dl { margin: 22px 0 0; }
+    .business-model dl div {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 14px;
+      padding: 9px 0;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .business-model dt { color: var(--muted); }
+    .business-model dd { margin: 0; }
+
+    .economics-strip {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 28px;
+      padding: 17px 19px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .economics-strip b { color: var(--ink); font-family: "Cascadia Mono", Consolas, monospace; }
+    .economics-strip .operator { color: var(--energy); }
+
+    .moat-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(310px, .72fr);
+      gap: 28px;
+    }
+    .moat-stack { border-top: 1px solid var(--line-strong); }
+    .moat-row {
+      display: grid;
+      grid-template-columns: 42px 150px 1fr;
+      gap: 18px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+    .moat-row .index { color: var(--compute); font-family: "Cascadia Mono", Consolas, monospace; font-size: 10px; }
+    .moat-row h3 { margin: 0; font-size: 14px; }
+    .moat-row p { margin: 0; color: var(--muted); font-size: 12px; }
+    .position-map {
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .position-map h3 { margin-bottom: 18px; }
+    .axis-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+    .position-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      min-height: 215px;
+      border: 1px solid var(--line);
+    }
+    .position-track > div {
+      position: relative;
+      padding: 12px;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .position-track > div:last-child { border-right: 0; }
+    .position-track strong {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      padding: 8px;
+      border: 1px solid var(--line-strong);
+      background: var(--surface-raised);
+      color: var(--ink);
+      font-size: 11px;
+      text-align: center;
+    }
+    .position-track .energy-player { bottom: 18px; }
+    .position-track .crusoe {
+      top: 72px;
+      left: -12px;
+      right: -12px;
+      z-index: 1;
+      border-color: var(--energy);
+      color: var(--energy);
+    }
+    .position-track .cloud-player { top: 18px; }
+    .position-caption { margin-top: 15px; color: var(--muted); font-size: 11px; }
+
+    .fact-ledger {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .fact-ledger th, .fact-ledger td {
+      padding: 15px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .fact-ledger th {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .metric-value {
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .evidence-label {
+      display: inline-flex;
+      padding: 3px 7px;
+      border: 1px solid var(--line-strong);
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .evidence-label.inference { border-color: #6a5d45; color: var(--energy); }
+    .fact-ledger a {
+      color: var(--compute);
+      text-underline-offset: 3px;
+    }
+    .data-gap {
+      margin-top: 28px;
+      padding: 20px 22px;
+      border: 1px solid var(--risk);
+      background: rgba(226, 116, 107, .045);
+    }
+    .data-gap h3 { color: var(--risk); }
+    .gap-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .gap-list li {
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: "Cascadia Mono", Consolas, monospace;
+      font-size: 10px;
+    }
+
+    .investment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .case-panel { padding: 24px 26px 26px 0; }
+    .case-panel + .case-panel {
+      padding-right: 0;
+      padding-left: 26px;
+      border-left: 1px solid var(--line);
+    }
+    .case-panel.up h3 { color: var(--output); }
+    .case-panel.down h3 { color: var(--risk); }
+    .case-panel ul { margin: 16px 0 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .case-panel li + li { margin-top: 8px; }
+    .expectation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .expectation-grid article {
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .expectation-grid p { color: var(--muted); font-size: 13px; }
+    .final-judgment {
+      position: relative;
+      margin-top: 28px;
+      padding: clamp(24px, 4vw, 42px);
+      border: 1px solid var(--compute);
+      background: #0e1a20;
+    }
+    .final-judgment::before {
+      content: "FINAL VIEW";
+      display: block;
+      margin-bottom: 13px;
+      color: var(--compute);
+      font-family: "Cascadia Mono", Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+    .final-judgment strong {
+      display: block;
+      max-width: 850px;
+      font-family: "Arial Narrow", "Roboto Condensed", sans-serif;
+      font-size: clamp(24px, 3.8vw, 43px);
+      line-height: 1.25;
+      letter-spacing: -.025em;
+    }
+    .final-judgment p {
+      max-width: 880px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      padding: 28px 0 38px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    footer a { color: var(--compute); text-underline-offset: 3px; }
+
+    .js .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .js .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+    @keyframes route-draw {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    @media (max-width: 1080px) {
+      :root { --rail: 190px; }
+      .shell { width: min(var(--max), calc(100% - 36px)); }
+      .content-layout { gap: 28px; }
+      .pipeline-node { padding-inline: 9px; }
+      .pipeline-node strong { font-size: 12px; }
+      .moat-layout { grid-template-columns: 1fr; }
+      .position-map { max-width: 620px; }
+    }
+
+    @media (max-width: 900px) {
+      .shell { width: min(100% - 28px, 760px); }
+      .masthead-grid { grid-template-columns: 1fr; gap: 34px; }
+      .identity-ledger { max-width: 520px; }
+      .content-layout { display: flex; flex-direction: column; gap: 0; }
+      main { order: 2; width: 100%; }
+      .context-rail {
+        position: sticky;
+        z-index: 30;
+        top: 0;
+        order: 1;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: rgba(11, 17, 22, .96);
+      }
+      .rail-title, .rail-note { display: none; }
+      .rail-nav {
+        display: flex;
+        overflow-x: auto;
+        border-bottom: 1px solid var(--line);
+        scrollbar-width: none;
+      }
+      .rail-nav::-webkit-scrollbar { display: none; }
+      .rail-nav a {
+        flex: 0 0 auto;
+        grid-template-columns: auto 1fr;
+        min-height: 50px;
+        padding: 8px 12px;
+        border: 0;
+      }
+      .rail-nav a::before {
+        right: 10px;
+        bottom: 0;
+        left: 10px;
+        width: auto;
+        height: 2px;
+        transform: scaleX(0);
+      }
+      .rail-nav a.is-active::before { height: 2px; transform: scaleX(1); }
+      .rail-nav a.is-active { padding-left: 12px; }
+      section { scroll-margin-top: 52px; }
+      .section-head { grid-template-columns: 1fr; gap: 15px; }
+      .pipeline {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding-left: 28px;
+      }
+      .pipeline::before {
+        top: 2%;
+        bottom: 2%;
+        left: 6px;
+        width: 2px;
+        height: auto;
+        transform-origin: top;
+        animation-name: route-draw-vertical;
+      }
+      .pipeline-node {
+        display: grid;
+        grid-template-columns: 34px minmax(110px, .55fr) 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 14px;
+      }
+      .pipeline-node::before {
+        position: absolute;
+        left: 0;
+        width: 12px;
+        height: 12px;
+        margin: 10px 0 0 -28px;
+      }
+      .pipeline-node .node-index { grid-row: 1 / span 2; }
+      .pipeline-node strong, .pipeline-node small { min-height: 0; margin: 0; }
+      .pipeline-node em { grid-column: 2 / -1; }
+      .architecture-note { grid-template-columns: 1fr; gap: 7px; }
+      .timeline { grid-template-columns: 1fr 1fr; row-gap: 26px; }
+      .business-model > p { min-height: 0; }
+      .economics-strip { grid-template-columns: auto 1fr; }
+      .economics-strip .operator { display: none; }
+    }
+
+    @keyframes route-draw-vertical {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-inner { min-height: 38px; font-size: 9px; }
+      .topbar-inner > span:last-child { display: none; }
+      .masthead { padding-top: 34px; }
+      h1 { font-size: clamp(39px, 13vw, 61px); }
+      .thesis-bar { grid-template-columns: 1fr; gap: 7px; }
+      .thesis-bar .confidence { white-space: normal; }
+      .frame-header { display: grid; gap: 5px; }
+      .pipeline-node {
+        grid-template-columns: 30px 1fr;
+      }
+      .pipeline-node small, .pipeline-node em { grid-column: 2; }
+      .comparison-band, .business-grid, .investment-grid, .expectation-grid {
+        grid-template-columns: 1fr;
+      }
+      .comparison-band article + article,
+      .business-model + .business-model,
+      .case-panel + .case-panel {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+      .business-model, .business-model + .business-model,
+      .case-panel, .case-panel + .case-panel {
+        padding: 22px 0;
+      }
+      .timeline { grid-template-columns: 1fr; }
+      .pivot-callout { grid-template-columns: 1fr; gap: 12px; }
+      .moat-row { grid-template-columns: 32px 1fr; }
+      .moat-row p { grid-column: 2; }
+      .fact-ledger thead { display: none; }
+      .fact-ledger, .fact-ledger tbody, .fact-ledger tr, .fact-ledger td { display: block; }
+      .fact-ledger tr { padding: 16px 0; border-bottom: 1px solid var(--line); }
+      .fact-ledger td { padding: 4px 0; border: 0; }
+      .footer-grid { display: grid; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+
+  <div class="topbar">
+    <div class="shell topbar-inner">
+      <span><strong>CRUSOE / COMPANY SYSTEM MAP</strong></span>
+      <span class="topbar-state"><i class="status-dot" aria-hidden="true"></i>RESEARCH SNAPSHOT · 2026.07</span>
+      <span>ENERGY → INTELLIGENCE</span>
+    </div>
+  </div>
+
+  <header class="masthead" id="overview">
+    <div class="shell masthead-grid">
+      <div>
+        <p class="kicker">AI INFRASTRUCTURE / PRIVATE COMPANY</p>
+        <h1>Crusoe 把<span class="headline-accent">電力</span><br>變成可用的 AI 產能</h1>
+        <p class="lede">它不是晶片公司，而是把能源、AI 資料中心、GPU 系統與 Cloud 軟體垂直整合的 AI Factory 業者。</p>
+      </div>
+      <dl class="identity-ledger" aria-label="Crusoe 公司分類">
+        <div><dt>公司本質</dt><dd>能源驅動的 AI 基礎設施</dd></div>
+        <div><dt>主要產品</dt><dd>資料中心容量＋GPU Cloud</dd></div>
+        <div><dt>不是什麼</dt><dd>不是 NVIDIA 的晶片競爭者</dd></div>
+        <div><dt>公司狀態</dt><dd>未上市私人公司</dd></div>
+      </dl>
+    </div>
+    <div class="shell thesis-bar">
+      <span class="label">ONE-LINE VIEW</span>
+      <p>Crusoe 最接近「具能源基因的 CoreWeave＋AI 資料中心開發商」；它賣的是已通電、可立即使用的 AI 產能。</p>
+      <span class="confidence">判斷信心：中</span>
+    </div>
+  </header>
+
+  <div class="shell content-layout">
+    <main id="main">
+      <section id="system-map" data-observe="energy">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-tag">SYSTEM ARCHITECTURE</p>
+            <h2>從一瓦電，到一個完成的 AI 任務</h2>
+          </div>
+          <p class="section-summary">Crusoe 控制的環節愈多，愈能縮短部署時間並改善每瓦電的 Token 產出；但同時也承擔更高資本與執行風險。</p>
+        </div>
+
+        <div class="system-frame reveal">
+          <div class="frame-header">
+            <span>INPUT / PHYSICAL RESOURCE</span>
+            <span>OUTPUT / COMPLETED WORK</span>
+          </div>
+          <ol class="pipeline" aria-label="Energy-to-Intelligence 系統路徑">
+            <li class="pipeline-node" data-layer="energy">
+              <span class="node-index">01</span>
+              <strong>能源</strong>
+              <small>天然氣、再生能源、儲能與電網資源</small>
+              <em>瓶頸：可取得且可快速上線的 MW</em>
+            </li>
+            <li class="pipeline-node" data-layer="facility">
+              <span class="node-index">02</span>
+              <strong>AI 資料中心</strong>
+              <small>土地、變電、配電、液冷與模組化施工</small>
+              <em>瓶頸：許可、工期、功率密度</em>
+            </li>
+            <li class="pipeline-node" data-layer="compute">
+              <span class="node-index">03</span>
+              <strong>GPU / HBM / Network</strong>
+              <small>NVIDIA／AMD 加速器與高速互連</small>
+              <em>瓶頸：供應、網路與記憶體效率</em>
+            </li>
+            <li class="pipeline-node" data-layer="cloud">
+              <span class="node-index">04</span>
+              <strong>Crusoe Cloud</strong>
+              <small>訓練、Managed Inference 與資源調度</small>
+              <em>瓶頸：利用率、軟體與客戶長約</em>
+            </li>
+            <li class="pipeline-node" data-layer="output">
+              <span class="node-index">05</span>
+              <strong>有效 Token</strong>
+              <small>在延遲與成本目標內完成的 AI 工作</small>
+              <em>價值：每瓦電完成更多任務</em>
+            </li>
+          </ol>
+          <div class="architecture-note">
+            <b>核心供應鏈位置</b>
+            <p>Crusoe 不生產 GPU，而是把能源、資料中心、伺服器與軟體組成可營運的 AI Factory。它的稀缺性主要來自「energized capacity」與建設速度。</p>
+          </div>
+        </div>
+
+        <div class="comparison-band reveal">
+          <article class="positive">
+            <h3>Crusoe 是什麼</h3>
+            <p>能源取得者、AI 資料中心開發商、GPU 叢集營運商與 Cloud 平台供應者的組合。</p>
+          </article>
+          <article class="negative">
+            <h3>Crusoe 不是什麼</h3>
+            <p>沒有自有 AI 加速器、HBM 或網路晶片；它仍依賴 NVIDIA、AMD、Supermicro 與整體供應鏈。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="transformation" data-observe="facility">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-tag">COMPANY TRANSFORMATION</p>
+            <h2>它不是突然變成 AI 公司</h2>
+          </div>
+          <p class="section-summary">Crusoe 的能力沿著同一條主線演進：找到便宜或受限的能源，把它轉成高密度運算，再把運算升級成雲端服務。</p>
+        </div>
+
+        <ol class="timeline reveal" aria-label="Crusoe 轉型時間軸">
+          <li>
+            <time>2018 →</time>
+            <strong>油田廢氣再利用</strong>
+            <p>以 Digital Flare Mitigation 將原本燃燒掉的伴生天然氣轉成電力。</p>
+          </li>
+          <li>
+            <time>EARLY MODEL</time>
+            <strong>比特幣挖礦</strong>
+            <p>將模組化資料中心搬到能源所在地；證明「移動資料比移動天然氣容易」。</p>
+          </li>
+          <li>
+            <time>2022–2024</time>
+            <strong>Crusoe Cloud</strong>
+            <p>把高密度運算能力轉向 AI 訓練、推論與 GPU Cloud。</p>
+          </li>
+          <li>
+            <time>2025 →</time>
+            <strong>Gigawatt AI Factory</strong>
+            <p>出售比特幣挖礦業務，聚焦 Abilene 等大型 AI 資料中心與 Cloud 平台。</p>
+          </li>
+        </ol>
+
+        <div class="pivot-callout reveal">
+          <b>真正沒有改變的，是能源能力。</b>
+          <p>從挖礦到 AI 的表面產品不同，但底層能力一直是取得電力、部署模組化運算並維持高負載。這也是 Crusoe 相對純 GPU 租賃商最具辨識度的地方。</p>
+        </div>
+      </section>
+
+      <section id="business-model" data-observe="cloud">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-tag">REVENUE ENGINES</p>
+            <h2>兩套商業模式，共用同一個電力底座</h2>
+          </div>
+          <p class="section-summary">資料中心開發偏向長期基礎設施收益；Cloud 則承擔 GPU 折舊與利用率風險，換取更高軟體與服務價值。</p>
+        </div>
+
+        <div class="business-grid reveal">
+          <article class="business-model">
+            <span class="model-code">MODEL / 01</span>
+            <h3>AI 資料中心開發</h3>
+            <p>取得土地與電力，完成變電、液冷、機房和系統部署，再以長約或合資架構交付大型客戶。</p>
+            <dl>
+              <div><dt>主要收入</dt><dd>長期租約、開發與營運收益</dd></div>
+              <div><dt>關鍵能力</dt><dd>融資、工期、許可與電力取得</dd></div>
+              <div><dt>主要風險</dt><dd>Capex、施工延誤與單一專案集中</dd></div>
+              <div><dt>類比</dt><dd>AI 專用資料中心開發商</dd></div>
+            </dl>
+          </article>
+          <article class="business-model">
+            <span class="model-code">MODEL / 02</span>
+            <h3>Crusoe Cloud</h3>
+            <p>直接提供 NVIDIA／AMD GPU、訓練、Managed Inference、Fine-tuning 與叢集管理。</p>
+            <dl>
+              <div><dt>主要收入</dt><dd>長約 GPU 容量與按使用量計費</dd></div>
+              <div><dt>關鍵能力</dt><dd>利用率、調度、軟體與服務品質</dd></div>
+              <div><dt>主要風險</dt><dd>GPU 折舊、租金下降與客戶集中</dd></div>
+              <div><dt>類比</dt><dd>CoreWeave、Nebius、Lambda</dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <div class="economics-strip reveal" aria-label="Crusoe 經濟模型">
+          <b>低成本電力</b><span class="operator">＋</span>
+          <b>快速上線容量</b><span class="operator">＋</span>
+          <b>高 GPU 利用率</b><span>＝ 更低的單位 AI 產出成本</span>
+        </div>
+      </section>
+
+      <section id="moat" data-observe="compute">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-tag">MOAT / POSITIONING</p>
+            <h2>護城河在執行，不在晶片 IP</h2>
+          </div>
+          <p class="section-summary">Crusoe 的優勢若成立，會表現在「更早取得電力、更快交付機房、更有效部署 GPU」，而不是晶片效能領先。</p>
+        </div>
+
+        <div class="moat-layout">
+          <div class="moat-stack reveal">
+            <article class="moat-row">
+              <span class="index">01</span>
+              <h3>電力取得能力</h3>
+              <p>提早鎖定天然氣、再生能源、儲能或其他可擴展電源，降低等待電網併網的時間。</p>
+            </article>
+            <article class="moat-row">
+              <span class="index">02</span>
+              <h3>建設速度</h3>
+              <p>把資料中心、供電設備與預組裝 GPU Rack 平行推進，縮短 time-to-energization。</p>
+            </article>
+            <article class="moat-row">
+              <span class="index">03</span>
+              <h3>垂直整合</h3>
+              <p>減少能源商、建商、機房業者與 Cloud 平台之間的協調摩擦，但提高自身執行複雜度。</p>
+            </article>
+            <article class="moat-row">
+              <span class="index">04</span>
+              <h3>融資與長約</h3>
+              <p>大型客戶租約支撐專案融資；融資能力反過來決定下一批資料中心與 GPU 採購速度。</p>
+            </article>
+          </div>
+
+          <aside class="position-map reveal" aria-label="Crusoe 競爭定位圖">
+            <h3>跨層競爭位置</h3>
+            <div class="axis-labels"><span>PHYSICAL</span><span>SOFTWARE</span></div>
+            <div class="position-track">
+              <div>
+                能源／機房
+                <strong class="energy-player">能源商<br>資料中心商</strong>
+              </div>
+              <div>
+                垂直整合
+                <strong class="crusoe">CRUSOE<br>ENERGY → CLOUD</strong>
+              </div>
+              <div>
+                Cloud／平台
+                <strong class="cloud-player">CoreWeave<br>Nebius / Lambda</strong>
+              </div>
+            </div>
+            <p class="position-caption">Crusoe 橫跨更多環節，但 NVIDIA 仍掌握 GPU、網路與軟體生態系的核心定價權。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="facts" data-observe="facility">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-tag">FACT LEDGER</p>
+            <h2>關鍵數字很大，但先看證據層級</h2>
+          </div>
+          <p class="section-summary">以下多數是公司公告或專案規劃，不應直接等同已實現收入、獲利或自由現金流。</p>
+        </div>
+
+        <div class="reveal">
+          <table class="fact-ledger">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>公開資訊</th>
+                <th>證據類型</th>
+                <th>怎麼解讀</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Abilene AI 園區</td>
+                <td><span class="metric-value">1.2 GW</span><br>規劃總投資約 US$15B</td>
+                <td><span class="evidence-label">公司公告</span></td>
+                <td>證明可參與超大型專案；不代表所有容量已上線或由 Crusoe 自有資本承擔。</td>
+              </tr>
+              <tr>
+                <td>Series E</td>
+                <td><span class="metric-value">US$1.375B</span><br>估值超過 US$10B</td>
+                <td><span class="evidence-label">公司公告</span></td>
+                <td>融資能力顯著提升，但私人市場估值不等於公開市場可驗證的現金流價值。</td>
+              </tr>
+              <tr>
+                <td>能源 Pipeline</td>
+                <td><span class="metric-value">&gt;45 GW</span></td>
+                <td><span class="evidence-label">公司公告</span></td>
+                <td>Pipeline 是開發機會集合，不是已建成或已簽約容量。</td>
+              </tr>
+              <tr>
+                <td>Cloud Bookings</td>
+                <td><span class="metric-value">5×</span><br>2025 前三季年增</td>
+                <td><span class="evidence-label">公司公告</span></td>
+                <td>顯示需求動能，但缺少基期、收入認列、毛利率與取消條款。</td>
+              </tr>
+              <tr>
+                <td>公司定位</td>
+                <td>能源型 CoreWeave＋資料中心開發商</td>
+                <td><span class="evidence-label inference">分析推論</span></td>
+                <td>用來理解商業模式，不是公司正式分類，也不代表兩者財務結構相同。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <aside class="data-gap reveal">
+          <h3>資料缺口｜目前無法確認</h3>
+          <p>Crusoe 是私人公司，公開資料不足以建立完整獲利與估值模型。下列欄位不能用融資新聞替代：</p>
+          <ul class="gap-list">
+            <li>Revenue</li>
+            <li>Gross margin</li>
+            <li>GPU utilization</li>
+            <li>Customer concentration</li>
+            <li>Project-level IRR</li>
+            <li>Normalized FCF</li>
+            <li>Cost per token</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section id="investment-view" data-observe="output">
+        <div class="section-head reveal">
+          <div>
+            <p class="section-tag">INVESTMENT INTERPRETATION</p>
+            <h2>最大的機會，也是最大的風險：重資本</h2>
+          </div>
+          <p class="section-summary">當 AI 容量供不應求，土地、電力與交付速度會形成稀缺性；一旦租金或需求反轉，固定成本與折舊同樣會放大下行。</p>
+        </div>
+
+        <div class="investment-grid reveal">
+          <article class="case-panel up">
+            <h3>最大上行來源</h3>
+            <ul>
+              <li>AI 訓練與 Agentic Inference 需求持續快於容量建設。</li>
+              <li>電網與供電設備成為更長期瓶頸，使已通電容量取得溢價。</li>
+              <li>大型客戶長約提高融資能力，形成「合約 → 資本 → 新容量」飛輪。</li>
+              <li>Cloud 軟體與推論最佳化提高每座資料中心的單位產出。</li>
+            </ul>
+          </article>
+          <article class="case-panel down">
+            <h3>最大下行來源</h3>
+            <ul>
+              <li>AI Cloud 租金下滑快於 GPU 折舊與融資成本下降。</li>
+              <li>大型專案延誤、超支或客戶取消，造成資本長時間閒置。</li>
+              <li>客戶集中，談判權落在 Oracle、OpenAI 或其他大型租戶。</li>
+              <li>超大規模雲端與其他 neocloud 同時擴產，energized capacity 稀缺性消退。</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="expectation-grid reveal">
+          <article>
+            <h3>市場可能低估</h3>
+            <p>AI 的限制正從「有沒有 GPU」擴大為「能否在需要的時間與地點提供通電、液冷且可營運的整座系統」。Crusoe 的能源基因正好對準這個瓶頸。</p>
+          </article>
+          <article>
+            <h3>市場已經定價</h3>
+            <p>Crusoe 超過 US$10B 的私人估值已包含 AI Factory 高成長敘事。缺少收入、毛利率與 FCF 資料時，不能假設規模等於良好股東報酬。</p>
+          </article>
+        </div>
+
+        <div class="final-judgment reveal">
+          <strong>Crusoe 不是下一個 NVIDIA；它是把電力、土地、液冷、GPU 與軟體組合成「可立即使用 AI 產能」的基礎設施執行者。</strong>
+          <p>技術方向信心：高｜需求放大量信心：中｜公司護城河信心：中低。若未來要進一步判斷投資價值，最需要的是客戶集中、GPU 利用率、專案報酬率與正常化自由現金流。</p>
+        </div>
+      </section>
+    </main>
+
+    <aside class="context-rail" aria-label="垂直整合層級">
+      <p class="rail-title">Vertical stack</p>
+      <nav class="rail-nav" aria-label="Energy-to-Intelligence 導覽">
+        <a href="#system-map" data-layer="energy"><span class="rail-code">01</span><span>能源</span></a>
+        <a href="#transformation" data-layer="facility"><span class="rail-code">02</span><span>資料中心</span></a>
+        <a href="#moat" data-layer="compute"><span class="rail-code">03</span><span>運算系統</span></a>
+        <a href="#business-model" data-layer="cloud"><span class="rail-code">04</span><span>Cloud</span></a>
+        <a href="#investment-view" data-layer="output"><span class="rail-code">05</span><span>有效產出</span></a>
+      </nav>
+      <p class="rail-note">閱讀位置會同步到 Crusoe 控制的供應鏈層級。顏色只輔助狀態，所有資訊皆有文字標示。</p>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="shell footer-grid">
+      <span>研究快照｜公司公告與分析推論已分開標記｜非投資建議</span>
+      <span>主要來源：
+        <a href="https://www.crusoe.ai/resources/newsroom/crusoe-announces-series-e-funding">Crusoe Series E</a> ·
+        <a href="https://www.crusoe.ai/resources/newsroom/crusoe-announces-flagship-abilene-data-center-is-live">Abilene Campus</a> ·
+        <a href="https://www.crusoe.ai/resources/blog/tokenomics-in-the-age-of-agentic-inference">Tokenomics</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    document.documentElement.classList.add('js');
+
+    const railLinks = [...document.querySelectorAll('.rail-nav [data-layer]')];
+    const observedSections = [...document.querySelectorAll('[data-observe]')];
+    const pipelineNodes = [...document.querySelectorAll('.pipeline-node')];
+    const revealItems = [...document.querySelectorAll('.reveal')];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setActiveLayer(layer) {
+      railLinks.forEach((link) => {
+        const active = link.dataset.layer === layer;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      pipelineNodes.forEach((node) => {
+        node.classList.toggle('is-active', node.dataset.layer === layer);
+      });
+      document.documentElement.dataset.activeLayer = layer;
+    }
+
+    if ('IntersectionObserver' in window) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveLayer(visible.target.dataset.observe);
+      }, { rootMargin: '-20% 0px -55%', threshold: [0.15, 0.35, 0.6] });
+
+      observedSections.forEach((section) => sectionObserver.observe(section));
+    }
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+    } else {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -8%', threshold: 0.08 });
+      revealItems.forEach((item) => revealObserver.observe(item));
+    }
+
+    setActiveLayer('energy');
+  </script>
+</body>
+</html>
