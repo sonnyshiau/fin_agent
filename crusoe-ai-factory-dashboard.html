@@ -98,7 +98,7 @@
     .masthead {
       position: relative;
       overflow: hidden;
-      padding: clamp(38px, 6vw, 76px) 0 30px;
+      padding: clamp(34px, 4.5vw, 58px) 0 24px;
       border-bottom: 1px solid var(--line);
     }
     .masthead::after {
@@ -133,12 +133,13 @@
       max-width: 850px;
       margin-bottom: 20px;
       font-family: "Arial Narrow", "Roboto Condensed", "Segoe UI", sans-serif;
-      font-size: clamp(42px, 6.6vw, 92px);
+      font-size: clamp(42px, 6vw, 82px);
       font-weight: 760;
       line-height: .98;
       letter-spacing: -.05em;
     }
     .headline-accent { color: var(--energy); }
+    .keep { white-space: nowrap; }
     .lede {
       max-width: 790px;
       margin-bottom: 0;
@@ -174,7 +175,7 @@
       grid-template-columns: auto minmax(0, 1fr) auto;
       gap: 16px;
       align-items: center;
-      margin-top: 36px;
+      margin-top: 27px;
       padding-top: 17px;
       border-top: 1px solid var(--line);
       font-size: 13px;
@@ -200,7 +201,7 @@
     main { min-width: 0; }
     section {
       scroll-margin-top: 74px;
-      padding-block: clamp(50px, 7vw, 88px);
+      padding-block: clamp(46px, 5vw, 64px);
       border-top: 1px solid var(--line);
     }
     main section:first-child { border-top: 0; }
@@ -872,7 +873,7 @@
     <div class="shell masthead-grid">
       <div>
         <p class="kicker">AI INFRASTRUCTURE / PRIVATE COMPANY</p>
-        <h1>Crusoe 把<span class="headline-accent">電力</span><br>變成可用的 AI 產能</h1>
+        <h1>Crusoe 把<span class="headline-accent">電力</span><br>變成可用的 <span class="keep">AI 產能</span></h1>
         <p class="lede">它不是晶片公司，而是把能源、AI 資料中心、GPU 系統與 Cloud 軟體垂直整合的 AI Factory 業者。</p>
       </div>
       <dl class="identity-ledger" aria-label="Crusoe 公司分類">
