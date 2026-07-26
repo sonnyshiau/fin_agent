@@ -15,7 +15,7 @@ const htmlPath = path.join(root, "ai-datacenter-memory-atlas.html");
 const html = fs.readFileSync(htmlPath, "utf8");
 
 const requiredText = [
-  "AI Data Center Memory Atlas", "SRAM", "DDR DRAM", "GDDR", "HBM",
+  "AI Data Center Memory Atlas", "SRAM", "DDR DRAM", "GDDR", "LPDDR", "HBM",
   "KV Cache", "NAND Flash", "NOR Flash", "NVMe SSD",
   "Model Load", "Prefill", "Decode",
   "Bandwidth (GB/s) = data rate × interface width × stacks ÷ 8"
@@ -41,16 +41,34 @@ if (document.readyState === "loading") {
 
 const scenarios = [...document.querySelectorAll("button[data-scenario]")];
 if (scenarios.length !== 3) throw new Error("Expected exactly three scenario controls.");
+const expectedStageNames = { load: "Model Load", prefill: "Prefill", decode: "Decode" };
 for (const button of scenarios) {
   button.click();
   if (document.body.dataset.scenario !== button.dataset.scenario) {
     throw new Error(`Scenario failed: ${button.dataset.scenario}`);
   }
   if (button.getAttribute("aria-pressed") !== "true") throw new Error("Scenario aria state failed.");
+  if (document.querySelector("#stage-name")?.textContent !== expectedStageNames[button.dataset.scenario]) {
+    throw new Error(`Stage explainer failed: ${button.dataset.scenario}`);
+  }
+}
+
+const stageRail = document.querySelector(".stage-rail");
+if (!stageRail) throw new Error("Stage-only explainer rail is missing.");
+if (stageRail.querySelector("[id^='detail-']")) throw new Error("Component glossary leaked into stage rail.");
+for (const id of ["stage-definition", "stage-flow", "stage-result"]) {
+  if (!stageRail.querySelector(`#${id}`)?.textContent.trim()) throw new Error(`Missing stage field: ${id}`);
+}
+
+const glossary = document.querySelector(".glossary-panel");
+const dataPathGrid = document.querySelector(".data-path-grid");
+if (!glossary || !dataPathGrid || !(dataPathGrid.compareDocumentPosition(glossary) & 4)) {
+  throw new Error("Component glossary must appear below the diagram and stage rail.");
 }
 
 const componentButtons = [...document.querySelectorAll("[data-component]")];
-if (componentButtons.length < 8) throw new Error("Expected at least eight component controls.");
+if (componentButtons.length < 9) throw new Error("Expected LPDDR and at least eight other component controls.");
+if (!componentButtons.some((button) => button.dataset.component === "lpddr")) throw new Error("LPDDR control is missing.");
 componentButtons.find((button) => button.dataset.component === "kv").click();
 if (document.querySelector("#detail-category").textContent !== "模型資料結構") {
   throw new Error("KV cache classification failed.");
