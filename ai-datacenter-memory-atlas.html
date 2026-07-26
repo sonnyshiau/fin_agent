@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Data Center Memory Atlas｜AI 資料中心記憶體全圖解</title>
+  <meta name="description" content="從 NVMe SSD、DDR、HBM 到 SRAM 與 KV Cache，以 AI Data Center 資料路徑拆解記憶體技術、系統角色與封裝。">
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --backplane: #0b1118;
+      --module: #121d27;
+      --module-raised: #182632;
+      --module-deep: #0e171f;
+      --trace: #2b3b49;
+      --trace-active: #d7e3ea;
+      --sram: #53d6c1;
+      --dram: #5da9ff;
+      --flash: #f2b45b;
+      --compute: #e879a9;
+      --text: #e8eef2;
+      --muted: #92a2ae;
+      --danger: #ff7f73;
+      --focus: #ffffff;
+      --radius: 6px;
+      --page: 1280px;
+    }
+
+    * { box-sizing: border-box; }
+    html { color-scheme: dark; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--backplane);
+      color: var(--text);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    a { color: var(--dram); }
+    p { margin: 0; }
+    h1, h2, h3 { margin: 0; font-family: "Arial Narrow", "Roboto Condensed", "Noto Sans TC", sans-serif; }
+    h1 { max-width: 920px; font-size: clamp(2.4rem, 6vw, 5.6rem); line-height: .92; letter-spacing: -.055em; }
+    h2 { font-size: clamp(1.65rem, 3vw, 2.45rem); line-height: 1.05; letter-spacing: -.025em; }
+    h3 { font-size: 1.05rem; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .mono, .metric, code { font-family: Consolas, "IBM Plex Mono", monospace; }
+    .shell { width: min(var(--page), calc(100vw - 32px)); margin-inline: auto; }
+    .skip-link { position: fixed; z-index: 99; top: 8px; left: 8px; padding: 10px 14px; transform: translateY(-150%); background: var(--text); color: var(--backplane); }
+    .skip-link:focus { transform: translateY(0); }
+    .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--muted); font: 700 .72rem/1 Consolas, monospace; letter-spacing: .14em; text-transform: uppercase; }
+    .eyebrow::before { width: 26px; height: 2px; background: currentColor; content: ""; }
+    .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .55fr); align-items: end; gap: 30px; margin-bottom: 22px; }
+    .section-head p { max-width: 58ch; color: var(--muted); font-size: .92rem; }
+    .kicker { display: block; margin-bottom: 9px; color: var(--dram); font: 700 .7rem/1 Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; }
+    .panel { border: 1px solid var(--trace); background: var(--module); border-radius: var(--radius); }
+    .quiet { color: var(--muted); }
+
+    .site-header { position: relative; min-height: 590px; padding: 24px 0 54px; border-bottom: 1px solid var(--trace); overflow: hidden; }
+    .site-header::before {
+      position: absolute; inset: 0; pointer-events: none; content: "";
+      background-image: linear-gradient(var(--trace) 1px, transparent 1px), linear-gradient(90deg, var(--trace) 1px, transparent 1px);
+      background-size: 72px 72px; opacity: .18;
+      mask-image: linear-gradient(to bottom, #000, transparent 85%);
+    }
+    .topbar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-bottom: 72px; }
+    .brand { display: flex; align-items: center; gap: 12px; font: 700 .78rem/1 Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .brand-mark { display: grid; width: 30px; height: 30px; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 4px; border: 1px solid var(--trace); }
+    .brand-mark i { background: var(--dram); }
+    .brand-mark i:nth-child(2), .brand-mark i:nth-child(6) { background: var(--sram); }
+    .brand-mark i:nth-child(4) { background: var(--flash); }
+    .topbar-note { color: var(--muted); font: .7rem Consolas, monospace; }
+    .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .65fr); gap: 60px; align-items: end; }
+    .hero h1 span { display: block; color: var(--dram); }
+    .hero-thesis { margin-top: 24px; max-width: 700px; color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.2rem); }
+    .hero-thesis strong { color: var(--text); }
+    .hierarchy-ruler { display: grid; gap: 8px; align-self: stretch; padding: 18px; background: var(--module-deep); }
+    .ruler-title { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--trace); color: var(--muted); font: .68rem Consolas, monospace; text-transform: uppercase; }
+    .ruler-row { display: grid; grid-template-columns: 70px 1fr auto; align-items: center; gap: 10px; min-height: 42px; }
+    .ruler-row b { font: 700 .72rem Consolas, monospace; }
+    .ruler-bar { height: 7px; background: var(--trace); }
+    .ruler-bar i { display: block; height: 100%; background: var(--sram); }
+    .ruler-row:nth-child(3) .ruler-bar i, .ruler-row:nth-child(4) .ruler-bar i { background: var(--dram); }
+    .ruler-row:nth-child(5) .ruler-bar i { background: var(--flash); }
+    .ruler-row span { color: var(--muted); font: .64rem Consolas, monospace; }
+
+    main section { padding: 76px 0; border-bottom: 1px solid var(--trace); }
+    .taxonomy { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0; padding: 1px; list-style: none; background: var(--trace); }
+    .taxonomy li { min-height: 132px; padding: 22px; background: var(--module); }
+    .taxonomy b, .taxonomy span { display: block; }
+    .taxonomy b { margin-bottom: 28px; color: var(--muted); font: 700 .68rem Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .taxonomy span { font-weight: 800; }
+    .taxonomy li:nth-child(1) { box-shadow: inset 0 3px var(--sram); }
+    .taxonomy li:nth-child(2) { box-shadow: inset 0 3px var(--dram); }
+    .taxonomy li:nth-child(3) { box-shadow: inset 0 3px var(--flash); }
+    .taxonomy li:nth-child(4) { box-shadow: inset 0 3px var(--compute); }
+
+    .scenario-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+    .scenario-button, .component-button, .quiz-choice, .quiz-next {
+      min-height: 42px; padding: 9px 14px; border: 1px solid var(--trace); border-radius: 3px; background: var(--module); cursor: pointer;
+    }
+    .scenario-button:hover, .component-button:hover, .quiz-choice:hover, .quiz-next:hover { border-color: var(--muted); }
+    .scenario-button[aria-pressed="true"] { border-color: var(--dram); background: #142a3d; color: #b9dbff; }
+    .scenario-button span { display: block; color: var(--muted); font: .62rem Consolas, monospace; text-transform: uppercase; }
+    .data-path-grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 12px; }
+    .diagram-panel { min-width: 0; padding: 12px; }
+    .diagram-topline { display: flex; justify-content: space-between; gap: 14px; padding: 4px 5px 12px; color: var(--muted); font: .68rem Consolas, monospace; }
+    .rack-svg { display: block; width: 100%; height: auto; border: 1px solid var(--trace); background: var(--module-deep); }
+    .svg-zone { fill: #101a23; stroke: var(--trace); }
+    .svg-node { fill: var(--module-raised); stroke: var(--trace); stroke-width: 2; }
+    .svg-node.flash { stroke: var(--flash); }
+    .svg-node.dram { stroke: var(--dram); }
+    .svg-node.sram { stroke: var(--sram); }
+    .svg-node.compute { stroke: var(--compute); }
+    .svg-title { fill: var(--text); font: 700 17px "Arial Narrow", sans-serif; }
+    .svg-sub { fill: var(--muted); font: 12px Consolas, monospace; }
+    .svg-zone-label { fill: var(--muted); font: 700 11px Consolas, monospace; letter-spacing: 1.2px; }
+    .trace { fill: none; stroke: var(--trace); stroke-width: 5; stroke-linecap: round; transition: stroke .25s, stroke-width .25s, opacity .25s; }
+    .trace.is-active { stroke: var(--trace-active); stroke-width: 9; }
+    body[data-scenario="load"] .trace.is-active { stroke: var(--flash); }
+    body[data-scenario="prefill"] .trace.is-active { stroke: var(--dram); }
+    body[data-scenario="decode"] .trace.is-active { stroke: var(--compute); }
+    .path-label { fill: var(--muted); font: 700 10px Consolas, monospace; paint-order: stroke; stroke: var(--module-deep); stroke-width: 4px; }
+    .payload { fill: var(--flash); stroke: var(--backplane); stroke-width: 3; opacity: 0; }
+    .payload.is-moving { opacity: 1; animation: payload-pulse 1.25s ease-in-out infinite; }
+    body[data-scenario="prefill"] .payload { fill: var(--dram); }
+    body[data-scenario="decode"] .payload { fill: var(--compute); }
+    @keyframes payload-pulse { 0%, 100% { r: 7px; opacity: .55; } 50% { r: 12px; opacity: 1; } }
+    .detail-rail { display: flex; flex-direction: column; padding: 22px; }
+    .scenario-readout { min-height: 112px; padding-bottom: 18px; border-bottom: 1px solid var(--trace); }
+    .scenario-readout b { display: block; margin-bottom: 8px; color: var(--dram); font: .7rem Consolas, monospace; text-transform: uppercase; }
+    #scenario-summary { font-size: .93rem; }
+    .detail-card { padding-top: 20px; }
+    .detail-card h3 { margin-bottom: 15px; font-size: 1.65rem; }
+    .detail-list { display: grid; margin: 0; }
+    .detail-list div { display: grid; grid-template-columns: 82px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--trace); }
+    .detail-list dt { color: var(--muted); font: .65rem Consolas, monospace; text-transform: uppercase; }
+    .detail-list dd { margin: 0; font-size: .78rem; }
+    .misconception { margin-top: 14px; padding: 12px; border-left: 3px solid var(--danger); background: #281a1c; font-size: .78rem; }
+
+    .component-strip { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 12px; }
+    .component-button { min-width: 0; padding: 12px 8px; font: 700 .7rem Consolas, monospace; }
+    .component-button[aria-pressed="true"] { border-color: var(--sram); color: var(--sram); }
+    .component-button:nth-child(2), .component-button:nth-child(3), .component-button:nth-child(4) { border-bottom-color: var(--dram); }
+    .component-button:nth-child(6), .component-button:nth-child(7), .component-button:nth-child(8) { border-bottom-color: var(--flash); }
+
+    .layer-map { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .layer { position: relative; min-height: 210px; padding: 18px; overflow: hidden; }
+    .layer::after { position: absolute; right: -15px; bottom: -35px; color: rgba(255,255,255,.035); font: 800 7rem/1 Consolas, monospace; content: attr(data-index); }
+    .layer h3 { margin: 22px 0 8px; font-size: 1.5rem; }
+    .layer p { color: var(--muted); font-size: .84rem; }
+    .layer-tag { color: var(--sram); font: 700 .65rem Consolas, monospace; text-transform: uppercase; }
+    .layer:nth-child(2) .layer-tag, .layer:nth-child(3) .layer-tag { color: var(--dram); }
+    .layer:nth-child(4) .layer-tag { color: var(--flash); }
+    .layer-metric { position: absolute; left: 18px; bottom: 16px; font: 700 .67rem Consolas, monospace; }
+
+    .hbm-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: 12px; }
+    .hbm-visual { padding: 14px; }
+    .hbm-svg { display: block; width: 100%; height: auto; }
+    .die { fill: var(--module-raised); stroke: var(--dram); stroke-width: 2; }
+    .base-die { fill: #182f45; stroke: var(--dram); stroke-width: 2; }
+    .gpu-die { fill: #33202b; stroke: var(--compute); stroke-width: 2; }
+    .interposer { fill: #17232c; stroke: #6e8798; stroke-width: 2; }
+    .substrate { fill: #302b21; stroke: var(--flash); stroke-width: 2; }
+    .tsv { stroke: var(--sram); stroke-width: 4; }
+    .microbump { fill: var(--flash); }
+    .bus { stroke: var(--dram); stroke-width: 7; stroke-dasharray: 11 7; }
+    .hbm-label { fill: var(--text); font: 700 13px "Arial Narrow", sans-serif; }
+    .hbm-note { fill: var(--muted); font: 10px Consolas, monospace; }
+    .calculator { padding: 22px; }
+    .formula { margin: 18px 0; padding: 12px; border: 1px solid var(--trace); background: var(--module-deep); color: #c8d5dd; font-size: .76rem; }
+    .calc-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .calc-fields label { color: var(--muted); font: .65rem Consolas, monospace; }
+    .calc-fields input { width: 100%; margin-top: 7px; padding: 10px; border: 1px solid var(--trace); border-radius: 3px; background: var(--backplane); color: var(--text); }
+    .calc-output { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--trace); }
+    #bandwidth-result { display: block; color: var(--dram); font: 800 clamp(2.1rem, 5vw, 3.8rem)/1 Consolas, monospace; letter-spacing: -.06em; }
+    .calc-output small { color: var(--muted); }
+    .correction { margin-top: 12px; padding: 16px; border-left: 4px solid var(--flash); background: #282318; }
+    .correction strong { color: var(--flash); }
+    .correction p { margin-top: 5px; color: #c8bd9d; font-size: .82rem; }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--trace); scrollbar-color: var(--dram) var(--module); }
+    table { width: 100%; min-width: 1020px; border-collapse: collapse; background: var(--module); font-size: .78rem; }
+    th, td { padding: 13px 12px; border-right: 1px solid var(--trace); border-bottom: 1px solid var(--trace); text-align: left; vertical-align: top; }
+    th { position: sticky; top: 0; background: var(--module-deep); color: var(--muted); font: 700 .64rem Consolas, monospace; text-transform: uppercase; }
+    tbody tr:hover { background: var(--module-raised); }
+    td:first-child { color: var(--text); font-weight: 800; white-space: nowrap; }
+    .type-chip { display: inline-block; padding: 3px 6px; border: 1px solid currentColor; border-radius: 2px; color: var(--dram); font: .62rem Consolas, monospace; }
+    .type-chip.flash { color: var(--flash); }
+    .type-chip.sram { color: var(--sram); }
+    .type-chip.compute { color: var(--compute); }
+    .scroll-hint { display: none; margin-top: 8px; color: var(--muted); font: .66rem Consolas, monospace; }
+
+    .axes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; padding: 1px; background: var(--trace); }
+    .axis { padding: 22px; background: var(--module); }
+    .axis-index { color: var(--muted); font: .65rem Consolas, monospace; }
+    .axis h3 { margin: 24px 0 8px; font-size: 1.4rem; }
+    .axis p { min-height: 48px; color: var(--muted); font-size: .8rem; }
+    .axis-meter { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; margin-top: 20px; }
+    .axis-meter i { height: 8px; background: var(--trace); }
+    .axis-meter i.on { background: var(--dram); }
+    .axis:nth-child(2) .axis-meter i.on { background: var(--sram); }
+    .axis:nth-child(3) .axis-meter i.on { background: var(--flash); }
+    .axis:nth-child(4) .axis-meter i.on { background: var(--compute); }
+    .engineering-note { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 12px; padding: 18px; border: 1px solid var(--danger); background: #27191c; }
+    .engineering-note strong { color: var(--danger); font: 800 1.25rem "Arial Narrow", sans-serif; }
+    .engineering-note span { max-width: 62ch; color: #c9aaad; font-size: .82rem; }
+
+    .review-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 12px; }
+    .mental-model { padding: 28px; }
+    .mental-flow { display: grid; gap: 1px; margin-top: 22px; background: var(--trace); }
+    .mental-row { display: grid; grid-template-columns: 120px 1fr; gap: 18px; padding: 13px; background: var(--module-deep); }
+    .mental-row b { font: 700 .73rem Consolas, monospace; }
+    .mental-row span { color: var(--muted); font-size: .82rem; }
+    .quiz { padding: 24px; }
+    #quiz-term { margin: 18px 0; color: var(--compute); font: 800 2.4rem/1 "Arial Narrow", sans-serif; }
+    .quiz-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .quiz-choice { padding-inline: 8px; font-size: .75rem; }
+    .quiz-choice[data-result="correct"] { border-color: var(--sram); color: var(--sram); }
+    .quiz-choice[data-result="incorrect"] { border-color: var(--danger); color: var(--danger); }
+    #quiz-feedback { min-height: 76px; margin-top: 14px; padding: 12px; background: var(--module-deep); color: var(--muted); font-size: .8rem; }
+    .quiz-next { width: 100%; margin-top: 8px; border-color: var(--compute); }
+
+    .sources { display: grid; grid-template-columns: 170px 1fr; gap: 28px; padding: 34px 0 50px; }
+    .sources h2 { font-size: 1.2rem; }
+    .source-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .source-list li { padding-bottom: 10px; border-bottom: 1px solid var(--trace); color: var(--muted); font-size: .76rem; }
+    .source-list a { margin-right: 8px; font-weight: 700; }
+    footer { border-top: 1px solid var(--trace); }
+
+    @media (max-width: 980px) {
+      .hero, .review-grid { grid-template-columns: 1fr; }
+      .hero { gap: 32px; }
+      .taxonomy, .layer-map, .axes-grid { grid-template-columns: 1fr 1fr; }
+      .data-path-grid, .hbm-grid { grid-template-columns: 1fr; }
+      .detail-rail { min-height: 0; }
+      .component-strip { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 20px, var(--page)); }
+      .site-header { min-height: 0; }
+      .topbar { padding-bottom: 48px; }
+      .topbar-note { display: none; }
+      .section-head { grid-template-columns: 1fr; gap: 12px; }
+      main section { padding: 54px 0; }
+      .taxonomy, .layer-map, .axes-grid { grid-template-columns: 1fr; }
+      .taxonomy li { min-height: 104px; }
+      .taxonomy b { margin-bottom: 15px; }
+      .scenario-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+      .scenario-button { padding-inline: 7px; font-size: .76rem; }
+      .diagram-panel { padding: 6px; overflow-x: auto; }
+      .rack-svg { min-width: 720px; }
+      .component-strip { grid-template-columns: repeat(2, 1fr); }
+      .calc-fields { grid-template-columns: 1fr; }
+      .review-grid { grid-template-columns: 1fr; }
+      .mental-row { grid-template-columns: 96px 1fr; }
+      .sources { grid-template-columns: 1fr; }
+      .scroll-hint { display: block; }
+      .engineering-note { align-items: flex-start; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .payload { display: none; }
+    }
+  </style>
+</head>
+<body data-scenario="load">
+  <a class="skip-link" href="#atlas-main">跳至主要內容</a>
+  <header class="site-header">
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>Memory Systems / Field Atlas</div>
+        <div class="topbar-note">AI INFRASTRUCTURE · VOLATILE ↔ PERSISTENT · REV 01</div>
+      </div>
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Rack → Package → Die</div>
+          <h1>AI Data Center <span>Memory Atlas</span></h1>
+          <p class="hero-thesis"><strong>AI 運算的資料旅程</strong>，是在容量、頻寬、延遲與持久性之間逐層交換。先看完整系統，再拆到每一種 cell、裝置與模型資料。</p>
+        </div>
+        <aside class="hierarchy-ruler panel" aria-label="記憶體階層速覽">
+          <div class="ruler-title"><span>Closer to compute</span><span>Typical scale</span></div>
+          <div class="ruler-row"><b>SRAM</b><div class="ruler-bar"><i style="width:24%"></i></div><span>KB–MB</span></div>
+          <div class="ruler-row"><b>HBM</b><div class="ruler-bar"><i style="width:58%"></i></div><span>GB</span></div>
+          <div class="ruler-row"><b>DDR</b><div class="ruler-bar"><i style="width:76%"></i></div><span>GB–TB</span></div>
+          <div class="ruler-row"><b>NAND</b><div class="ruler-bar"><i style="width:100%"></i></div><span>TB–PB</span></div>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main id="atlas-main">
+    <section id="orientation" aria-labelledby="orientation-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">00 / Vocabulary Map</span><h2 id="orientation-title">先分類，才不會被「Cache」與「Memory」混淆</h2></div>
+          <p>同一個詞可能描述電路、系統角色、封裝或資料結構。KV Cache 不是一種記憶體；顯存也不是一種特定 cell。</p>
+        </div>
+        <ul class="taxonomy" aria-label="名詞分類">
+          <li><b>物理技術</b><span>SRAM · DRAM · NAND · NOR</span></li>
+          <li><b>系統角色</b><span>CPU Cache · 內存 · 顯存</span></li>
+          <li><b>裝置／封裝</b><span>DIMM · HBM Stack · SSD</span></li>
+          <li><b>模型資料結構</b><span>KV Cache</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="data-path" aria-labelledby="data-path-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">01 / System Data Path</span><h2 id="data-path-title">一份模型，如何從 SSD 走到 Tensor Core</h2></div>
+          <p>選擇工作階段，觀察同一套硬體在 Model Load、Prefill 與 Decode 時搬運不同資料。</p>
+        </div>
+        <div class="scenario-controls" aria-label="AI 推論階段">
+          <button class="scenario-button" type="button" data-scenario="load" aria-pressed="true"><span>Stage 01</span>Model Load</button>
+          <button class="scenario-button" type="button" data-scenario="prefill" aria-pressed="false"><span>Stage 02</span>Prefill</button>
+          <button class="scenario-button" type="button" data-scenario="decode" aria-pressed="false"><span>Stage 03</span>Decode</button>
+        </div>
+        <div class="data-path-grid">
+          <div class="diagram-panel panel">
+            <div class="diagram-topline"><span>AI SERVER / LOGICAL CROSS-SECTION</span><span>ACTIVE PATH = COLORED TRACE</span></div>
+            <svg class="rack-svg" viewBox="0 0 1080 620" role="img" aria-labelledby="rack-title rack-desc">
+              <title id="rack-title">AI 資料中心從 SSD 到運算單元的資料路徑</title>
+              <desc id="rack-desc">模型由 NVMe SSD 載入 DDR，再經 PCIe 進入 GPU HBM，分塊送到 SRAM 與運算單元。</desc>
+              <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/></marker></defs>
+              <rect class="svg-zone" x="28" y="42" width="1024" height="165" rx="4"/>
+              <rect class="svg-zone" x="28" y="236" width="1024" height="350" rx="4"/>
+              <text class="svg-zone-label" x="48" y="68">HOST / STORAGE DOMAIN</text>
+              <text class="svg-zone-label" x="48" y="262">ACCELERATOR PACKAGE</text>
+
+              <g id="ssd-node"><rect class="svg-node flash" x="70" y="95" width="205" height="76" rx="4"/><text class="svg-title" x="90" y="126">NVMe SSD</text><text class="svg-sub" x="90" y="150">NAND · Persistent</text></g>
+              <g id="cpu-node"><rect class="svg-node" x="430" y="82" width="180" height="102" rx="4"/><text class="svg-title" x="450" y="120">CPU</text><text class="svg-sub" x="450" y="143">L2 / L3 SRAM</text><text class="svg-sub" x="450" y="161">Memory Controller</text></g>
+              <g id="ddr-node"><rect class="svg-node dram" x="760" y="95" width="235" height="76" rx="4"/><text class="svg-title" x="780" y="126">DDR5 DIMM</text><text class="svg-sub" x="780" y="150">Host DRAM · 內存</text></g>
+
+              <g id="hbm-node"><rect class="svg-node dram" x="80" y="335" width="235" height="128" rx="4"/><text class="svg-title" x="102" y="372">HBM Stack</text><text class="svg-sub" x="102" y="397">Stacked DRAM · 顯存</text><text class="svg-sub" x="102" y="420">Weights · KV Cache</text><path d="M112 441h168" stroke="#5da9ff" stroke-width="5"/></g>
+              <g id="pcie-node"><rect class="svg-node" x="400" y="285" width="260" height="58" rx="4"/><text class="svg-title" x="426" y="320">PCIe / CXL Link</text></g>
+              <g id="sram-node"><rect class="svg-node sram" x="440" y="410" width="210" height="92" rx="4"/><text class="svg-title" x="462" y="445">GPU L2 / SRAM</text><text class="svg-sub" x="462" y="470">On-chip tile buffer</text></g>
+              <g id="compute-node"><rect class="svg-node compute" x="760" y="370" width="235" height="128" rx="4"/><text class="svg-title" x="782" y="410">AI Compute</text><text class="svg-sub" x="782" y="435">Tensor / Vector Core</text><text class="svg-sub" x="782" y="458">Attention · GEMM</text></g>
+
+              <path id="path-ssd-ddr" class="trace flash-path" d="M275 133 H400 Q420 133 430 123 M610 123 H760"/>
+              <path id="path-ddr-hbm" class="trace dram-path" d="M875 171 V225 Q875 245 855 250 H690 Q655 250 635 279 L610 314 H315 Q290 314 275 335"/>
+              <path id="path-hbm-sram" class="trace dram-path" d="M315 410 H440"/>
+              <path id="path-sram-compute" class="trace sram-path" d="M650 447 H760"/>
+              <path id="path-compute-hbm" class="trace compute-path" d="M760 480 H680 Q660 480 650 498 V540 H330 Q305 540 290 515 L275 463"/>
+              <text class="path-label" x="312" y="116">MODEL BYTES</text>
+              <text class="path-label" x="682" y="239">PCIe DMA</text>
+              <text class="path-label" x="330" y="397">W / KV TILE</text>
+              <text class="path-label" x="670" y="434">ON-CHIP</text>
+              <text class="path-label" x="493" y="530">APPEND NEW K/V</text>
+              <circle id="payload" class="payload is-moving" cx="400" cy="133" r="9"/>
+            </svg>
+          </div>
+          <aside class="detail-rail panel" aria-label="階段與元件說明">
+            <div class="scenario-readout"><b>Active operation</b><p id="scenario-summary" aria-live="polite"></p></div>
+            <div class="detail-card">
+              <span class="kicker">Selected component</span>
+              <h3 id="detail-name">SRAM</h3>
+              <dl class="detail-list">
+                <div><dt>分類</dt><dd id="detail-category"></dd></div>
+                <div><dt>實體</dt><dd id="detail-medium"></dd></div>
+                <div><dt>存放</dt><dd id="detail-stores"></dd></div>
+                <div><dt>目的</dt><dd id="detail-purpose"></dd></div>
+                <div><dt>斷電</dt><dd id="detail-volatile"></dd></div>
+              </dl>
+              <p class="misconception"><strong>別混淆：</strong> <span id="detail-misconception"></span></p>
+            </div>
+          </aside>
+        </div>
+        <nav class="component-strip" aria-label="選擇記憶體元件">
+          <button type="button" class="component-button" data-component="sram" aria-pressed="true">SRAM</button>
+          <button type="button" class="component-button" data-component="ddr" aria-pressed="false">DDR</button>
+          <button type="button" class="component-button" data-component="gddr" aria-pressed="false">GDDR</button>
+          <button type="button" class="component-button" data-component="hbm" aria-pressed="false">HBM</button>
+          <button type="button" class="component-button" data-component="kv" aria-pressed="false">KV CACHE</button>
+          <button type="button" class="component-button" data-component="nand" aria-pressed="false">NAND</button>
+          <button type="button" class="component-button" data-component="nor" aria-pressed="false">NOR</button>
+          <button type="button" class="component-button" data-component="ssd" aria-pressed="false">SSD</button>
+        </nav>
+      </div>
+    </section>
+
+    <section id="layers" aria-labelledby="layers-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">02 / Hierarchy</span><h2 id="layers-title">離運算越近：容量越小，延遲越低，成本越高</h2></div>
+          <p>資料不是只待在一處。系統把常用的小工作集向運算單元靠近，把大而冷的資料留在下層。</p>
+        </div>
+        <div class="layer-map">
+          <article class="layer panel" data-index="1"><span class="layer-tag">On-die / SRAM</span><h3>CPU / GPU Cache</h3><p>6T SRAM array 加上 tag、ECC 與控制邏輯。硬體自動管理 cache line。</p><span class="layer-metric">FASTEST · SMALLEST</span></article>
+          <article class="layer panel" data-index="2"><span class="layer-tag">In-package / DRAM</span><h3>GPU HBM</h3><p>保存權重、activation 與 KV cache；寬介面供應大量平行運算。</p><span class="layer-metric">TB/s CLASS</span></article>
+          <article class="layer panel" data-index="3"><span class="layer-tag">Board / DRAM</span><h3>Host DDR</h3><p>中國用語「內存」；CPU 的主記憶體，也可承接 GPU offload。</p><span class="layer-metric">CAPACITY TIER</span></article>
+          <article class="layer panel" data-index="4"><span class="layer-tag">Storage / NAND</span><h3>NVMe SSD</h3><p>斷電後保存模型與資料集。容量大，但不能直接餵飽運算核心。</p><span class="layer-metric">PERSISTENT TIER</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="hbm-anatomy" aria-labelledby="hbm-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">03 / Package Anatomy</span><h2 id="hbm-title">HBM：不是把 DRAM 疊高就自然變快</h2></div>
+          <p>關鍵是 TSV 垂直互連、近距離 2.5D 封裝與每 stack 極寬的平行 I/O。堆疊主要增加容量；多 stack 才增加獨立外部介面。</p>
+        </div>
+        <div class="hbm-grid">
+          <div>
+            <div class="hbm-visual panel">
+              <svg class="hbm-svg" viewBox="0 0 780 570" role="img" aria-labelledby="hbm-svg-title hbm-svg-desc">
+                <title id="hbm-svg-title">HBM DRAM 堆疊、TSV、Interposer 與 GPU 封裝剖面</title>
+                <desc id="hbm-svg-desc">四層 DRAM 經 TSV 接到 base die，再透過 micro-bump 與 silicon interposer 連接 GPU。</desc>
+                <rect class="substrate" x="42" y="500" width="696" height="38" rx="3"/>
+                <text class="hbm-label" x="56" y="524">PACKAGE SUBSTRATE</text>
+                <rect class="interposer" x="72" y="420" width="640" height="62" rx="3"/>
+                <text class="hbm-label" x="88" y="456">SILICON INTERPOSER · DENSE PARALLEL ROUTING</text>
+                <rect class="base-die" x="95" y="349" width="244" height="55" rx="3"/>
+                <text class="hbm-label" x="114" y="382">BASE / INTERFACE DIE</text>
+                <rect class="gpu-die" x="470" y="256" width="210" height="148" rx="4"/>
+                <text class="hbm-label" x="494" y="310">GPU / AI ASIC</text>
+                <text class="hbm-note" x="494" y="336">Memory Controller</text>
+                <text class="hbm-note" x="494" y="356">L2 SRAM · Compute</text>
+                <g aria-label="四層 DRAM die">
+                  <rect class="die" x="105" y="278" width="224" height="54" rx="3"/>
+                  <rect class="die" x="105" y="207" width="224" height="54" rx="3"/>
+                  <rect class="die" x="105" y="136" width="224" height="54" rx="3"/>
+                  <rect class="die" x="105" y="65" width="224" height="54" rx="3"/>
+                  <text class="hbm-label" x="126" y="98">DRAM DIE 4</text>
+                  <text class="hbm-label" x="126" y="169">DRAM DIE 3</text>
+                  <text class="hbm-label" x="126" y="240">DRAM DIE 2</text>
+                  <text class="hbm-label" x="126" y="311">DRAM DIE 1</text>
+                </g>
+                <line class="tsv" x1="275" y1="80" x2="275" y2="391"/><line class="tsv" x1="293" y1="80" x2="293" y2="391"/>
+                <text class="hbm-note" x="350" y="173">TSV</text><path d="M338 169 H300" stroke="#53d6c1"/>
+                <g aria-label="micro bumps"><circle class="microbump" cx="128" cy="412" r="5"/><circle class="microbump" cx="160" cy="412" r="5"/><circle class="microbump" cx="192" cy="412" r="5"/><circle class="microbump" cx="224" cy="412" r="5"/><circle class="microbump" cx="256" cy="412" r="5"/><circle class="microbump" cx="288" cy="412" r="5"/></g>
+                <path class="bus" d="M340 382 Q400 382 450 348 H470"/>
+                <text class="hbm-label" x="350" y="360">1024-bit / STACK</text>
+                <text class="hbm-note" x="104" y="48">4-HIGH SHOWN · 8/12-HIGH FOLLOW SAME CONCEPT</text>
+              </svg>
+            </div>
+            <aside class="correction"><strong>堆疊層數 ≠ 外部介面倍增</strong><p>增加 DRAM die 主要提高容量與內部平行性；HBM2E 的完整 stack 對處理器仍呈現 1024-bit 總介面。</p></aside>
+          </div>
+          <div class="calculator panel">
+            <span class="kicker">Peak bandwidth calculator</span>
+            <h3>寬而相對低速，勝過窄而高速</h3>
+            <p class="formula mono">Bandwidth (GB/s) = data rate × interface width × stacks ÷ 8</p>
+            <div class="calc-fields">
+              <label>Gb/s per pin<input id="hbm-rate" type="number" min="0.1" step="0.1" value="3.2"></label>
+              <label>Bus width (bit)<input id="hbm-width" type="number" min="1" step="1" value="1024"></label>
+              <label>Stacks<input id="hbm-stacks" type="number" min="1" step="1" value="2"></label>
+            </div>
+            <div class="calc-output" aria-live="polite"><span id="bandwidth-result">819.2 GB/s</span><small>理論峰值頻寬；實效仍受存取模式、bank conflict、協定開銷、溫度與排程影響。</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" aria-labelledby="comparison-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">04 / Comparison Matrix</span><h2 id="comparison-title">八個名詞，一張表完成定位</h2></div>
+          <p>先問「它是技術、角色、裝置，還是資料結構？」再比較容量、速度或用途，才不會跨層誤比。</p>
+        </div>
+        <div class="table-wrap" tabindex="0" aria-label="記憶體技術比較表，可水平捲動">
+          <table>
+            <thead><tr><th>名詞</th><th>分類</th><th>Cell／介質</th><th>斷電</th><th>典型位置</th><th>最佳化目標</th><th>AI Data Center 例子</th></tr></thead>
+            <tbody>
+              <tr><td>SRAM</td><td><span class="type-chip sram">物理技術</span></td><td>常見 6T bitcell</td><td>消失</td><td>CPU/GPU die</td><td>極低延遲</td><td>L2/L3、shared memory、tile buffer</td></tr>
+              <tr><td>DDR DRAM</td><td><span class="type-chip">物理技術</span></td><td>1T1C＋refresh</td><td>消失</td><td>DIMM／主機板</td><td>容量與成本</td><td>Host memory、模型 staging、offload</td></tr>
+              <tr><td>GDDR</td><td><span class="type-chip">物理技術</span></td><td>Graphics DRAM</td><td>消失</td><td>GPU PCB 周圍</td><td>高 per-pin rate</td><td>消費型／工作站 GPU 顯存</td></tr>
+              <tr><td>HBM</td><td><span class="type-chip">物理技術＋封裝</span></td><td>TSV-stacked DRAM</td><td>消失</td><td>GPU 同封裝</td><td>極寬介面、低 pJ/bit</td><td>權重、activation、KV cache</td></tr>
+              <tr><td>NAND Flash</td><td><span class="type-chip flash">物理技術</span></td><td>Floating-gate／charge-trap</td><td>保留</td><td>SSD、手機、記憶卡</td><td>密度與成本</td><td>模型、資料集、checkpoint</td></tr>
+              <tr><td>NOR Flash</td><td><span class="type-chip flash">物理技術</span></td><td>Parallel-readable cells</td><td>保留</td><td>主機板／控制器</td><td>隨機讀取與 XIP</td><td>BIOS、BMC、NIC／SSD firmware</td></tr>
+              <tr><td>NVMe SSD</td><td><span class="type-chip flash">裝置</span></td><td>NAND＋controller＋ECC</td><td>保留</td><td>Server storage</td><td>大量持久儲存</td><td>模型檔與冷資料</td></tr>
+              <tr><td>KV Cache</td><td><span class="type-chip compute">模型資料結構</span></td><td>不是記憶體技術；是 K/V tensor</td><td>依承載介質</td><td>通常 GPU HBM</td><td>避免重算歷史 K/V</td><td>Agent 長 context 的工作記憶</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="scroll-hint">← 左右滑動查看完整比較表 →</p>
+      </div>
+    </section>
+
+    <section id="four-axes" aria-labelledby="axes-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">05 / Four Independent Axes</span><h2 id="axes-title">「快」至少要拆成四個問題</h2></div>
+          <p>記憶體選型不是單一排名。HBM 可以有極高總頻寬，但單筆 random access latency 並不因此等於 SRAM。</p>
+        </div>
+        <div class="axes-grid">
+          <article class="axis"><span class="axis-index">AXIS_A</span><h3>Bandwidth</h3><p>每秒能搬多少資料；看 GB/s 或 TB/s。</p><div class="axis-meter" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></article>
+          <article class="axis"><span class="axis-index">AXIS_B</span><h3>Latency</h3><p>Request 到第一筆資料回來要多久。</p><div class="axis-meter" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+          <article class="axis"><span class="axis-index">AXIS_C</span><h3>Capacity</h3><p>總共能容納多少資料；看 MB、GB、TB。</p><div class="axis-meter" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></article>
+          <article class="axis"><span class="axis-index">AXIS_D</span><h3>Persistence</h3><p>斷電之後資料是否仍然存在。</p><div class="axis-meter" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div></article>
+        </div>
+        <aside class="engineering-note"><strong>高頻寬不等於低延遲</strong><span>把 bandwidth 想成車道總流量，把 latency 想成第一輛車抵達時間。HBM 是「很多條短而寬的車道」，不等於每一次存取都像 SRAM。</span></aside>
+      </div>
+    </section>
+
+    <section id="review" aria-labelledby="review-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="kicker">06 / Recall Test</span><h2 id="review-title">最後不要背規格，只記住角色</h2></div>
+          <p>能正確分類一個名詞，通常就能推回它的實體位置、資料生命週期與系統瓶頸。</p>
+        </div>
+        <div class="review-grid">
+          <article class="mental-model panel">
+            <span class="kicker">Final mental model</span>
+            <h3>五句話重建完整資料路徑</h3>
+            <div class="mental-flow">
+              <div class="mental-row"><b>SSD / NAND</b><span>保存模型與資料。</span></div>
+              <div class="mental-row"><b>DDR</b><span>替主機 staging 與 serving。</span></div>
+              <div class="mental-row"><b>HBM</b><span>以高頻寬供應加速器。</span></div>
+              <div class="mental-row"><b>SRAM</b><span>把工作 tile 餵給運算單元。</span></div>
+              <div class="mental-row"><b>KV Cache</b><span>記住歷史 token 的 attention K/V 狀態。</span></div>
+            </div>
+          </article>
+          <aside class="quiz panel" aria-label="分類複習測驗">
+            <span class="kicker">Classification drill</span>
+            <p class="quiet">它屬於哪一類？</p>
+            <div id="quiz-term">HBM</div>
+            <div class="quiz-choices">
+              <button type="button" class="quiz-choice" data-quiz-choice="物理技術">物理技術</button>
+              <button type="button" class="quiz-choice" data-quiz-choice="系統角色">系統角色</button>
+              <button type="button" class="quiz-choice" data-quiz-choice="裝置／封裝">裝置／封裝</button>
+              <button type="button" class="quiz-choice" data-quiz-choice="模型資料結構">模型資料結構</button>
+            </div>
+            <p id="quiz-feedback" aria-live="polite">選擇它屬於哪一類。</p>
+            <button type="button" id="quiz-next" class="quiz-next">下一題</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell sources">
+      <div><span class="kicker">Sources</span><h2>技術依據</h2></div>
+      <ul class="source-list">
+        <li><a href="https://docs.amd.com/r/en-US/pg313-network-on-chip/HBM-Topology">AMD HBM Topology</a>1024-bit stack、8 channels 與 pseudo-channel 組織。</li>
+        <li><a href="https://assets.micron.com/adobe/assets/urn%3Aaaid%3Aaem%3A275edf31-79e3-4b6c-8bbd-a233babe9281/renditions/original/as/micron-hbm2e-memory-wp.pdf">Micron HBM2E Technical Paper</a>per-pin rate、I/O width 與 device bandwidth。</li>
+        <li><a href="https://huggingface.co/docs/transformers/main/cache_explanation">Hugging Face Cache Explanation</a>每層 K/V tensor、autoregressive reuse 與 cache shape。</li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const scenarios = {
+      load: {
+        label: "Model Load",
+        summary: "SSD 的 NAND 保存模型；啟動服務時，權重經 Host DRAM 搬入 GPU HBM。",
+        paths: ["path-ssd-ddr", "path-ddr-hbm"]
+      },
+      prefill: {
+        label: "Prefill",
+        summary: "GPU 平行處理 prompt；權重與 activation 在 HBM、SRAM、運算單元間流動，K/V 寫回 HBM。",
+        paths: ["path-hbm-sram", "path-sram-compute", "path-compute-hbm"]
+      },
+      decode: {
+        label: "Decode",
+        summary: "每一步讀取權重與歷史 KV，分塊搬入 SRAM 完成 attention，再把新 K/V append 到 HBM。",
+        paths: ["path-hbm-sram", "path-sram-compute", "path-compute-hbm"]
+      }
+    };
+
+    const componentFacts = {
+      sram: { name: "SRAM", category: "物理技術", medium: "常見 6T bitcell array", stores: "Cache line、tag、tile、register-adjacent data", purpose: "最低延遲地供應 CPU／GPU pipeline", volatile: "斷電消失", misconception: "CPU L2/L3 主要是 SRAM，但 cache 還包含 tag、ECC 與控制邏輯。" },
+      ddr: { name: "DDR DRAM", category: "物理技術／主記憶體角色", medium: "1T1C DRAM，需要 refresh", stores: "OS、程式、host-side model data", purpose: "以合理成本提供大容量主記憶體", volatile: "斷電消失", misconception: "中國用語『內存』通常指 DDR RAM，不是 SSD，也不是 CPU cache。" },
+      gddr: { name: "GDDR", category: "物理技術／顯存實作", medium: "高 per-pin rate Graphics DRAM", stores: "Frame buffer、模型權重、activation", purpose: "以少量高速 pins 提供 GPU bandwidth", volatile: "斷電消失", misconception: "顯存是一個系統角色；GDDR 只是其中一種實作。" },
+      hbm: { name: "HBM", category: "物理技術＋先進封裝", medium: "TSV-stacked DRAM＋寬 I/O", stores: "權重、activation、KV cache", purpose: "以大量平行 pins 提供高 bandwidth 與較低 pJ/bit", volatile: "斷電消失", misconception: "更多 DRAM layers 主要增加容量；不是把 1024-bit 再乘上 die 數。" },
+      kv: { name: "KV Cache", category: "模型資料結構", medium: "每層 attention 的 K/V tensor；通常承載於 HBM", stores: "已處理 token 的 Key／Value vectors", purpose: "避免每產生新 token 都重算歷史 K/V", volatile: "依承載介質；request 結束通常釋放", misconception: "KV Cache 不是 SRAM 或 HBM；它是可以放在 HBM、DDR 甚至 SSD 的資料。" },
+      nand: { name: "NAND Flash", category: "物理技術", medium: "Floating-gate 或 charge-trap cell", stores: "大量持久資料", purpose: "用低成本取得高密度儲存", volatile: "斷電保留", misconception: "NAND 適合 page/program 與 block/erase，不適合 CPU 直接逐位址執行。" },
+      nor: { name: "NOR Flash", category: "物理技術", medium: "可平行隨機讀取的 Flash array", stores: "Boot code、firmware", purpose: "快速隨機讀取與 XIP", volatile: "斷電保留", misconception: "NOR 容量通常較小、每 bit 成本較高，不用來取代資料中心 SSD。" },
+      ssd: { name: "NVMe SSD", category: "裝置", medium: "NAND＋controller＋firmware＋ECC＋選配 DRAM", stores: "模型檔、資料集、checkpoint、冷 KV", purpose: "提供大量持久儲存與平行 I/O", volatile: "斷電保留", misconception: "SSD 不是單顆 NAND；controller 的 FTL、wear leveling 與 ECC 都是核心。" }
+    };
+
+    const quizQuestions = [
+      { term: "HBM", answer: "物理技術", why: "HBM 是以堆疊 DRAM 與寬介面實作的記憶體技術。" },
+      { term: "顯存／VRAM", answer: "系統角色", why: "顯存描述 GPU 使用的記憶體角色，可由 GDDR、HBM 或共享 DRAM 實作。" },
+      { term: "SSD", answer: "裝置／封裝", why: "SSD 是由 NAND、控制器、韌體與介面組成的儲存裝置。" },
+      { term: "KV Cache", answer: "模型資料結構", why: "KV cache 是 attention 的歷史 K/V tensor，不是一種 SRAM 或 DRAM。" }
+    ];
+
+    function initScenarioController() {
+      const buttons = [...document.querySelectorAll("[data-scenario]")];
+      const summary = document.querySelector("#scenario-summary");
+      const payload = document.querySelector("#payload");
+      if (!buttons.length || !summary) return;
+      const activate = (name) => {
+        const scenario = scenarios[name];
+        if (!scenario) return;
+        document.body.dataset.scenario = name;
+        buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.scenario === name)));
+        document.querySelectorAll(".trace").forEach((path) => path.classList.toggle("is-active", scenario.paths.includes(path.id)));
+        summary.textContent = scenario.summary;
+        if (payload) payload.setAttribute("cx", name === "load" ? "400" : name === "prefill" ? "550" : "720");
+      };
+      buttons.forEach((button) => button.addEventListener("click", () => activate(button.dataset.scenario)));
+      activate(document.body.dataset.scenario || "load");
+    }
+
+    function initComponentInspector() {
+      const buttons = [...document.querySelectorAll("[data-component]")];
+      const fields = ["name", "category", "medium", "stores", "purpose", "volatile", "misconception"];
+      if (!buttons.length) return;
+      const show = (key) => {
+        const fact = componentFacts[key];
+        if (!fact) return;
+        fields.forEach((field) => {
+          const node = document.querySelector(`#detail-${field}`);
+          if (node) node.textContent = fact[field];
+        });
+        buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.component === key)));
+      };
+      buttons.forEach((button) => button.addEventListener("click", () => show(button.dataset.component)));
+      show("sram");
+    }
+
+    function initBandwidthCalculator() {
+      const rate = document.querySelector("#hbm-rate");
+      const width = document.querySelector("#hbm-width");
+      const stacks = document.querySelector("#hbm-stacks");
+      const output = document.querySelector("#bandwidth-result");
+      if (!rate || !width || !stacks || !output) return;
+      const update = () => {
+        const values = [rate, width, stacks].map((input) => Number(input.value));
+        const valid = values.every((value) => Number.isFinite(value) && value > 0);
+        output.textContent = valid ? `${(values[0] * values[1] * values[2] / 8).toFixed(1)} GB/s` : "請輸入正數";
+      };
+      [rate, width, stacks].forEach((input) => input.addEventListener("input", update));
+      update();
+    }
+
+    function initQuiz() {
+      const term = document.querySelector("#quiz-term");
+      const feedback = document.querySelector("#quiz-feedback");
+      const next = document.querySelector("#quiz-next");
+      const choices = [...document.querySelectorAll("[data-quiz-choice]")];
+      if (!term || !feedback || !next || !choices.length) return;
+      let index = 0;
+      const render = () => {
+        term.textContent = quizQuestions[index].term;
+        feedback.textContent = "選擇它屬於哪一類。";
+        choices.forEach((choice) => { choice.disabled = false; choice.removeAttribute("data-result"); });
+      };
+      choices.forEach((choice) => choice.addEventListener("click", () => {
+        const question = quizQuestions[index];
+        const correct = choice.dataset.quizChoice === question.answer;
+        feedback.textContent = `${correct ? "正確。" : `答案是${question.answer}。`} ${question.why}`;
+        choices.forEach((item) => { item.disabled = true; });
+        choice.dataset.result = correct ? "correct" : "incorrect";
+      }));
+      next.addEventListener("click", () => { index = (index + 1) % quizQuestions.length; render(); });
+      render();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initScenarioController();
+      initComponentInspector();
+      initBandwidthCalculator();
+      initQuiz();
+      const payload = document.querySelector("#payload");
+      document.addEventListener("visibilitychange", () => {
+        if (!payload) return;
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        payload.classList.toggle("is-moving", !document.hidden && !reduce);
+      });
+    });
+  </script>
+</body>
+</html>
