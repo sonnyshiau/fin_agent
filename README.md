@@ -8,6 +8,7 @@
 
 ## 精選研究（Featured Research）
 
+- **[AI Data Center Memory Atlas](https://sonnyshiau.github.io/fin_agent/ai-datacenter-memory-atlas/)** — 從 NVMe SSD、DDR、PCIe、HBM 到片上 SRAM，拆解 Model Load、Prefill、Decode、KV Cache 與 Flash 記憶體階層。
 - **[Crusoe Energy-to-Intelligence](https://sonnyshiau.github.io/fin_agent/crusoe-ai-factory-dashboard/)** — 從能源、AI 資料中心、GPU 系統到 Cloud，拆解 Crusoe 的垂直整合模式、護城河與重資本風險。
 - **[MRVL FY27–FY29 估值與預期差](https://sonnyshiau.github.io/fin_agent/mrvl-valuation/)** — 拆解 Custom XPU、XPU attach、CXL、scale-up switching 與光互連，建立 Bull／Base／Bear 估值情境。
 - **[光模組架構 × CPO／NPO](https://sonnyshiau.github.io/fin_agent/optical-cpo-npo-guide.html)** — 從 EML、VCSEL 與訊號鏈精確區分 Pluggable、LPO、OBO、NPO、CPO，並連結 LITE／TSEM 估值。
@@ -35,6 +36,7 @@
 
 ## 已發布研究（Published Research）
 
+- [AI Data Center Memory Atlas](https://sonnyshiau.github.io/fin_agent/ai-datacenter-memory-atlas/) — 互動拆解 SRAM、DDR、GDDR、LPDDR、HBM、KV Cache、NAND、NOR 與 SSD 的物理本質、資料路徑和系統角色。
 - [Crusoe AI Factory 研究儀表板](https://sonnyshiau.github.io/fin_agent/crusoe-ai-factory-dashboard/) — Energy-to-Intelligence 系統路徑、商業模式、競爭定位、關鍵事實與投資風險。
 - [MRVL FY27–FY29 估值與預期差](https://sonnyshiau.github.io/fin_agent/mrvl-valuation/) — Marvell 財測、TAM 捕獲、CXL 選擇權與 Bull／Base／Bear 目標價分析。
 - [光模組架構、CPO／NPO 與 LITE／TSEM 研究報告](https://sonnyshiau.github.io/fin_agent/optical-cpo-npo-guide.html) — 光模組訊號鏈、五種架構、價值轉移、名詞字典與可調式估值情境。
