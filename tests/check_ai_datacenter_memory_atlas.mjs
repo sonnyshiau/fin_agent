@@ -79,5 +79,11 @@ for (const svg of document.querySelectorAll("svg")) {
   }
 }
 
+const pcieRoute = document.querySelector("#path-ddr-hbm")?.getAttribute("d") || "";
+const pcieRouteSegments = (pcieRoute.match(/M/g) || []).length;
+if (pcieRouteSegments < 2) {
+  throw new Error("PCIe route must stop at the gateway edges instead of crossing its label.");
+}
+
 dom.window.close();
 console.log("AI Data Center Memory Atlas checks passed.");

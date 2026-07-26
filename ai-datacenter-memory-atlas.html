@@ -113,6 +113,7 @@
     .svg-node.dram { stroke: var(--dram); }
     .svg-node.sram { stroke: var(--sram); }
     .svg-node.compute { stroke: var(--compute); }
+    .pcie-port { fill: var(--backplane); stroke: var(--dram); stroke-width: 3; }
     .svg-title { fill: var(--text); font: 700 17px "Arial Narrow", sans-serif; }
     .svg-sub { fill: var(--muted); font: 12px Consolas, monospace; }
     .svg-zone-label { fill: var(--muted); font: 700 11px Consolas, monospace; letter-spacing: 1.2px; }
@@ -334,12 +335,18 @@
               <g id="ddr-node"><rect class="svg-node dram" x="760" y="95" width="235" height="76" rx="4"/><text class="svg-title" x="780" y="126">DDR5 DIMM</text><text class="svg-sub" x="780" y="150">Host DRAM · 內存</text></g>
 
               <g id="hbm-node"><rect class="svg-node dram" x="80" y="335" width="235" height="128" rx="4"/><text class="svg-title" x="102" y="372">HBM Stack</text><text class="svg-sub" x="102" y="397">Stacked DRAM · 顯存</text><text class="svg-sub" x="102" y="420">Weights · KV Cache</text><path d="M112 441h168" stroke="#5da9ff" stroke-width="5"/></g>
-              <g id="pcie-node"><rect class="svg-node" x="400" y="285" width="260" height="58" rx="4"/><text class="svg-title" x="426" y="320">PCIe / CXL Link</text></g>
+              <g id="pcie-node">
+                <rect class="svg-node" x="405" y="278" width="250" height="66" rx="4"/>
+                <circle class="pcie-port" cx="405" cy="310" r="6"/>
+                <circle class="pcie-port" cx="655" cy="310" r="6"/>
+                <text class="svg-title" x="430" y="307">PCIe / CXL Link</text>
+                <text class="svg-sub" x="430" y="329">HOST ↔ ACCELERATOR GATEWAY</text>
+              </g>
               <g id="sram-node"><rect class="svg-node sram" x="440" y="410" width="210" height="92" rx="4"/><text class="svg-title" x="462" y="445">GPU L2 / SRAM</text><text class="svg-sub" x="462" y="470">On-chip tile buffer</text></g>
               <g id="compute-node"><rect class="svg-node compute" x="760" y="370" width="235" height="128" rx="4"/><text class="svg-title" x="782" y="410">AI Compute</text><text class="svg-sub" x="782" y="435">Tensor / Vector Core</text><text class="svg-sub" x="782" y="458">Attention · GEMM</text></g>
 
               <path id="path-ssd-ddr" class="trace flash-path" d="M275 133 H400 Q420 133 430 123 M610 123 H760"/>
-              <path id="path-ddr-hbm" class="trace dram-path" d="M875 171 V225 Q875 245 855 250 H690 Q655 250 635 279 L610 314 H315 Q290 314 275 335"/>
+              <path id="path-ddr-hbm" class="trace dram-path" d="M875 171 V225 Q875 245 855 250 H705 Q680 250 667 274 L655 310 M405 310 H330 Q300 310 275 335"/>
               <path id="path-hbm-sram" class="trace dram-path" d="M315 410 H440"/>
               <path id="path-sram-compute" class="trace sram-path" d="M650 447 H760"/>
               <path id="path-compute-hbm" class="trace compute-path" d="M760 480 H680 Q660 480 650 498 V540 H330 Q305 540 290 515 L275 463"/>
