@@ -128,23 +128,36 @@
     body[data-scenario="prefill"] .payload { fill: var(--dram); }
     body[data-scenario="decode"] .payload { fill: var(--compute); }
     @keyframes payload-pulse { 0%, 100% { r: 7px; opacity: .55; } 50% { r: 12px; opacity: 1; } }
-    .detail-rail { display: flex; flex-direction: column; padding: 22px; }
-    .scenario-readout { min-height: 112px; padding-bottom: 18px; border-bottom: 1px solid var(--trace); }
-    .scenario-readout b { display: block; margin-bottom: 8px; color: var(--dram); font: .7rem Consolas, monospace; text-transform: uppercase; }
-    #scenario-summary { font-size: .93rem; }
-    .detail-card { padding-top: 20px; }
+    .stage-rail { display: flex; flex-direction: column; padding: 22px; }
+    .stage-heading { padding-bottom: 18px; border-bottom: 1px solid var(--trace); }
+    .stage-code { display: block; margin-bottom: 12px; color: var(--dram); font: 700 .7rem Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; }
+    #stage-name { margin-bottom: 10px; font-size: 2rem; }
+    #stage-definition { color: var(--text); font-size: .92rem; }
+    .stage-facts { display: grid; margin: 0; }
+    .stage-facts div { padding: 15px 0; border-bottom: 1px solid var(--trace); }
+    .stage-facts dt { margin-bottom: 6px; color: var(--muted); font: 700 .64rem Consolas, monospace; letter-spacing: .09em; text-transform: uppercase; }
+    .stage-facts dd { margin: 0; font-size: .8rem; }
+    .stage-pressure { margin-top: auto; padding: 13px; border-left: 3px solid var(--compute); background: #271923; font-size: .78rem; }
+    .stage-pressure b { color: var(--compute); }
+    .glossary-panel { margin-top: 12px; padding: 20px; }
+    .glossary-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--trace); }
+    .glossary-head p { max-width: 58ch; color: var(--muted); font-size: .78rem; }
+    .glossary-detail { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; padding-top: 20px; }
+    .glossary-identity h3 { margin: 7px 0 9px; font-size: 2rem; }
+    .glossary-category { display: inline-block; padding: 4px 7px; border: 1px solid var(--sram); color: var(--sram); font: 700 .64rem Consolas, monospace; }
+    .glossary-body { min-width: 0; }
     .detail-card h3 { margin-bottom: 15px; font-size: 1.65rem; }
-    .detail-list { display: grid; margin: 0; }
-    .detail-list div { display: grid; grid-template-columns: 82px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--trace); }
+    .detail-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0; background: var(--trace); }
+    .detail-list div { display: block; min-height: 92px; padding: 12px; background: var(--module-deep); }
     .detail-list dt { color: var(--muted); font: .65rem Consolas, monospace; text-transform: uppercase; }
     .detail-list dd { margin: 0; font-size: .78rem; }
     .misconception { margin-top: 14px; padding: 12px; border-left: 3px solid var(--danger); background: #281a1c; font-size: .78rem; }
 
-    .component-strip { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 12px; }
+    .component-strip { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; margin-top: 16px; }
     .component-button { min-width: 0; padding: 12px 8px; font: 700 .7rem Consolas, monospace; }
     .component-button[aria-pressed="true"] { border-color: var(--sram); color: var(--sram); }
-    .component-button:nth-child(2), .component-button:nth-child(3), .component-button:nth-child(4) { border-bottom-color: var(--dram); }
-    .component-button:nth-child(6), .component-button:nth-child(7), .component-button:nth-child(8) { border-bottom-color: var(--flash); }
+    .component-button:nth-child(2), .component-button:nth-child(3), .component-button:nth-child(4), .component-button:nth-child(5) { border-bottom-color: var(--dram); }
+    .component-button:nth-child(7), .component-button:nth-child(8), .component-button:nth-child(9) { border-bottom-color: var(--flash); }
 
     .layer-map { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .layer { position: relative; min-height: 210px; padding: 18px; overflow: hidden; }
@@ -235,8 +248,11 @@
       .hero { gap: 32px; }
       .taxonomy, .layer-map, .axes-grid { grid-template-columns: 1fr 1fr; }
       .data-path-grid, .hbm-grid { grid-template-columns: 1fr; }
-      .detail-rail { min-height: 0; }
-      .component-strip { grid-template-columns: repeat(4, 1fr); }
+      .stage-rail { min-height: 0; }
+      .stage-pressure { margin-top: 18px; }
+      .component-strip { grid-template-columns: repeat(3, 1fr); }
+      .glossary-detail { grid-template-columns: 1fr; }
+      .detail-list { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 760px) {
       .shell { width: min(100% - 20px, var(--page)); }
@@ -252,7 +268,9 @@
       .scenario-button { padding-inline: 7px; font-size: .76rem; }
       .diagram-panel { padding: 6px; overflow-x: auto; }
       .rack-svg { min-width: 720px; }
-      .component-strip { grid-template-columns: repeat(2, 1fr); }
+      .component-strip { grid-template-columns: repeat(3, 1fr); }
+      .glossary-head { align-items: flex-start; flex-direction: column; }
+      .detail-list { grid-template-columns: 1fr; }
       .calc-fields { grid-template-columns: 1fr; }
       .review-grid { grid-template-columns: 1fr; }
       .mental-row { grid-template-columns: 96px 1fr; }
@@ -358,13 +376,43 @@
               <circle id="payload" class="payload is-moving" cx="400" cy="133" r="9"/>
             </svg>
           </div>
-          <aside class="detail-rail panel" aria-label="階段與元件說明">
-            <div class="scenario-readout"><b>Active operation</b><p id="scenario-summary" aria-live="polite"></p></div>
-            <div class="detail-card">
-              <span class="kicker">Selected component</span>
+          <aside class="stage-rail panel" aria-label="推論階段說明">
+            <div class="stage-heading">
+              <span class="stage-code" id="stage-code">Stage 01 / Service Setup</span>
+              <h3 id="stage-name">Model Load</h3>
+              <p id="stage-definition" aria-live="polite"></p>
+            </div>
+            <dl class="stage-facts">
+              <div><dt>Data flow / 資料怎麼走</dt><dd id="stage-flow"></dd></div>
+              <div><dt>Output / 完成後得到什麼</dt><dd id="stage-result"></dd></div>
+            </dl>
+            <p class="stage-pressure"><b>System lens：</b> <span id="stage-pressure"></span></p>
+          </aside>
+        </div>
+        <div class="glossary-panel panel">
+          <div class="glossary-head">
+            <div><span class="kicker">Memory vocabulary / 名詞介紹</span><h3>先選名詞，再看它的物理本質與系統角色</h3></div>
+            <p>這一區只回答元件是什麼；上方右欄只回答推論階段在做什麼，兩個層級不再混在一起。</p>
+          </div>
+          <nav class="component-strip" aria-label="選擇記憶體元件">
+            <button type="button" class="component-button" data-component="sram" aria-pressed="true">SRAM</button>
+            <button type="button" class="component-button" data-component="ddr" aria-pressed="false">DDR</button>
+            <button type="button" class="component-button" data-component="gddr" aria-pressed="false">GDDR</button>
+            <button type="button" class="component-button" data-component="lpddr" aria-pressed="false">LPDDR</button>
+            <button type="button" class="component-button" data-component="hbm" aria-pressed="false">HBM</button>
+            <button type="button" class="component-button" data-component="kv" aria-pressed="false">KV CACHE</button>
+            <button type="button" class="component-button" data-component="nand" aria-pressed="false">NAND</button>
+            <button type="button" class="component-button" data-component="nor" aria-pressed="false">NOR</button>
+            <button type="button" class="component-button" data-component="ssd" aria-pressed="false">SSD</button>
+          </nav>
+          <div class="glossary-detail">
+            <div class="glossary-identity">
+              <span class="kicker">Selected term</span>
               <h3 id="detail-name">SRAM</h3>
+              <span class="glossary-category" id="detail-category"></span>
+            </div>
+            <div class="glossary-body">
               <dl class="detail-list">
-                <div><dt>分類</dt><dd id="detail-category"></dd></div>
                 <div><dt>實體</dt><dd id="detail-medium"></dd></div>
                 <div><dt>存放</dt><dd id="detail-stores"></dd></div>
                 <div><dt>目的</dt><dd id="detail-purpose"></dd></div>
@@ -372,18 +420,8 @@
               </dl>
               <p class="misconception"><strong>別混淆：</strong> <span id="detail-misconception"></span></p>
             </div>
-          </aside>
+          </div>
         </div>
-        <nav class="component-strip" aria-label="選擇記憶體元件">
-          <button type="button" class="component-button" data-component="sram" aria-pressed="true">SRAM</button>
-          <button type="button" class="component-button" data-component="ddr" aria-pressed="false">DDR</button>
-          <button type="button" class="component-button" data-component="gddr" aria-pressed="false">GDDR</button>
-          <button type="button" class="component-button" data-component="hbm" aria-pressed="false">HBM</button>
-          <button type="button" class="component-button" data-component="kv" aria-pressed="false">KV CACHE</button>
-          <button type="button" class="component-button" data-component="nand" aria-pressed="false">NAND</button>
-          <button type="button" class="component-button" data-component="nor" aria-pressed="false">NOR</button>
-          <button type="button" class="component-button" data-component="ssd" aria-pressed="false">SSD</button>
-        </nav>
       </div>
     </section>
 
@@ -462,7 +500,7 @@
     <section id="comparison" aria-labelledby="comparison-title">
       <div class="shell">
         <div class="section-head">
-          <div><span class="kicker">04 / Comparison Matrix</span><h2 id="comparison-title">八個名詞，一張表完成定位</h2></div>
+          <div><span class="kicker">04 / Comparison Matrix</span><h2 id="comparison-title">九個名詞，一張表完成定位</h2></div>
           <p>先問「它是技術、角色、裝置，還是資料結構？」再比較容量、速度或用途，才不會跨層誤比。</p>
         </div>
         <div class="table-wrap" tabindex="0" aria-label="記憶體技術比較表，可水平捲動">
@@ -472,6 +510,7 @@
               <tr><td>SRAM</td><td><span class="type-chip sram">物理技術</span></td><td>常見 6T bitcell</td><td>消失</td><td>CPU/GPU die</td><td>極低延遲</td><td>L2/L3、shared memory、tile buffer</td></tr>
               <tr><td>DDR DRAM</td><td><span class="type-chip">物理技術</span></td><td>1T1C＋refresh</td><td>消失</td><td>DIMM／主機板</td><td>容量與成本</td><td>Host memory、模型 staging、offload</td></tr>
               <tr><td>GDDR</td><td><span class="type-chip">物理技術</span></td><td>Graphics DRAM</td><td>消失</td><td>GPU PCB 周圍</td><td>高 per-pin rate</td><td>消費型／工作站 GPU 顯存</td></tr>
+              <tr><td>LPDDR</td><td><span class="type-chip">物理技術</span></td><td>Low-Power DRAM</td><td>消失</td><td>SoC／AI PC／Edge</td><td>低功耗與共用記憶體</td><td>CPU＋iGPU unified memory</td></tr>
               <tr><td>HBM</td><td><span class="type-chip">物理技術＋封裝</span></td><td>TSV-stacked DRAM</td><td>消失</td><td>GPU 同封裝</td><td>極寬介面、低 pJ/bit</td><td>權重、activation、KV cache</td></tr>
               <tr><td>NAND Flash</td><td><span class="type-chip flash">物理技術</span></td><td>Floating-gate／charge-trap</td><td>保留</td><td>SSD、手機、記憶卡</td><td>密度與成本</td><td>模型、資料集、checkpoint</td></tr>
               <tr><td>NOR Flash</td><td><span class="type-chip flash">物理技術</span></td><td>Parallel-readable cells</td><td>保留</td><td>主機板／控制器</td><td>隨機讀取與 XIP</td><td>BIOS、BMC、NIC／SSD firmware</td></tr>
@@ -550,18 +589,30 @@
   <script>
     const scenarios = {
       load: {
+        code: "Stage 01 / Service Setup",
         label: "Model Load",
-        summary: "SSD 的 NAND 保存模型；啟動服務時，權重經 Host DRAM 搬入 GPU HBM。",
+        definition: "把持久儲存中的模型權重，搬到可供推論服務使用的工作記憶體。這是服務啟動準備，不是在生成 token。",
+        flow: "NVMe SSD → Host DDR → PCIe／CXL → GPU HBM",
+        result: "權重常駐 HBM，GPU 可以開始接收 prompt。",
+        pressure: "主要看 storage 與 PCIe 搬移時間；完成載入後通常不會每個 token 重走一次。",
         paths: ["path-ssd-ddr", "path-ddr-hbm"]
       },
       prefill: {
+        code: "Stage 02 / Context Build",
         label: "Prefill",
-        summary: "GPU 平行處理 prompt；權重與 activation 在 HBM、SRAM、運算單元間流動，K/V 寫回 HBM。",
+        definition: "一次平行處理整段輸入 prompt，計算各層 activation，並為歷史 token 建立初始 KV Cache。",
+        flow: "HBM 權重／activation → SRAM tile → Tensor Core；K/V 寫回 HBM",
+        result: "產生第一個輸出 token，並建立可供 Decode 重用的 context 狀態。",
+        pressure: "通常偏 compute-bound；prompt 越長，首 token 延遲與初始 KV 容量越大。",
         paths: ["path-hbm-sram", "path-sram-compute", "path-compute-hbm"]
       },
       decode: {
+        code: "Stage 03 / Token Loop",
         label: "Decode",
-        summary: "每一步讀取權重與歷史 KV，分塊搬入 SRAM 完成 attention，再把新 K/V append 到 HBM。",
+        definition: "每一輪只生成一個新 token，反覆讀取模型權重與全部可見的歷史 KV，再追加新的 K/V。",
+        flow: "HBM 權重／歷史 KV → SRAM tile → Tensor Core → 新 K/V append 回 HBM",
+        result: "每輪輸出一個 token，KV Cache 隨 context 持續成長。",
+        pressure: "通常更受 HBM bandwidth 與 KV 容量限制；Agent 多輪工具呼叫會放大這個壓力。",
         paths: ["path-hbm-sram", "path-sram-compute", "path-compute-hbm"]
       }
     };
@@ -570,6 +621,7 @@
       sram: { name: "SRAM", category: "物理技術", medium: "常見 6T bitcell array", stores: "Cache line、tag、tile、register-adjacent data", purpose: "最低延遲地供應 CPU／GPU pipeline", volatile: "斷電消失", misconception: "CPU L2/L3 主要是 SRAM，但 cache 還包含 tag、ECC 與控制邏輯。" },
       ddr: { name: "DDR DRAM", category: "物理技術／主記憶體角色", medium: "1T1C DRAM，需要 refresh", stores: "OS、程式、host-side model data", purpose: "以合理成本提供大容量主記憶體", volatile: "斷電消失", misconception: "中國用語『內存』通常指 DDR RAM，不是 SSD，也不是 CPU cache。" },
       gddr: { name: "GDDR", category: "物理技術／顯存實作", medium: "高 per-pin rate Graphics DRAM", stores: "Frame buffer、模型權重、activation", purpose: "以少量高速 pins 提供 GPU bandwidth", volatile: "斷電消失", misconception: "顯存是一個系統角色；GDDR 只是其中一種實作。" },
+      lpddr: { name: "LPDDR", category: "物理技術／低功耗主記憶體", medium: "Low-Power DRAM＋寬 board-level interface", stores: "CPU／整合式 GPU 共用資料、edge AI 模型", purpose: "降低待機與每 bit 傳輸功耗", volatile: "斷電消失", misconception: "LPDDR 不只用在手機；AI PC、edge accelerator 與部分 unified-memory 系統也會使用。" },
       hbm: { name: "HBM", category: "物理技術＋先進封裝", medium: "TSV-stacked DRAM＋寬 I/O", stores: "權重、activation、KV cache", purpose: "以大量平行 pins 提供高 bandwidth 與較低 pJ/bit", volatile: "斷電消失", misconception: "更多 DRAM layers 主要增加容量；不是把 1024-bit 再乘上 die 數。" },
       kv: { name: "KV Cache", category: "模型資料結構", medium: "每層 attention 的 K/V tensor；通常承載於 HBM", stores: "已處理 token 的 Key／Value vectors", purpose: "避免每產生新 token 都重算歷史 K/V", volatile: "依承載介質；request 結束通常釋放", misconception: "KV Cache 不是 SRAM 或 HBM；它是可以放在 HBM、DDR 甚至 SSD 的資料。" },
       nand: { name: "NAND Flash", category: "物理技術", medium: "Floating-gate 或 charge-trap cell", stores: "大量持久資料", purpose: "用低成本取得高密度儲存", volatile: "斷電保留", misconception: "NAND 適合 page/program 與 block/erase，不適合 CPU 直接逐位址執行。" },
@@ -586,16 +638,19 @@
 
     function initScenarioController() {
       const buttons = [...document.querySelectorAll("[data-scenario]")];
-      const summary = document.querySelector("#scenario-summary");
       const payload = document.querySelector("#payload");
-      if (!buttons.length || !summary) return;
+      const fields = ["code", "name", "definition", "flow", "result", "pressure"];
+      if (!buttons.length) return;
       const activate = (name) => {
         const scenario = scenarios[name];
         if (!scenario) return;
         document.body.dataset.scenario = name;
         buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.scenario === name)));
         document.querySelectorAll(".trace").forEach((path) => path.classList.toggle("is-active", scenario.paths.includes(path.id)));
-        summary.textContent = scenario.summary;
+        fields.forEach((field) => {
+          const node = document.querySelector(`#stage-${field}`);
+          if (node) node.textContent = field === "name" ? scenario.label : scenario[field];
+        });
         if (payload) payload.setAttribute("cx", name === "load" ? "400" : name === "prefill" ? "550" : "720");
       };
       buttons.forEach((button) => button.addEventListener("click", () => activate(button.dataset.scenario)));
