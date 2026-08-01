@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#173e55">
+  <meta name="description" content="Lumentum（LITE）完整 Alpha 研究：已定價、未定價、產品放量、EPS 敏感度與估值情境。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23173e55'/%3E%3Cpath d='M7 16h18M11 11l-4 5 4 5M21 11l4 5-4 5' fill='none' stroke='%233aa7c6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <title>Lumentum（LITE）Alpha 研究｜2026.08</title>
+  <style>
+    :root {
+      --canvas: #f3f4f0;
+      --paper: #ffffff;
+      --ink: #1f2724;
+      --ink-2: #35403b;
+      --muted: #68716d;
+      --faint: #8b938f;
+      --rule: #d9ddd8;
+      --rule-2: #e9ece8;
+      --navy: #173e55;
+      --blue: #245d7a;
+      --blue-soft: #eaf2f6;
+      --cyan: #3aa7c6;
+      --cyan-soft: #e9f7fa;
+      --green: #2e6b50;
+      --green-soft: #eaf4ee;
+      --amber: #9b691d;
+      --amber-soft: #f8f0df;
+      --red: #a13c35;
+      --red-soft: #f8eae8;
+      --shadow: 0 8px 24px rgba(25, 39, 33, 0.055);
+      --radius: 8px;
+      --radius-sm: 5px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 78px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      font-size: 15px;
+      line-height: 1.68;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 8px;
+      left: 8px;
+      padding: 8px 12px;
+      transform: translateY(-160%);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      color: var(--navy);
+      box-shadow: var(--shadow);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    :focus-visible {
+      outline: 3px solid rgba(58, 167, 198, .55);
+      outline-offset: 3px;
+    }
+
+    .topbar {
+      position: sticky;
+      z-index: 50;
+      top: 0;
+      border-bottom: 1px solid rgba(217, 221, 216, .9);
+      background: rgba(243, 244, 240, .94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: min(calc(100% - 28px), var(--max));
+      min-height: 58px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      border: 1px solid rgba(36, 93, 122, .26);
+      border-radius: 50%;
+      background: var(--paper);
+    }
+
+    .brand strong {
+      color: var(--navy);
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+
+    .brand small {
+      color: var(--faint);
+      font-size: 10px;
+      letter-spacing: .08em;
+    }
+
+    .nav-scroll {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-scroll::-webkit-scrollbar { display: none; }
+
+    .nav-scroll a {
+      flex: 0 0 auto;
+      padding: 7px 8px 6px;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-scroll a:hover,
+    .nav-scroll a[aria-current="location"] {
+      border-color: var(--cyan);
+      color: var(--navy);
+    }
+
+    .print-button {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 6px 9px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      color: var(--navy);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .page {
+      width: min(calc(100% - 28px), var(--max));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      gap: 22px;
+      overflow: hidden;
+      padding: clamp(24px, 6vw, 54px);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -38px;
+      bottom: 24px;
+      width: 300px;
+      height: 1px;
+      background: var(--cyan);
+      box-shadow: 0 -12px 0 rgba(58, 167, 198, .55), 0 12px 0 rgba(36, 93, 122, .25);
+      content: "";
+      transform: rotate(-12deg);
+      transform-origin: center;
+    }
+
+    .hero-copy,
+    .price-panel { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 24px;
+      height: 2px;
+      background: var(--cyan);
+      content: "";
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 17px;
+      color: var(--navy);
+      font-size: clamp(34px, 7.2vw, 70px);
+      font-weight: 820;
+      letter-spacing: -.055em;
+      line-height: .98;
+    }
+
+    h1 span {
+      display: block;
+      margin-top: 10px;
+      color: var(--blue);
+      font-size: .54em;
+      letter-spacing: -.025em;
+      line-height: 1.12;
+    }
+
+    .hero-deck {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: var(--ink-2);
+      font-size: clamp(16px, 2.2vw, 20px);
+      font-weight: 620;
+      line-height: 1.58;
+    }
+
+    .hero-deck strong { color: var(--blue); }
+
+    .price-panel {
+      align-self: end;
+      max-width: 360px;
+      padding: 18px;
+      border: 1px solid var(--rule);
+      border-top: 3px solid var(--cyan);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .92);
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .price {
+      margin: 4px 0 2px;
+      color: var(--navy);
+      font-size: clamp(34px, 7vw, 50px);
+      font-weight: 800;
+      letter-spacing: -.05em;
+      line-height: 1;
+    }
+
+    .price-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .stage {
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 5px 8px;
+      border: 1px solid #e1c88e;
+      border-radius: 999px;
+      background: var(--amber-soft);
+      color: #7b5114;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .05em;
+    }
+
+    .evidence-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 7px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      background: #f8f9f7;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .035em;
+      white-space: nowrap;
+    }
+
+    .tag::before {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+
+    .tag.fact { color: var(--green); background: var(--green-soft); border-color: #cce0d4; }
+    .tag.guide { color: var(--blue); background: var(--blue-soft); border-color: #cbdde7; }
+    .tag.consensus { color: #685b86; background: #f0edf6; border-color: #dcd3eb; }
+    .tag.channel { color: var(--amber); background: var(--amber-soft); border-color: #e8d5ad; }
+    .tag.inference { color: var(--red); background: var(--red-soft); border-color: #e9c9c5; }
+
+    section { margin-top: 44px; }
+
+    .section-head {
+      display: grid;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    .section-kicker {
+      margin: 0;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      color: var(--navy);
+      font-size: clamp(25px, 4.5vw, 38px);
+      font-weight: 790;
+      letter-spacing: -.035em;
+      line-height: 1.13;
+    }
+
+    .section-lead {
+      max-width: 840px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid { display: grid; gap: 12px; }
+    .grid-3, .grid-4, .split { grid-template-columns: 1fr; }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: 0 3px 12px rgba(25, 39, 33, .025);
+    }
+
+    .card h3 {
+      margin-bottom: 9px;
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      line-height: 1.35;
+    }
+
+    .card p:last-child { margin-bottom: 0; }
+
+    .card-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 22px;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .thesis-card { min-height: 220px; }
+    .thesis-card:first-child { border-top: 3px solid var(--cyan); }
+    .thesis-card:nth-child(2) { border-top: 3px solid var(--amber); }
+    .thesis-card:nth-child(3) { border-top: 3px solid var(--red); }
+
+    .thesis-card p { color: var(--ink-2); font-size: 13px; }
+
+    .decision-strip {
+      display: grid;
+      gap: 14px;
+      margin-top: 12px;
+      padding: 21px;
+      border: 1px solid #bdd4df;
+      border-left: 5px solid var(--cyan);
+      border-radius: var(--radius);
+      background: var(--blue-soft);
+    }
+
+    .decision-strip strong {
+      display: block;
+      color: var(--navy);
+      font-size: 18px;
+      line-height: 1.42;
+    }
+
+    .decision-strip p { margin: 0; color: var(--ink-2); font-size: 13px; }
+
+    .metric-card {
+      padding: 16px;
+      border-top: 3px solid var(--blue);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      display: block;
+      margin: 4px 0 3px;
+      color: var(--navy);
+      font-size: 27px;
+      font-weight: 820;
+      letter-spacing: -.035em;
+      line-height: 1.05;
+    }
+
+    .metric-note { color: var(--muted); font-size: 11px; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: 0 3px 12px rgba(25, 39, 33, .025);
+    }
+
+    table {
+      width: 100%;
+      min-width: 670px;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    caption {
+      padding: 15px 16px 11px;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-top: 1px solid var(--rule-2);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    thead th {
+      border-top: 0;
+      background: #f8f9f7;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    tbody th {
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    tbody td {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .accent-cell { color: var(--blue); font-weight: 850; }
+    .soft-cell { background: rgba(234, 242, 246, .55); }
+
+    .table-note {
+      margin: 9px 2px 0;
+      color: var(--faint);
+      font-size: 10px;
+    }
+
+    .mix-bar {
+      display: flex;
+      height: 11px;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 99px;
+      background: var(--paper);
+    }
+
+    .mix-components { width: 66%; background: var(--blue); }
+    .mix-systems { width: 34%; background: var(--cyan); }
+
+    .mix-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .mix-legend b { display: block; color: var(--navy); font-size: 20px; }
+    .mix-legend span { color: var(--muted); font-size: 11px; }
+
+    .ledger {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--rule);
+    }
+
+    .ledger-row {
+      display: grid;
+      gap: 8px;
+      padding: 15px 16px;
+      background: var(--paper);
+    }
+
+    .ledger-row h3 { margin: 0; color: var(--navy); font-size: 14px; }
+    .ledger-row p { margin: 0; color: var(--ink-2); font-size: 12px; }
+
+    .signal {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: fit-content;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .05em;
+    }
+
+    .signal i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .signal.open i { background: var(--cyan); box-shadow: 0 0 0 4px var(--cyan-soft); }
+    .signal.priced i { background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); }
+
+    .optical-shell {
+      padding: 22px 16px 18px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .optical-path {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(128px, 1fr));
+      gap: 10px;
+      overflow-x: auto;
+      padding: 20px 2px 25px;
+      scrollbar-color: var(--rule) transparent;
+    }
+
+    .optical-path::before {
+      position: absolute;
+      top: 48px;
+      right: 6%;
+      left: 6%;
+      height: 2px;
+      background: var(--cyan);
+      content: "";
+    }
+
+    .path-node {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      min-height: 94px;
+      padding: 11px 8px;
+      place-items: center;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .path-node:hover { transform: translateY(-2px); border-color: #9ebdcd; }
+
+    .path-node[aria-selected="true"] {
+      border-color: var(--cyan);
+      background: var(--cyan-soft);
+      box-shadow: 0 5px 18px rgba(36, 93, 122, .11);
+      color: var(--navy);
+    }
+
+    .node-dot {
+      display: grid;
+      width: 29px;
+      height: 29px;
+      place-items: center;
+      border: 2px solid var(--paper);
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 0 1px var(--blue);
+      color: white;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .path-node[aria-selected="true"] .node-dot { background: var(--cyan); box-shadow: 0 0 0 1px var(--cyan); }
+
+    .node-name { font-size: 12px; font-weight: 850; line-height: 1.25; }
+    .node-role { color: var(--muted); font-size: 9px; letter-spacing: .04em; }
+
+    .product-panel {
+      display: grid;
+      gap: 16px;
+      margin-top: 4px;
+      padding: 20px;
+      border: 1px solid #c9dce5;
+      border-left: 4px solid var(--cyan);
+      border-radius: var(--radius);
+      background: var(--blue-soft);
+    }
+
+    .product-panel[hidden] { display: none; }
+    .product-panel h3 { margin-bottom: 6px; color: var(--navy); font-size: 18px; }
+    .product-panel p { margin-bottom: 0; color: var(--ink-2); font-size: 13px; }
+
+    .panel-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .panel-stat {
+      padding: 10px;
+      border: 1px solid rgba(36, 93, 122, .14);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, .7);
+    }
+
+    .panel-stat span { display: block; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .panel-stat b { display: block; margin-top: 2px; color: var(--navy); font-size: 13px; line-height: 1.35; }
+
+    .confidence {
+      display: inline-grid;
+      grid-template-columns: repeat(3, 16px);
+      gap: 3px;
+      vertical-align: middle;
+    }
+
+    .confidence i { height: 5px; border-radius: 99px; background: var(--rule); }
+    .confidence.high i { background: var(--green); }
+    .confidence.medium i:nth-child(-n+2) { background: var(--amber); }
+    .confidence.low i:first-child { background: var(--red); }
+
+    .ramp-table td:nth-child(3) { white-space: normal; min-width: 210px; }
+
+    .formula-box {
+      padding: 18px;
+      border: 1px dashed #aeb9b3;
+      border-radius: var(--radius);
+      background: #f8f9f7;
+      color: var(--ink-2);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .calculator {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .choice-group { border: 0; margin: 0; padding: 0; }
+    .choice-group legend { margin-bottom: 8px; color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .choice-row { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    .choice-button {
+      min-width: 68px;
+      padding: 8px 10px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .choice-button[aria-pressed="true"] {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: white;
+    }
+
+    .calculator-result {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--navy);
+      border-radius: var(--radius);
+      background: var(--navy);
+    }
+
+    .result-cell { padding: 16px; background: var(--navy); color: white; }
+    .result-cell + .result-cell { border-left: 1px solid rgba(255,255,255,.18); }
+    .result-cell span { display: block; color: #bad2de; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .result-cell b { display: block; margin-top: 3px; font-size: clamp(24px, 5vw, 36px); letter-spacing: -.04em; line-height: 1; }
+
+    .scenario-card { position: relative; overflow: hidden; min-height: 245px; }
+    .scenario-card::before { position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--rule); content: ""; }
+    .scenario-card.bear::before { background: var(--red); }
+    .scenario-card.base::before { background: var(--blue); }
+    .scenario-card.bull::before { background: var(--green); }
+
+    .scenario-name { color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    .scenario-price { display: block; margin: 6px 0 10px; color: var(--navy); font-size: 31px; font-weight: 850; letter-spacing: -.045em; line-height: 1; }
+    .scenario-return { display: inline-flex; padding: 4px 7px; border-radius: 999px; background: #f3f4f0; color: var(--muted); font-size: 10px; font-weight: 850; }
+    .scenario-card ul { margin: 15px 0 0; padding-left: 17px; color: var(--ink-2); font-size: 12px; }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      padding-left: 6px;
+    }
+
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 14px;
+      padding: 0 0 22px 21px;
+      border-left: 1px solid var(--rule);
+    }
+
+    .timeline-item:last-child { border-left-color: transparent; padding-bottom: 0; }
+    .timeline-item::before { position: absolute; top: 5px; left: -5px; width: 9px; height: 9px; border: 2px solid var(--paper); border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 1px var(--cyan); content: ""; }
+    .timeline-date { color: var(--blue); font-size: 10px; font-weight: 900; letter-spacing: .06em; }
+    .timeline-copy h3 { margin-bottom: 3px; font-size: 14px; }
+    .timeline-copy p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .checklist { counter-reset: checks; }
+    .check-item {
+      position: relative;
+      padding: 14px 14px 14px 46px;
+      border-top: 1px solid var(--rule-2);
+    }
+    .check-item:first-child { border-top: 0; }
+    .check-item::before {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: grid;
+      width: 22px;
+      height: 22px;
+      place-items: center;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      color: var(--blue);
+      content: counter(checks, decimal-leading-zero);
+      counter-increment: checks;
+      font-size: 9px;
+      font-weight: 900;
+    }
+    .check-item strong { display: block; color: var(--navy); font-size: 13px; }
+    .check-item span { color: var(--muted); font-size: 11px; }
+
+    .risk-card { border-left: 4px solid var(--red); }
+    .risk-card strong { color: var(--red); }
+
+    .source-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: source;
+    }
+
+    .source-list li {
+      position: relative;
+      padding: 11px 12px 11px 43px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      counter-increment: source;
+    }
+
+    .source-list li::before {
+      position: absolute;
+      top: 11px;
+      left: 12px;
+      color: var(--blue);
+      content: counter(source, decimal-leading-zero);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .source-list a { color: var(--navy); font-size: 12px; font-weight: 760; text-underline-offset: 3px; }
+    .source-list span { display: block; color: var(--faint); font-size: 10px; word-break: break-all; }
+
+    .disclaimer {
+      margin-top: 18px;
+      padding-top: 15px;
+      border-top: 1px solid var(--rule);
+      color: var(--faint);
+      font-size: 10px;
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 28px;
+      color: var(--faint);
+      font-size: 10px;
+    }
+
+    @media (min-width: 680px) {
+      .page { padding-top: 38px; }
+      .hero { grid-template-columns: minmax(0, 1fr) 310px; }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-head { grid-template-columns: minmax(0, 1fr) minmax(260px, .65fr); align-items: end; }
+      .section-head .section-lead { justify-self: end; }
+      .decision-strip { grid-template-columns: .9fr 1.2fr; align-items: center; }
+      .ledger-row { grid-template-columns: 132px minmax(140px, .55fr) 1.45fr; align-items: center; }
+      .product-panel { grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); align-items: center; }
+      .calculator { grid-template-columns: .65fr .65fr 1.2fr; align-items: end; }
+    }
+
+    @media (min-width: 940px) {
+      .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .hero { min-height: 455px; align-items: end; }
+      .nav-scroll a { padding-inline: 10px; }
+    }
+
+    @media (max-width: 520px) {
+      .topbar-inner { width: min(calc(100% - 18px), var(--max)); gap: 9px; }
+      .brand small { display: none; }
+      .print-button span { display: none; }
+      .page { width: min(calc(100% - 18px), var(--max)); padding-top: 16px; }
+      .hero { padding: 24px 19px; }
+      .hero::after { opacity: .45; }
+      .card { padding: 16px; }
+      .panel-stats { grid-template-columns: 1fr; }
+      .calculator-result { grid-template-columns: 1fr; }
+      .result-cell + .result-cell { border-top: 1px solid rgba(255,255,255,.18); border-left: 0; }
+      .timeline-item { grid-template-columns: 62px 1fr; gap: 9px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+
+    @page { size: A4 portrait; margin: 12mm; }
+
+    @media print {
+      :root { --canvas: #fff; --shadow: none; }
+      html { scroll-padding-top: 0; }
+      body { background: #fff; color: #111; font-size: 9.5pt; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .topbar, .skip-link, .print-button, .nav-scroll { display: none !important; }
+      .page { width: 100%; max-width: none; margin: 0; padding: 0; }
+      .hero { min-height: 0; padding: 18px; box-shadow: none; }
+      .hero::after { display: none; }
+      h1 { font-size: 34pt; }
+      section { margin-top: 24px; break-before: auto; }
+      #valuation, #watch, #risks { break-before: page; }
+      .section-head { break-after: avoid-page; page-break-after: avoid; }
+      .card, .table-wrap, .optical-shell, .calculator, .decision-strip, .ledger-row, .timeline-item, .source-list li { break-inside: avoid; box-shadow: none; }
+      .optical-shell { break-inside: auto; }
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid-4 { grid-template-columns: repeat(4, 1fr); }
+      .split { grid-template-columns: repeat(2, 1fr); }
+      .optical-path { overflow: visible; grid-template-columns: repeat(5, 1fr); }
+      .path-node { min-height: 72px; }
+      .product-panel[hidden] { display: grid; }
+      .product-panel { break-inside: avoid; margin-top: 7px; padding: 12px; }
+      .choice-group { display: none; }
+      .calculator { display: block; }
+      .calculator-result { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .result-cell b { font-size: 24pt; }
+      table { min-width: 0; }
+      th, td { padding: 7px 8px; white-space: normal; }
+      .source-list span { display: block; }
+      a { text-decoration: none; }
+      footer { break-before: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要內容</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="返回報告頂端">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+            <path d="M2 8.5h13M5 4.5l-3 4 3 4M12 4.5l3 4-3 4" stroke="#245d7a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8.5" cy="8.5" r="2.1" fill="#3aa7c6"/>
+          </svg>
+        </span>
+        <span><strong>LITE / ALPHA</strong><small> OPTICAL RESEARCH</small></span>
+      </a>
+      <nav class="nav-scroll" aria-label="報告章節">
+        <a href="#verdict">結論</a>
+        <a href="#numbers">數字</a>
+        <a href="#expectations">預期差</a>
+        <a href="#products">產品放量</a>
+        <a href="#valuation">估值</a>
+        <a href="#watch">追蹤</a>
+        <a href="#risks">風險</a>
+        <a href="#sources">來源</a>
+      </nav>
+      <button class="print-button" id="printButton" type="button" aria-label="列印或匯出 PDF">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>列印 / PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="page" id="main">
+    <article id="top">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Public Equity Research · 2026.08.01</p>
+          <h1>Lumentum <span>不是單一光模組押注，而是 AI Fabric 的架構對沖</span></h1>
+          <p class="hero-deck">市場已為 EML 缺貨、OCS backlog 與第一波 CPO 付錢；仍可能漏看的是 <strong>每顆 xPU 的光學價值量上升</strong>，以及公司同時站在 pluggable、CPO、OCS、scale-up 多條路徑上的選擇權。</p>
+          <ul class="evidence-legend" aria-label="證據分級圖例">
+            <li class="tag fact">已確認事實</li>
+            <li class="tag guide">公司指引</li>
+            <li class="tag consensus">市場共識</li>
+            <li class="tag channel">供應鏈調查</li>
+            <li class="tag inference">分析推論</li>
+          </ul>
+        </div>
+        <aside class="price-panel" aria-label="股價快照">
+          <span class="price-label">LITE current price</span>
+          <div class="price">US$713.94</div>
+          <div class="price-meta">
+            <span>截至 2026-08-01</span>
+            <span>FY28E P/E 24.2x</span>
+          </div>
+          <span class="stage">預期階段：強勢兌現 → 接近完美定價</span>
+        </aside>
+      </header>
+
+      <section id="verdict" aria-labelledby="verdict-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">01 · Executive Verdict</p>
+            <h2 id="verdict-title">好公司已是共識，真正的問題是還剩多少預期差</h2>
+          </div>
+          <p class="section-lead">目前股價不是在交易「AI 光通訊會成長」；它在交易 Lumentum 能把 2026–2029 的營收放大四倍、同時把 EBIT margin 推到 42%。因此 alpha 必須來自共識以外的產品價值量或更高獲利率。</p>
+        </div>
+
+        <div class="grid grid-3">
+          <article class="card thesis-card">
+            <span class="card-index">01</span>
+            <h3>Investment Thesis</h3>
+            <p>EML 提供近端現金流，ELS/CPO 與 OCS 提高每個 xPU 的 content，1060nm VCSEL 則保留 optical scale-up 的零基選擇權。組合價值高於任何單一產品 TAM。</p>
+            <span class="tag inference">分析推論</span>
+          </article>
+          <article class="card thesis-card">
+            <span class="card-index">02</span>
+            <h3>What’s Priced</h3>
+            <p>FY27 EML shortage、年底前 +50% 產能、OCS 超過 US$1bn run-rate、數億美元 scale-out CPO，以及 NVIDIA US$2bn 策略投資，均已成主流敘事。</p>
+            <span class="tag consensus">市場共識</span>
+          </article>
+          <article class="card thesis-card">
+            <span class="card-index">03</span>
+            <h3>Key Risk</h3>
+            <p>NVIDIA 同時投資 Lumentum 與 Coherent，代表需求被驗證，也代表雙供與買方議價。若 Coherent 6 吋 InP 良率快速改善，Lumentum 的稀缺性溢價會先於需求下滑而消失。</p>
+            <span class="tag fact">已確認事實</span>
+          </article>
+        </div>
+
+        <div class="decision-strip">
+          <strong>一句話結論：FY28 合理 alpha case 約 US$829–890；US$1,100 以上必須等 FY29 的 CPO／OCS／scale-up 同時驗證。</strong>
+          <p>以 US$713.94 起算，要有超過 20% 上行，不只要達到 FY28E EPS US$29.53；需要 EPS 約 US$34–35，或市場願意把估值由 24.2x 再推到約 26–28x。現在較適合「高 Beta 衛星倉＋財報後驗證」，不是把所有 2029 藍圖一次買滿。</p>
+        </div>
+      </section>
+
+      <section id="numbers" aria-labelledby="numbers-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">02 · Numbers That Matter</p>
+            <h2 id="numbers-title">市場已經寫進去的成長曲線</h2>
+          </div>
+          <p class="section-lead">下表保留原三頁圖卡的 FY26E–FY29E 共識數字；P/E 改以 2026-08-01 股價 US$713.94 重算。FY29E 的核心假設不是單純出貨增加，而是產品組合與 fab 利用率同時成功。</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <caption>FY26E–FY29E 市場共識與目前估值</caption>
+            <thead>
+              <tr><th scope="col">US$bn / 每股</th><th scope="col">FY26E</th><th scope="col">FY27E</th><th scope="col">FY28E</th><th scope="col">FY29E</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">營收</th><td>3.00</td><td>5.67</td><td class="soft-cell">8.77</td><td>12.21</td></tr>
+              <tr><th scope="row">EPS</th><td>8.23</td><td>18.58</td><td class="soft-cell accent-cell">29.53</td><td>44.84</td></tr>
+              <tr><th scope="row">EBIT margin</th><td>29.2%</td><td>38.1%</td><td class="soft-cell">40.8%</td><td>42.1%</td></tr>
+              <tr><th scope="row">P/E @ US$713.94</th><td>86.7x</td><td>38.4x</td><td class="soft-cell accent-cell">24.2x</td><td>15.9x</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">市場共識來源見 [12]；P/E 為本報告依 US$713.94／各年度 EPS 計算。原始圖卡以 US$693.24 計算的 P/E 為 84.2x／37.3x／23.5x／15.5x；FY26E–FY29E 不是公司財測。</p>
+
+        <div class="grid grid-4" style="margin-top:12px">
+          <article class="card metric-card"><span class="metric-label">FY3Q26 Revenue</span><b class="metric-value">US$808.4m</b><span class="metric-note">已公布實績</span></article>
+          <article class="card metric-card"><span class="metric-label">Non-GAAP Gross Margin</span><b class="metric-value">47.9%</b><span class="metric-note">產品組合改善</span></article>
+          <article class="card metric-card"><span class="metric-label">Operating Margin</span><b class="metric-value">32.2%</b><span class="metric-note">距 FY27E 38.1% 尚有斜率</span></article>
+          <article class="card metric-card"><span class="metric-label">Non-GAAP EPS</span><b class="metric-value">US$2.37</b><span class="metric-note">FY3Q26</span></article>
+        </div>
+
+        <div class="split grid" style="margin-top:12px">
+          <article class="card">
+            <h3>FY3Q26 Segment Mix</h3>
+            <div class="mix-bar" role="img" aria-label="Components 66%，Systems 34%">
+              <span class="mix-components"></span><span class="mix-systems"></span>
+            </div>
+            <div class="mix-legend">
+              <div><b>US$533.3m</b><span>Components · 66%</span></div>
+              <div><b>US$275.1m</b><span>Systems · 34%</span></div>
+            </div>
+            <p class="table-note">Systems 的 OCS 成長使公司逐步由元件供應商，往更高 content 的 photonic systems 延伸。</p>
+          </article>
+          <article class="card">
+            <h3>FY4Q26 公司指引</h3>
+            <div class="grid grid-3">
+              <div><span class="metric-label">Revenue</span><b class="metric-value" style="font-size:20px">US$960m–1.01bn</b></div>
+              <div><span class="metric-label">Op. margin</span><b class="metric-value" style="font-size:20px">35–36%</b></div>
+              <div><span class="metric-label">EPS</span><b class="metric-value" style="font-size:20px">US$2.85–3.05</b></div>
+            </div>
+            <p class="table-note">公司指引假設稀釋股數 102m、稅率 16.5%；後續敏感度模型沿用同一假設。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="expectations" aria-labelledby="expectations-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">03 · Expectation Gap</p>
+            <h2 id="expectations-title">已定價的 headline，與還沒進模型的 value content</h2>
+          </div>
+          <p class="section-lead">「消息還沒被大家知道」不是 alpha。真正可交易的預期差，是市場知道產品存在，但仍低估每個系統需要多少顆、何時認列、能保留多少 margin。</p>
+        </div>
+
+        <div class="ledger" aria-label="已定價與未定價項目比較">
+          <article class="ledger-row">
+            <div class="signal priced"><i></i>大致已定價</div>
+            <h3>EML 缺貨＋產能</h3>
+            <p>FY27 shortage、長約與溢價、2026 年底前 EML capacity 約 +50%，已是市場主流模型的一部分。</p>
+          </article>
+          <article class="ledger-row">
+            <div class="signal priced"><i></i>大致已定價</div>
+            <h3>OCS 第一階段</h3>
+            <p>2027 年 run-rate 超過 US$1bn、2H26 履行逾 US$400m backlog、多年 multi-billion agreement，已構成 Systems 高增長共識。</p>
+          </article>
+          <article class="ledger-row">
+            <div class="signal priced"><i></i>大致已定價</div>
+            <h3>NVIDIA 背書</h3>
+            <p>US$2bn 投資、採購承諾、Greensboro fab 與初期 scale-out CPO，均已推升估值與長期能見度。</p>
+          </article>
+          <article class="ledger-row">
+            <div class="signal open"><i></i>可能尚未充分</div>
+            <h3>ELS 全套 content</h3>
+            <p>公司表示完整 external laser source 機會約為 UHP laser chip 單體的 2 倍；若 attach rate 提高，市場可能只算到晶片、沒算到整套 ELS。</p>
+          </article>
+          <article class="ledger-row">
+            <div class="signal open"><i></i>可能尚未充分</div>
+            <h3>OCS ports / xPU</h3>
+            <p>今天約 1.5:1，未來架構可能走向 2:1–10:1。若 AI cluster 拓樸真的提高 optical switching density，Systems content 的斜率會高於 xPU 數量。</p>
+          </article>
+          <article class="ledger-row">
+            <div class="signal open"><i></i>零基選擇權</div>
+            <h3>1060nm VCSEL scale-up</h3>
+            <p>2D array、co-packaged ASIC、UCIe/PCIe 與 channel sparing 技術路徑已展示，但尚無客戶、時程與商用營收指引；應視為 option，而非 base case。</p>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top:12px;border-left:4px solid var(--amber)">
+          <h3>容易誤算的「假 alpha」</h3>
+          <p><strong>Greensboro 的 US$5bn 是年產能，不是公司營收指引。</strong>而 FY29E US$12.21bn 營收、42.1% EBIT margin，本身已假設新 fab、高階產品組合與客戶放量相當順利。把 US$5bn 直接加到 FY29 consensus，會把產能上限與實際 demand 重複計算。</p>
+          <span class="tag inference">分析推論</span>
+        </div>
+      </section>
+
+      <section id="products" aria-labelledby="products-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">04 · Product Path</p>
+            <h2 id="products-title">五條光路，不是五個彼此獨立的 TAM</h2>
+          </div>
+          <p class="section-lead">Pluggable、CPO 與 optical scale-up 會彼此替代一部分鏈路；OCS 則服務拓樸重構。投資上應追蹤「每顆 xPU 的 Lumentum content」，避免把重疊市場全部相加。</p>
+        </div>
+
+        <div class="optical-shell">
+          <div class="optical-path" role="tablist" aria-label="Lumentum 產品路徑">
+            <button class="path-node" type="button" role="tab" aria-selected="true" aria-controls="panel-eml" id="tab-eml" data-product="eml">
+              <span class="node-dot">01</span><span class="node-name">400G/lane EML</span><span class="node-role">近端現金引擎</span>
+            </button>
+            <button class="path-node" type="button" role="tab" aria-selected="false" aria-controls="panel-els" id="tab-els" data-product="els">
+              <span class="node-dot">02</span><span class="node-name">CW / ELS / CPO</span><span class="node-role">content 擴張</span>
+            </button>
+            <button class="path-node" type="button" role="tab" aria-selected="false" aria-controls="panel-ocs" id="tab-ocs" data-product="ocs">
+              <span class="node-dot">03</span><span class="node-name">OCS Systems</span><span class="node-role">拓樸升級</span>
+            </button>
+            <button class="path-node" type="button" role="tab" aria-selected="false" aria-controls="panel-scale" id="tab-scale" data-product="scale">
+              <span class="node-dot">04</span><span class="node-name">Scale-across</span><span class="node-role">高 margin 元件</span>
+            </button>
+            <button class="path-node" type="button" role="tab" aria-selected="false" aria-controls="panel-vcsel" id="tab-vcsel" data-product="vcsel">
+              <span class="node-dot">05</span><span class="node-name">1060nm VCSEL</span><span class="node-role">零基選擇權</span>
+            </button>
+          </div>
+
+          <article class="product-panel" id="panel-eml" role="tabpanel" aria-labelledby="tab-eml" data-product-panel="eml">
+            <div><h3>400G/lane EML：CPO 延遲反而可能延長 cash engine</h3><p>公司在 OFC 將 400G EML 描述為 3.2T 的 de facto standard。若 CPO integration 比預期慢，pluggable 升速仍需 EML；但 Coherent 也展示 400G EML 並強調 6 吋 InP 良率，這是供給稀缺性最直接的反證。</p></div>
+            <div class="panel-stats"><div class="panel-stat"><span>時間</span><b>FY27–FY29</b></div><div class="panel-stat"><span>證據</span><b>公司產品展示＋競品驗證</b></div><div class="panel-stat"><span>Alpha</span><b>3.2T prolongation</b></div><div class="panel-stat"><span>破壞條件</span><b>6 吋 InP 快速降價</b></div></div>
+          </article>
+          <article class="product-panel" id="panel-els" role="tabpanel" aria-labelledby="tab-els" data-product-panel="els" hidden>
+            <div><h3>CW / ELS / CPO：真正的 alpha 是從 laser chip 走向整套光源</h3><p>公司表示完整 ELS 機會約是 UHP laser chip 單體的 2 倍；既有產能足以支援 CY27 數億美元 UHP revenue。第一階段 scale-up CPO 機會又可能是 scale-out 的 3–4 倍，首批出貨指向 2027 年底。</p></div>
+            <div class="panel-stats"><div class="panel-stat"><span>時間</span><b>Late CY27 起</b></div><div class="panel-stat"><span>證據</span><b>公司簡報／訪談</b></div><div class="panel-stat"><span>Alpha</span><b>ELS attach ×2 content</b></div><div class="panel-stat"><span>破壞條件</span><b>整合延遲且 AI capex 下修</b></div></div>
+          </article>
+          <article class="product-panel" id="panel-ocs" role="tabpanel" aria-labelledby="tab-ocs" data-product-panel="ocs" hidden>
+            <div><h3>OCS：從單一 hyperscaler 專案，轉成多客戶 platform</h3><p>R300 已有兩家 hyperscaler revenue customers，第三家承諾 2026 deployment。真正上修來自多客戶複製與 ports/xPU 提升，而非只把已公告的 US$1bn run-rate 再算一次。</p></div>
+            <div class="panel-stats"><div class="panel-stat"><span>時間</span><b>2H26–FY29</b></div><div class="panel-stat"><span>證據</span><b>公司頁面／公告</b></div><div class="panel-stat"><span>Alpha</span><b>1.5:1 → 2–10:1 ports/xPU</b></div><div class="panel-stat"><span>破壞條件</span><b>客戶不擴散或軟體整合慢</b></div></div>
+          </article>
+          <article class="product-panel" id="panel-scale" role="tabpanel" aria-labelledby="tab-scale" data-product-panel="scale" hidden>
+            <div><h3>Scale-across：pump laser、窄線寬與 DWDM UHP 的 margin 橋</h3><p>這條路徑未必創造最大 headline revenue，卻可能提供最好增量 margin。若高階 laser mix 讓 FY28 EBIT margin 比共識高 1–2ppt，每股價值的影響比小型新產品更直接。</p></div>
+            <div class="panel-stats"><div class="panel-stat"><span>時間</span><b>FY27–FY28</b></div><div class="panel-stat"><span>證據</span><b>Q3 管理層說法</b></div><div class="panel-stat"><span>Alpha</span><b>+1–2ppt EBIT</b></div><div class="panel-stat"><span>破壞條件</span><b>mix 改善未轉成 margin</b></div></div>
+          </article>
+          <article class="product-panel" id="panel-vcsel" role="tabpanel" aria-labelledby="tab-vcsel" data-product-panel="vcsel" hidden>
+            <div><h3>1060nm VCSEL：scale-up optical I/O 的零基選擇權</h3><p>2D array 與 ASIC co-package 支援 UCIe/PCIe、超過 150°C 與 channel sparing，技術故事完整；但沒有商用客戶、量產時程或 revenue guidance。合理做法是給 option value，不把它塞進 base case。</p></div>
+            <div class="panel-stats"><div class="panel-stat"><span>時間</span><b>FY29+</b></div><div class="panel-stat"><span>證據</span><b>技術展示</b></div><div class="panel-stat"><span>Alpha</span><b>3–5% FY29 revenue option</b></div><div class="panel-stat"><span>破壞條件</span><b>客戶選擇 copper／其他 optics</b></div></div>
+          </article>
+        </div>
+
+        <div class="table-wrap" style="margin-top:12px">
+          <table class="ramp-table">
+            <caption>產品放量地圖：證據、時程與估值影響</caption>
+            <thead><tr><th scope="col">產品</th><th scope="col">放量窗</th><th scope="col">目前證據</th><th scope="col">信心</th><th scope="col">可能影響</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">400G/lane EML / 3.2T</th><td>FY27–29</td><td>OFC 產品與需求論述；競品亦已展示</td><td><span class="confidence high" aria-label="高信心"><i></i><i></i><i></i></span></td><td>FY29 share +5ppt ≈ +US$610m revenue、約 +US$2 EPS</td></tr>
+              <tr><th scope="row">CW / ELS / CPO</th><td>Late CY27+</td><td>完整 ELS ≈ UHP chip 機會 2 倍；初期訂單／產能</td><td><span class="confidence medium" aria-label="中信心"><i></i><i></i><i></i></span></td><td>+US$0.5–1.0bn revenue → +US$1.64–3.27 EPS</td></tr>
+              <tr><th scope="row">OCS</th><td>2H26–29</td><td>backlog、兩家 revenue customers、第三家 deployment</td><td><span class="confidence high" aria-label="高信心"><i></i><i></i><i></i></span></td><td>共識外 +US$0.5–1.0bn → +US$27–79／股</td></tr>
+              <tr><th scope="row">Scale-across lasers</th><td>FY27–28</td><td>Q3 mix 與管理層說法</td><td><span class="confidence medium" aria-label="中信心"><i></i><i></i><i></i></span></td><td>FY28 +1–2ppt EBIT → +US$17–35／股</td></tr>
+              <tr><th scope="row">1060nm VCSEL</th><td>FY29+</td><td>技術 demo；尚無商用客戶與財測</td><td><span class="confidence low" aria-label="低信心"><i></i><i></i><i></i></span></td><td>3–5% FY29 revenue option → +US$23–42／股</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrap" style="margin-top:12px">
+          <table>
+            <caption>原三頁圖卡：FY27–FY29 產品結構情境（保留原定稿）</caption>
+            <thead><tr><th scope="col">產品結構</th><th scope="col">FY27</th><th scope="col">FY28</th><th scope="col">FY29</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">EML / pluggable</th><td>35–40%</td><td>27–32%</td><td>20–25%</td></tr>
+              <tr><th scope="row">CW / CPO / SiPh</th><td>15–20%</td><td>23–28%</td><td>28–33%</td></tr>
+              <tr><th scope="row">OCS / wavelength systems</th><td>20–25%</td><td>23–27%</td><td>25–30%</td></tr>
+              <tr><th scope="row">Telecom / coherent</th><td>10–15%</td><td>9–13%</td><td>8–12%</td></tr>
+              <tr><th scope="row">Industrial / 3DS / VCSEL</th><td>8–12%</td><td>7–11%</td><td>7–11%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">產品百分比為先前研究情境假設，區間可能重疊、不是公司 segment guidance；不可與總營收機械相加。</p>
+      </section>
+
+      <section id="valuation" aria-labelledby="valuation-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">05 · Value Sensitivity</p>
+            <h2 id="valuation-title">把放量敘事換算成 EPS 與每股價值</h2>
+          </div>
+          <p class="section-lead">敏感度只回答「若增量營收存在，它值多少」；不代表這些收入一定落在共識之外。估值時仍需扣除產品重疊、競爭、稀釋與執行風險。</p>
+        </div>
+
+        <div class="calculator" aria-labelledby="calculator-title">
+          <fieldset class="choice-group">
+            <legend id="calculator-title">共識外增量營收</legend>
+            <div class="choice-row" data-choice-group="revenue">
+              <button class="choice-button" type="button" data-revenue="0.5" aria-pressed="false">US$0.5bn</button>
+              <button class="choice-button" type="button" data-revenue="1" aria-pressed="true">US$1.0bn</button>
+              <button class="choice-button" type="button" data-revenue="2" aria-pressed="false">US$2.0bn</button>
+            </div>
+          </fieldset>
+          <fieldset class="choice-group">
+            <legend>增量 EBIT margin</legend>
+            <div class="choice-row" data-choice-group="margin">
+              <button class="choice-button" type="button" data-margin="0.3" aria-pressed="false">30%</button>
+              <button class="choice-button" type="button" data-margin="0.4" aria-pressed="true">40%</button>
+              <button class="choice-button" type="button" data-margin="0.45" aria-pressed="false">45%</button>
+            </div>
+          </fieldset>
+          <div class="calculator-result" id="sensitivityResult" aria-live="polite">
+            <div class="result-cell"><span>增量 EPS</span><b id="epsOutput">+US$3.27</b></div>
+            <div class="result-cell"><span>FY28 @ 24.2x 每股價值</span><b id="valueOutput">+US$79</b></div>
+          </div>
+        </div>
+        <div class="formula-box" style="margin-top:10px">增量 EPS = 增量營收 × EBIT margin × (1 − 16.5% 稅率) ÷ 102m 稀釋股數<br>每股價值 = 增量 EPS × 24.2x（目前 FY28E multiple）</div>
+
+        <div class="grid grid-3" style="margin-top:12px">
+          <article class="card scenario-card bear">
+            <span class="scenario-name">Execution Miss</span>
+            <b class="scenario-price">US$605–666</b>
+            <span class="scenario-return">−15% 至 −7%</span>
+            <ul><li>FY28 EPS 落到 US$25–26</li><li>24–26x，估值仍不便宜</li><li>EML 稀缺性降溫、OCS ramp 延遲</li></ul>
+          </article>
+          <article class="card scenario-card base">
+            <span class="scenario-name">FY28 Alpha Case</span>
+            <b class="scenario-price">US$829–890</b>
+            <span class="scenario-return">+16% 至 +25%</span>
+            <ul><li>+US$1bn revenue @ 40% EBIT</li><li>另加 +2ppt margin，EPS ≈ US$34.24</li><li>估值 24.2–26x</li></ul>
+          </article>
+          <article class="card scenario-card bull">
+            <span class="scenario-name">FY29 Strong Bull</span>
+            <b class="scenario-price">US$1,175–1,281</b>
+            <span class="scenario-return">+65% 至 +79%</span>
+            <ul><li>+US$2bn revenue @ 40% EBIT</li><li>另加 +2ppt margin，EPS ≈ US$53.39</li><li>必須有 FY29 證據，給 22–24x</li></ul>
+          </article>
+        </div>
+
+        <div class="table-wrap" style="margin-top:12px">
+          <table>
+            <caption>原三頁圖卡：US$693.24 價格基準的估值區間（歷史快照）</caption>
+            <thead><tr><th scope="col">情境</th><th scope="col">估值年度</th><th scope="col">P/E</th><th scope="col">目標價</th><th scope="col">定位</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Bear</th><td>FY28E</td><td>17–19x</td><td>US$502–561</td><td>放量／margin 未達標</td></tr>
+              <tr><th scope="row">Base</th><td>FY28E</td><td>23–26x</td><td>US$679–768</td><td>共識大致兌現</td></tr>
+              <tr><th scope="row">Bull</th><td>FY28E</td><td>30–33x</td><td>US$886–974</td><td>產品組合與估值同升</td></tr>
+              <tr><th scope="row">Extreme Bull</th><td>FY28E</td><td>36x</td><td>約 US$1,063</td><td>接近完美定價</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">此表嚴格保留先前定稿，基準股價為 US$693.24；不是 2026-08-01 的新目標價。新版決策以 US$713.94 與上方 FY28/FY29 情境為主。</p>
+      </section>
+
+      <section id="watch" aria-labelledby="watch-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">06 · Catalyst Map</p>
+            <h2 id="watch-title">接下來不是看新聞數量，而是看五個驗證點</h2>
+          </div>
+          <p class="section-lead">FY4Q26／全年結果預定於 2026-08-11 盤後公布。財報的價值在於判斷 FY27 共識是否仍保守，以及 FY28 的 US$34–35 EPS hurdle 是否開始可見。</p>
+        </div>
+
+        <div class="split grid">
+          <article class="card">
+            <h3>放量時間軸</h3>
+            <div class="timeline">
+              <div class="timeline-item"><span class="timeline-date">2H CY26</span><div class="timeline-copy"><h3>OCS backlog 轉收入</h3><p>追蹤逾 US$400m fulfillment 與新增客戶貢獻。</p></div></div>
+              <div class="timeline-item"><span class="timeline-date">END CY26</span><div class="timeline-copy"><h3>EML capacity +50%</h3><p>關鍵不只 wafer output，而是良率、ASP 與長約條件。</p></div></div>
+              <div class="timeline-item"><span class="timeline-date">CY27</span><div class="timeline-copy"><h3>OCS > US$1bn run-rate</h3><p>確認多客戶複製，而非單一專案集中。</p></div></div>
+              <div class="timeline-item"><span class="timeline-date">LATE CY27</span><div class="timeline-copy"><h3>Scale-up CPO 首批出貨</h3><p>追蹤 UHP chip 與完整 ELS 的 attach rate。</p></div></div>
+              <div class="timeline-item"><span class="timeline-date">FY29+</span><div class="timeline-copy"><h3>Optical scale-up optionality</h3><p>VCSEL 必須出現 design win／商用時程，才能從 option 進 base。</p></div></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>2026-08-11 財報檢查表</h3>
+            <div class="checklist">
+              <div class="check-item"><strong>OCS run-rate 與客戶擴散</strong><span>是否仍指向 >US$1bn？第三家 hyperscaler deployment 有無延遲？</span></div>
+              <div class="check-item"><strong>CPO / UHP 新訂單與 ELS attach</strong><span>市場只看到 chips，還是完整 ELS content 開始被採用？</span></div>
+              <div class="check-item"><strong>FY27 operating margin >38% 的路徑</strong><span>volume、pricing、mix、良率各貢獻多少？</span></div>
+              <div class="check-item"><strong>1.6T 垂直整合是否轉為 margin</strong><span>不是只報營收；要看到 Components 與 Systems 的獲利轉換。</span></div>
+              <div class="check-item"><strong>稀釋股數與 Capex</strong><span>NVIDIA preferred 一對一轉換；以 102m diluted shares 為模型基準。</span></div>
+              <div class="check-item"><strong>競品 6 吋 InP 良率與 pricing</strong><span>Coherent 的供給改善可能先壓縮 scarcity premium。</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top:12px;border-left:4px solid var(--green)">
+          <h3>投資策略</h3>
+          <p><strong>定位：高 Beta 衛星持股，不宜當低估值核心倉。</strong>已持有者可保留趨勢部位，但把加碼條件綁在 FY27 margin、OCS 多客戶與 ELS attach 的實證；新資金更適合等財報後確認或回撤分批。最好的上修不是另一個 headline 訂單，而是 FY28 EPS 共識開始向 US$34–35 靠攏。</p>
+          <span class="tag inference">分析推論</span>
+        </div>
+      </section>
+
+      <section id="risks" aria-labelledby="risks-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">07 · Thesis Broken</p>
+            <h2 id="risks-title">不是股價跌就壞掉；是下面的經濟邏輯被證偽</h2>
+          </div>
+          <p class="section-lead">這些指標比單季波動更重要。若同時出現兩項以上，應下修長期 EPS 與合理 multiple，而不是把跌幅自動視為買點。</p>
+        </div>
+
+        <div class="grid grid-3">
+          <article class="card risk-card"><h3>EML 稀缺性消失</h3><p><strong>Coherent 6 吋 InP 良率快速爬升</strong>，400G EML ASP／長約溢價下滑，Lumentum 產能擴張沒有換來獲利槓桿。</p></article>
+          <article class="card risk-card"><h3>CPO 延遲的原因變質</h3><p>若延遲來自 <strong>AI capex 放緩</strong>，而非 integration 複雜度，EML 與 CPO 不再構成 architecture hedge，會同時承壓。</p></article>
+          <article class="card risk-card"><h3>FY28 EPS 掉出軌道</h3><p>EPS 共識跌到 <strong>US$25–26 以下</strong>，或 operating margin 長時間低於 37%，表示 40%+ margin 並非 timing 問題。</p></article>
+          <article class="card risk-card"><h3>OCS 未能多客戶複製</h3><p>既有 backlog 消化後，新客戶／ports per xPU 沒上升，Systems 仍高度依賴單一 hyperscaler 專案。</p></article>
+          <article class="card risk-card"><h3>買方權力高於稀缺性</h3><p>NVIDIA 對 Lumentum、Coherent 的雙投資轉成價格／capacity rights 約束，供應商新增 Capex 卻無法保留超額 margin。</p></article>
+          <article class="card risk-card"><h3>客戶集中惡化</h3><p>FY3Q26 前兩大客戶占營收 <strong>26% 與 12%</strong>；若集中度再升且合約保護不足，單一架構切換會放大 downside。</p></article>
+        </div>
+      </section>
+
+      <section id="sources" aria-labelledby="sources-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">08 · Source Ledger</p>
+            <h2 id="sources-title">來源與證據邊界</h2>
+          </div>
+          <p class="section-lead">官方財報與 SEC 文件用於實績、指引、股數與客戶集中；公司／競品簡報用於 roadmap；PhotonCap 訪談屬產業調查，需與官方資料交叉比對。</p>
+        </div>
+
+        <ol class="source-list">
+          <li><a href="https://photoncap.net/p/a-conversation-with-lumentum" target="_blank" rel="noopener">PhotonCap｜A Conversation with Lumentum</a><span>https://photoncap.net/p/a-conversation-with-lumentum</span></li>
+          <li><a href="https://s21.q4cdn.com/377324469/files/doc_presentations/2026/2026-Lumentum-at-OFC_final.pdf" target="_blank" rel="noopener">Lumentum｜OFC 2026 Investor Presentation</a><span>https://s21.q4cdn.com/377324469/files/doc_presentations/2026/2026-Lumentum-at-OFC_final.pdf</span></li>
+          <li><a href="https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Third-Quarter-of-Fiscal-Year-2026-Financial-Results/default.aspx" target="_blank" rel="noopener">Lumentum｜FY3Q26 Financial Results</a><span>https://investor.lumentum.com/.../FY2026-Third-Quarter-Results</span></li>
+          <li><a href="https://s21.q4cdn.com/377324469/files/doc_financials/2026/q3/Q3-FY26-Earnings-Presentation_final.pdf" target="_blank" rel="noopener">Lumentum｜Q3 FY26 Earnings Presentation</a><span>https://s21.q4cdn.com/377324469/files/doc_financials/2026/q3/Q3-FY26-Earnings-Presentation_final.pdf</span></li>
+          <li><a href="https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Showcases-Breakthrough-Optical-Scale-Up-Demonstration-at-OFC-2026-Using-VCSEL-Technology/default.aspx" target="_blank" rel="noopener">Lumentum｜1060nm VCSEL Optical Scale-up Demonstration</a><span>https://investor.lumentum.com/.../VCSEL-Technology</span></li>
+          <li><a href="https://www.lumentum.com/en/products/data-center/optical-circuit-switches" target="_blank" rel="noopener">Lumentum｜Optical Circuit Switches</a><span>https://www.lumentum.com/en/products/data-center/optical-circuit-switches</span></li>
+          <li><a href="https://investor.lumentum.com/financial-news-releases/news-details/2025/Lumentum-Optical-Circuit-Switch-to-Improve-Next-Generation-AI-Data-Center-Scalability/" target="_blank" rel="noopener">Lumentum｜R300 OCS hyperscaler deployment</a><span>https://investor.lumentum.com/.../R300-OCS</span></li>
+          <li><a href="https://www.sec.gov/Archives/edgar/data/1633978/000162828026030777/lite-20260328.htm" target="_blank" rel="noopener">SEC｜Lumentum FY3Q26 Form 10-Q</a><span>https://www.sec.gov/Archives/edgar/data/1633978/000162828026030777/lite-20260328.htm</span></li>
+          <li><a href="https://nvidianews.nvidia.com/news/nvidia-announces-strategic-partnership-with-lumentum-to-develop-state-of-the-art-optics-technology" target="_blank" rel="noopener">NVIDIA｜Strategic partnership with Lumentum</a><span>https://nvidianews.nvidia.com/news/.../lumentum</span></li>
+          <li><a href="https://nvidianews.nvidia.com/news/nvidia-and-coherent-announce-strategic-partnership-to-develop-optics-technology-to-scale-next-generation-data-center-architecture" target="_blank" rel="noopener">NVIDIA｜Strategic partnership with Coherent</a><span>https://nvidianews.nvidia.com/news/.../coherent</span></li>
+          <li><a href="https://www.coherent.com/content/dam/coherent/site/en/documents/investors/investor-presentations/2026/march-17/OFC-2026-Investor%20event-deck-vf.pdf" target="_blank" rel="noopener">Coherent｜OFC 2026 Investor Event Deck</a><span>https://www.coherent.com/content/dam/.../OFC-2026-Investor-event-deck-vf.pdf</span></li>
+          <li><a href="https://www.finanzen.net/schaetzungen/lumentum" target="_blank" rel="noopener">Finanzen.net｜Lumentum analyst estimates</a><span>https://www.finanzen.net/schaetzungen/lumentum</span></li>
+          <li><a href="https://investor.lumentum.com/financial-news-releases/news-details/2026/Lumentum-Announces-Reporting-Date-for-Fourth-Quarter-and-Fiscal-Year-2026-Results/default.aspx" target="_blank" rel="noopener">Lumentum｜FY4Q26 reporting date</a><span>https://investor.lumentum.com/.../FY2026-Reporting-Date</span></li>
+          <li><a href="https://www.nasdaq.com/market-activity/stocks/lite" target="_blank" rel="noopener">Nasdaq｜LITE market activity</a><span>https://www.nasdaq.com/market-activity/stocks/lite</span></li>
+        </ol>
+
+        <p class="disclaimer">免責聲明：本報告為研究與情境分析，不構成投資建議。市場共識、股價與產品時程會變動；供應鏈訪談與公司 roadmap 可能帶有選擇性揭露及行銷偏誤。估值模型為簡化稅後 EBIT 敏感度，未完整反映利息、SBC、preferred conversion、Capex、營運資金與淨現金變化。投資決策前應以最新 SEC 文件與公司財測重新校準。</p>
+      </section>
+
+      <footer>
+        <span>Lumentum（NASDAQ: LITE）Alpha Research</span>
+        <span>資料截止：2026-08-01 · 繁體中文 · 單檔 HTML</span>
+      </footer>
+    </article>
+  </main>
+
+  <script>
+    (() => {
+      const productTabs = [...document.querySelectorAll('.path-node')];
+      const productPanels = [...document.querySelectorAll('[data-product-panel]')];
+
+      function selectProduct(product, focusPanel = false) {
+        productTabs.forEach((tab) => {
+          const selected = tab.dataset.product === product;
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+        });
+        productPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.productPanel !== product;
+        });
+        if (focusPanel) {
+          const panel = document.querySelector(`[data-product-panel="${product}"]`);
+          panel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      productTabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectProduct(tab.dataset.product));
+        tab.addEventListener('keydown', (event) => {
+          if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          let nextIndex = index;
+          if (event.key === 'ArrowRight') nextIndex = (index + 1) % productTabs.length;
+          if (event.key === 'ArrowLeft') nextIndex = (index - 1 + productTabs.length) % productTabs.length;
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = productTabs.length - 1;
+          selectProduct(productTabs[nextIndex].dataset.product);
+          productTabs[nextIndex].focus();
+        });
+      });
+
+      const shares = 102;
+      const taxRate = 0.165;
+      const fy28Multiple = 24.2;
+      let revenueBn = 1;
+      let ebitMargin = 0.4;
+      const epsOutput = document.querySelector('#epsOutput');
+      const valueOutput = document.querySelector('#valueOutput');
+
+      function updateSensitivity() {
+        const incrementalEps = revenueBn * 1000 * ebitMargin * (1 - taxRate) / shares;
+        const valuePerShare = incrementalEps * fy28Multiple;
+        epsOutput.textContent = `+US$${incrementalEps.toFixed(2)}`;
+        valueOutput.textContent = `+US$${Math.round(valuePerShare)}`;
+      }
+
+      document.querySelectorAll('[data-revenue]').forEach((button) => {
+        button.addEventListener('click', () => {
+          revenueBn = Number(button.dataset.revenue);
+          document.querySelectorAll('[data-revenue]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+          updateSensitivity();
+        });
+      });
+
+      document.querySelectorAll('[data-margin]').forEach((button) => {
+        button.addEventListener('click', () => {
+          ebitMargin = Number(button.dataset.margin);
+          document.querySelectorAll('[data-margin]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+          updateSensitivity();
+        });
+      });
+
+      document.querySelector('#printButton')?.addEventListener('click', () => window.print());
+
+      const navLinks = [...document.querySelectorAll('.nav-scroll a')];
+      const sections = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          navLinks.forEach((link) => {
+            if (link.getAttribute('href') === `#${visible.target.id}`) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        }, { rootMargin: '-18% 0px -70% 0px', threshold: [0, .25, .6] });
+        sections.forEach((section) => observer.observe(section));
+      }
+
+      selectProduct('eml');
+      updateSensitivity();
+    })();
+  </script>
+</body>
+</html>
